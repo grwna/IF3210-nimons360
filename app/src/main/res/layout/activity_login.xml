@@ -57,9 +57,8 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="32dp"
         app:boxBackgroundColor="@color/background"
         app:boxCornerRadiusBottomEnd="8dp"
         app:boxCornerRadiusBottomStart="8dp"
@@ -72,17 +71,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView2"
-        app:startIconDrawable="@android:drawable/ic_dialog_email"
-        app:startIconTint="@color/border_dark">
+        app:startIconDrawable="@drawable/email_vec_inset"
+        app:startIconTint="@color/border_dark"
+        app:startIconMinSize="20dp"
+        >
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextTextEmailAddress"
+        <EditText
+            android:id="@+id/login_email_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login_email_hint"
             android:inputType="textEmailAddress"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="14dp"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -92,9 +93,8 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
         app:boxBackgroundColor="@color/background"
         app:boxCornerRadiusBottomEnd="8dp"
         app:boxCornerRadiusBottomStart="8dp"
@@ -107,37 +107,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
-        app:startIconDrawable="@android:drawable/ic_lock_lock"
+        app:startIconDrawable="@drawable/lock_vec_inset"
         app:startIconTint="@color/border_dark"
+        app:startIconMinSize="20dp"
         app:suffixText="@string/login_show_text"
         app:suffixTextColor="@color/primary">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/editTextTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login_password_hint"
             android:inputType="textPassword"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
+            android:paddingVertical="14dp"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button"
+        android:id="@+id/login_button"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="8dp"
         android:text="@string/login_button_text"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:backgroundTint="@color/primary"
-        app:cornerRadius="28dp"
+        app:cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/passwordInputLayout" />
 

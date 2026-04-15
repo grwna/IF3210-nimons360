@@ -5,5 +5,6 @@
     <string name="login_image_desc">Application logo</string>
     <string name="login_email_hint">Email address</string>
     <string name="login_password_hint">Password</string>
-    <string name="login_button_text">Log In</string>
+    <string name="login_button_text">Sign In</string>
+    <string name="login_show_text">Show</string>
 </resources>

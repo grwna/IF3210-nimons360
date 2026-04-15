@@ -1,6 +1,5 @@
 package com.example.nimons360_far.ui
 
-import android.view.LayoutInflater
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -9,16 +8,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.sp
+import com.example.nimons360_far.ui.screen.FamiliesScreen
+import com.example.nimons360_far.ui.screen.HomeScreen
+import com.example.nimons360_far.ui.screen.MapScreen
 
-import com.example.nimons360_far.R
 sealed class BottomNavItem(val title: String, val icon: ImageVector) {
     object Home : BottomNavItem("Home", Icons.Default.Home)
     object Map : BottomNavItem("Map", Icons.Default.LocationOn)

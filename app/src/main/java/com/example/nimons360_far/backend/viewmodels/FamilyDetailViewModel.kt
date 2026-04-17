@@ -81,7 +81,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
                 if (res.isSuccessful) {
                     _joinErrorMessage.value = null
                     onSuccess()
-                    loadFamilyDetail(familyId) // reload data
+                    loadFamilyDetail(familyId)
                 } else {
                     _joinErrorMessage.value = "Wrong Family Code!"
                 }

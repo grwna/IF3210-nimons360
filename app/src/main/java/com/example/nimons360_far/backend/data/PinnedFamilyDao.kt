@@ -1,4 +1,4 @@
-package com.example.nimons360_far.data
+package com.example.nimons360_far.backend.data
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -7,7 +7,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface PinnedFamilyDAO {
+interface PinnedFamilyDao {
     @Query("SELECT * FROM pinned_families")
     fun getAllPinned(): Flow<List<PinnedFamily>>
 

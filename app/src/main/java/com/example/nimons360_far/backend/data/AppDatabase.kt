@@ -1,4 +1,4 @@
-package com.example.nimons360_far.data
+package com.example.nimons360_far.backend.data
 
 import android.content.Context
 import androidx.room.Database
@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [PinnedFamily::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun pinnedFamilyDao(): PinnedFamilyDAO
+    abstract fun pinnedFamilyDao(): PinnedFamilyDao
 
     companion object {
         @Volatile

@@ -1,10 +1,18 @@
-package com.example.nimons360_far.api
+package com.example.nimons360_far.backend.api
 
-import com.example.nimons360_far.model.*
+import com.example.nimons360_far.backend.models.CreateFamilyRequest
+import com.example.nimons360_far.backend.models.FamilyDetailResponse
+import com.example.nimons360_far.backend.models.FamilyResponse
+import com.example.nimons360_far.backend.models.JoinFamilyRequest
+import com.example.nimons360_far.backend.models.LeaveFamilyRequest
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Path
 
-interface FamilyAPI {
+interface FamilyApi {
     @GET("/api/families")
     suspend fun getAllFamilies(
         @Header("Authorization") token: String

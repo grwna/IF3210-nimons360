@@ -9,20 +9,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import android.content.Context
+import androidx.lifecycle.repeatOnLifecycle
 import coil.load
 import com.example.nimons360_far.R
-import com.example.nimons360_far.api.FamilyAPI
-import com.example.nimons360_far.model.CreateFamilyRequest
+import com.example.nimons360_far.backend.viewmodels.CreateEvent
+import com.example.nimons360_far.backend.viewmodels.CreateFamilyViewModel
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class CreateFamily : Fragment(R.layout.create_family) {
+
+    private val viewModel: CreateFamilyViewModel by viewModels()
+
     private val iconUrls = listOf(
         "https://mad.labpro.hmif.dev/assets/family_icon_1.png",
         "https://mad.labpro.hmif.dev/assets/family_icon_2.png",
@@ -33,17 +34,8 @@ class CreateFamily : Fragment(R.layout.create_family) {
         "https://mad.labpro.hmif.dev/assets/family_icon_7.png",
         "https://mad.labpro.hmif.dev/assets/family_icon_8.png"
     )
-    private var selectedIconUrl: String? = null
     private val iconViews = mutableListOf<ImageView>()
     private var ivSelectedIconPreview: ImageView? = null
-
-    private val api: FamilyAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyAPI::class.java)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,69 +44,45 @@ class CreateFamily : Fragment(R.layout.create_family) {
         val btnHeaderCreate = view.findViewById<TextView>(R.id.btnHeaderCreate)
         val btnCancel = view.findViewById<TextView>(R.id.btnCancel)
         ivSelectedIconPreview = view.findViewById(R.id.ivSelectedIconPreview)
+
         setupIconGrid(gridIcons)
+
         btnCancel.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+
         btnHeaderCreate.setOnClickListener {
-            attemptCreateFamily(etFamilyName)
+            val familyName = etFamilyName.text.toString().trim()
+            viewModel.attemptCreateFamily(familyName)
         }
-    }
 
-    private fun attemptCreateFamily(etFamilyName: TextInputEditText) {
-        val familyName = etFamilyName.text.toString().trim()
-        if (familyName.isEmpty()) {
-            Toast.makeText(requireContext(), "Family name cannot be empty!", Toast.LENGTH_SHORT)
-                .show()
-            return
-        }
-        if (familyName.length > 40) {
-            Toast.makeText(requireContext(), "Family name is too long!", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (selectedIconUrl == null) {
-            Toast.makeText(requireContext(), "Please select an icon!", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val sharedPreferences = requireContext().getSharedPreferences("Nimons360Prefs", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("AUTH_TOKEN", "") ?: ""
-        val bearerToken = "Bearer $token"
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val request = CreateFamilyRequest(familyName, selectedIconUrl!!)
-                val response = api.createFamily(bearerToken, request)
-                withContext(Dispatchers.Main) {
-                    if ((response.isSuccessful) && (response.body() != null)) {
-                        val newFamily = response.body()!!.data
-                        Toast.makeText(
-                            requireContext(),
-                            "Family '${newFamily.name}' created!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val familyDetail = FamilyDetail().apply {
-                            arguments = Bundle().apply {
-                                putInt("familyId", newFamily.id)
-                            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.selectedIconUrl.collect { url ->
+                        if (url != null) {
+                            ivSelectedIconPreview?.load(url) { crossfade(true) }
                         }
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, familyDetail)
-                            .addToBackStack(null)
-                            .commit()
-                    } else {
-                        val errorMsg =
-                            if (response.code() == 409) {
-                                "Token expired, please re-login"
-                            } else {
-                                "Failed to create family"
-                            }
-                        Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
                     }
                 }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT)
-                        .show()
+                launch {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is CreateEvent.Success -> {
+                                Toast.makeText(requireContext(), "Family '${event.familyName}' created!", Toast.LENGTH_SHORT).show()
+                                val familyDetail = FamilyDetail().apply {
+                                    arguments = Bundle().apply { putInt("familyId", event.newFamilyId) }
+                                }
+                                requireActivity().supportFragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_container, familyDetail)
+                                    .addToBackStack(null)
+                                    .commit()
+                            }
+                            is CreateEvent.Error -> {
+                                Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -128,6 +96,7 @@ class CreateFamily : Fragment(R.layout.create_family) {
         val cellSize = (availableWidth / 5)
         val margin = (4 * displayMetrics.density).toInt()
         val imageSize = cellSize - (margin * 2)
+
         for (url in iconUrls) {
             val imageView = ImageView(requireContext()).apply {
                 layoutParams = GridLayout.LayoutParams().apply {
@@ -138,7 +107,10 @@ class CreateFamily : Fragment(R.layout.create_family) {
                 val innerPadding = (12 * displayMetrics.density).toInt()
                 setPadding(innerPadding, innerPadding, innerPadding, innerPadding)
                 load(url) { crossfade(true) }
-                setOnClickListener { selectIcon(this, url) }
+                setOnClickListener {
+                    viewModel.selectIcon(url)
+                    updateIconSelectionUI(this)
+                }
             }
             iconViews.add(imageView)
             gridIcons.addView(imageView)
@@ -148,9 +120,7 @@ class CreateFamily : Fragment(R.layout.create_family) {
         }
     }
 
-    private fun selectIcon(selectedView: ImageView, url: String) {
-        selectedIconUrl = url
-        ivSelectedIconPreview?.load(url) { crossfade(true) }
+    private fun updateIconSelectionUI(selectedView: ImageView) {
         val unselectedBg = GradientDrawable().apply {
             setColor(Color.parseColor("#F8F9FA"))
             cornerRadius = 16f * resources.displayMetrics.density

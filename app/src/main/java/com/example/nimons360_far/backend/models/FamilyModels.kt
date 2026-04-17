@@ -1,4 +1,4 @@
-package com.example.nimons360_far.model
+package com.example.nimons360_far.backend.models
 
 import com.google.gson.annotations.SerializedName
 

@@ -15,6 +15,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import coil.load
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.viewmodels.CreateEvent
@@ -41,6 +43,11 @@ class CreateFamily : Fragment(R.layout.create_family) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, v.paddingBottom)
+            insets
+        }
         val etFamilyName = view.findViewById<TextInputEditText>(R.id.etFamilyName)
         val gridIcons = view.findViewById<GridLayout>(R.id.gridIcons)
         val btnHeaderCreate = view.findViewById<TextView>(R.id.btnHeaderCreate)

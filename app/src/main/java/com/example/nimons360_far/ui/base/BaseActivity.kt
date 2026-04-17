@@ -8,7 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.nimons360_far.backend.utils.navigateTo
-import com.example.nimons360_far.ui.screens.LoginActivity
+import com.example.nimons360_far.ui.auth.LoginActivity
 
 // ABC for common functionality for all activities
 abstract class BaseActivity : AppCompatActivity() {

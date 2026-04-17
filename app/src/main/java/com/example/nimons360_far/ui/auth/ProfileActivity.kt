@@ -1,21 +1,29 @@
-package com.example.nimons360_far.ui.screens
+package com.example.nimons360_far.ui.auth
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.utils.SessionManager
-import com.example.nimons360_far.backend.utils.navigateTo
 import com.example.nimons360_far.backend.viewmodels.ProfileState
 import com.example.nimons360_far.backend.viewmodels.ProfileViewModel
 import com.example.nimons360_far.databinding.ActivityProfileBinding
 import com.example.nimons360_far.ui.base.BaseActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
 class ProfileActivity : BaseActivity() {
@@ -73,16 +81,16 @@ class ProfileActivity : BaseActivity() {
 
         // Bottom Sheet trigger
         binding.ivEditPencil.setOnClickListener {
-            val bottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
-            val sheetView = layoutInflater.inflate(com.example.nimons360_far.R.layout.bottom_sheet_edit_name, null)
+            val bottomSheetDialog = BottomSheetDialog(this)
+            val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
             bottomSheetDialog.setContentView(sheetView)
             
             // Set background transparent to show curved top corners
-            (sheetView.parent as? android.view.View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            (sheetView.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
 
-            val etName = sheetView.findViewById<com.google.android.material.textfield.TextInputEditText>(com.example.nimons360_far.R.id.et_name)
-            val btnCancel = sheetView.findViewById<com.google.android.material.button.MaterialButton>(com.example.nimons360_far.R.id.btn_cancel)
-            val btnSave = sheetView.findViewById<com.google.android.material.button.MaterialButton>(com.example.nimons360_far.R.id.btn_save)
+            val etName = sheetView.findViewById<TextInputEditText>(R.id.et_name)
+            val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
+            val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
 
             // Populate current name
             etName.setText(binding.tvProfileName.text.toString())
@@ -106,15 +114,15 @@ class ProfileActivity : BaseActivity() {
 
         // Sign Out Modal Trigger
         binding.btnSignOut.setOnClickListener {
-            val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-            val dialogView = layoutInflater.inflate(com.example.nimons360_far.R.layout.dialog_sign_out, null)
+            val builder = AlertDialog.Builder(this)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_sign_out, null)
             builder.setView(dialogView)
             val dialog = builder.create()
-            dialog.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            val btnCancel = dialogView.findViewById<com.google.android.material.button.MaterialButton>(com.example.nimons360_far.R.id.btn_cancel)
-            val btnSignOutConfirm = dialogView.findViewById<com.google.android.material.button.MaterialButton>(com.example.nimons360_far.R.id.btn_sign_out_confirm)
-            val tvDialogAvatar = dialogView.findViewById<android.widget.TextView>(com.example.nimons360_far.R.id.tv_dialog_avatar_initial)
+            val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btn_cancel)
+            val btnSignOutConfirm = dialogView.findViewById<MaterialButton>(R.id.btn_sign_out_confirm)
+            val tvDialogAvatar = dialogView.findViewById<TextView>(R.id.tv_dialog_avatar_initial)
 
             tvDialogAvatar.text = binding.tvAvatarInitial.text
 

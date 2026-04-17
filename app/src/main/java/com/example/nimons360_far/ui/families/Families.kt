@@ -10,8 +10,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
@@ -95,7 +95,7 @@ fun FamiliesScreen(
         topBar = {
             Surface(
                 color = Color.White,
-                shadowElevation = 1.dp,
+                shadowElevation = 8.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
@@ -103,18 +103,10 @@ fun FamiliesScreen(
                     color = DesignTextBlack,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 24.dp, top = 20.dp, end = 24.dp, bottom = 16.dp)
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(start = 24.dp, top = 20.dp, end = 24.dp, bottom = 16.dp)
                 )
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNavigateToCreate,
-                containerColor = DesignFabBg,
-                contentColor = DesignBlue,
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Create")
             }
         },
         containerColor = DesignBg

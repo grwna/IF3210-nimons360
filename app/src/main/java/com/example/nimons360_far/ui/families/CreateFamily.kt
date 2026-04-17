@@ -92,6 +92,8 @@ class CreateFamily : Fragment(R.layout.create_family) {
                                 val familyDetail = FamilyDetail().apply {
                                     arguments = Bundle().apply { putInt("familyId", event.newFamilyId) }
                                 }
+                                val fragmentManager = requireActivity().supportFragmentManager
+                                fragmentManager.popBackStack()
                                 requireActivity().supportFragmentManager.beginTransaction()
                                     .replace(R.id.fragment_container, familyDetail)
                                     .addToBackStack(null)

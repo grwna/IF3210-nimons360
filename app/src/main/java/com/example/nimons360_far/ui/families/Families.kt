@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -77,7 +79,9 @@ class Families : Fragment() {
 fun FamiliesScreen(
     onNavigateToCreate: () -> Unit,
     onNavigateToDetail: (Int) -> Unit,
-    viewModel: FamiliesViewModel = viewModel()
+    viewModel: FamiliesViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as AppCompatActivity
+    )
 ) {
     val allFamilies by viewModel.allFamilies.collectAsState()
     val myFamilies by viewModel.myFamilies.collectAsState()
@@ -90,6 +94,10 @@ fun FamiliesScreen(
     val searchedList = baseList.filter { it.name.contains(searchQuery, ignoreCase = true) }
     val pinnedList = searchedList.filter { pinnedIds.contains(it.id) }
     val unpinnedList = searchedList.filter { !pinnedIds.contains(it.id) }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchFamilies()
+    }
 
     Scaffold(
         topBar = {

@@ -61,7 +61,7 @@ class FamiliesViewModel(application: Application) : AndroidViewModel(application
         observePinnedFamilies()
     }
 
-    private fun fetchFamilies() {
+    fun fetchFamilies() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (token.isNotEmpty()) {

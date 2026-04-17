@@ -3,6 +3,8 @@ package com.example.nimons360_far.ui.families
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -43,6 +45,7 @@ class CreateFamily : Fragment(R.layout.create_family) {
         val gridIcons = view.findViewById<GridLayout>(R.id.gridIcons)
         val btnHeaderCreate = view.findViewById<TextView>(R.id.btnHeaderCreate)
         val btnCancel = view.findViewById<TextView>(R.id.btnCancel)
+        val tvCounter = view.findViewById<TextView>(R.id.tvCounter)
         ivSelectedIconPreview = view.findViewById(R.id.ivSelectedIconPreview)
 
         setupIconGrid(gridIcons)
@@ -55,6 +58,15 @@ class CreateFamily : Fragment(R.layout.create_family) {
             val familyName = etFamilyName.text.toString().trim()
             viewModel.attemptCreateFamily(familyName)
         }
+
+        tvCounter.text = "${etFamilyName.text?.length ?: 0}/40"
+        etFamilyName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                tvCounter.text = "${s?.length ?: 0}/40"
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".ui.auth.AuthLoginActivity">
+    tools:context=".ui.auth.LoginActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
@@ -110,8 +110,8 @@
         app:startIconDrawable="@drawable/lock_vec_inset"
         app:startIconTint="@color/border_dark"
         app:startIconMinSize="20dp"
-        app:suffixText="@string/login_show_text"
-        app:suffixTextColor="@color/primary">
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/primary">
 
         <EditText
             android:id="@+id/editTextTextPassword"
@@ -127,13 +127,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_button"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="8dp"
         android:text="@string/login_button_text"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:backgroundTint="@color/primary"
         app:cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"

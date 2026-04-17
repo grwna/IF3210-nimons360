@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/nimons_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Nimons360FAR">
+
         <activity
             android:name=".LauncherActivity"
             android:exported="true">
@@ -29,6 +30,10 @@
 
         <activity
             android:name=".ui.screens.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.MainActivity"
             android:exported="false" />
 
         <meta-data

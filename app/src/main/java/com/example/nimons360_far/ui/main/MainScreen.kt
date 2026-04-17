@@ -2,18 +2,13 @@ package com.example.nimons360_far.ui.main
 
 import android.os.Bundle
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.appcompat.app.AppCompatActivity
 import com.example.nimons360_far.R
 import com.example.nimons360_far.ui.families.FamiliesScreen
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.nimons360_far.ui.families.CreateFamily
 import com.example.nimons360_far.ui.families.FamilyDetail
 import com.example.nimons360_far.ui.home.HomeScreen

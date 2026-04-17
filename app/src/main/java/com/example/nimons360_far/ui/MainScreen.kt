@@ -18,11 +18,11 @@ import com.example.nimons360_far.ui.screen.FamiliesScreen
 import com.example.nimons360_far.ui.screen.HomeScreen
 import com.example.nimons360_far.ui.screen.MapScreen
 
-sealed class BottomNavItem(val title: String, val icon: ImageVector) {
-    object Home : BottomNavItem("Home", Icons.Default.Home)
-    object Map : BottomNavItem("Map", Icons.Default.LocationOn)
-    object Families : BottomNavItem("Families", Icons.Default.Group)
-}
+import com.example.nimons360_far.ui.components.NavBar
+import com.example.nimons360_far.ui.components.HeadBar
+import com.example.nimons360_far.ui.components.BottomNavItem
+import com.example.nimons360_far.ui.components.FloatingFamilies
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,101 +31,30 @@ fun MainScreen() {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                modifier = Modifier.shadow(
-                    elevation = 8.dp,
-                    spotColor = Color.Black,
-                    ambientColor = Color.Black
-                ),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                title = {
-                    val currentTitle = if (selectedItem == BottomNavItem.Home) "Nimons360" else selectedItem.title
-                    Text(
-                        text = currentTitle,
-                        fontWeight = if (currentTitle == "Nimons360") FontWeight.Bold else FontWeight.Normal,
-                        fontSize = 22.sp
-                    )
-                },
-                actions = {
-                    IconButton(onClick = {/* TODO: Navigasi ke Profile Page*/}) {
-                        Icon(
-                            Icons.Default.AccountCircle,
-                            contentDescription = "Profile",
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                }
+            HeadBar(
+                currentTitle = selectedItem.title,
+                onProfileClick = { /*TODO: Navigasi ke Form Profile */ },
+                selectedItem = selectedItem
             )
         },
         bottomBar = {
-            NavigationBar(
-                containerColor = Color(0xFFFFFFFF),
-
-                modifier = Modifier.drawBehind {
-                    val strokeWidth = 1.dp.toPx()
-                    drawLine(
-                        color = Color(0xFFCAC4D0),
-                        start = Offset(0f, 0f),
-                        end = Offset(size.width, 0f),
-                        strokeWidth = strokeWidth
-                    )
-                }
-            ) {
-                val items = listOf(BottomNavItem.Home, BottomNavItem.Map, BottomNavItem.Families)
-                items.forEach { item ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = item.title,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = item.title,
-                                fontWeight = if (selectedItem == item) FontWeight.SemiBold else FontWeight.Normal
-                            )
-                        },
-                        selected = selectedItem == item,
-                        onClick = { selectedItem = item },
-
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFF1565C0),
-                            selectedTextColor = Color(0xFF1C1B1F),
-
-                            unselectedIconColor = Color(0xFF49454F),
-                            unselectedTextColor = Color(0xFF49454F),
-
-                            indicatorColor = Color(0xFFD9E9FF)
-                        )
-                    )
-                }
-            }
+            NavBar(
+                selectedItem = selectedItem,
+                onItemSelected = { selectedItem = it }
+            )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {/* TODO: Navigasi ke Form Create Family */},
-                containerColor = Color(0xFFE3EEFF),
-            ) {
-                Icon(Icons.Default.Add,
-                    contentDescription = "Add",
-                    tint = Color(0xFF1565C0)
-                )
-            }
+            FloatingFamilies(
+                onClick = { /* TODO: Navigasi ke Form Create Family */ }
+            )
         }
     ) { innerPadding ->
-
-        val modifier = Modifier.padding(innerPadding)
-
-        when (selectedItem) {
-            is BottomNavItem.Home -> HomeScreen(modifier = modifier)
-
-            is BottomNavItem.Map -> MapScreen(modifier = modifier)
-
-            is BottomNavItem.Families -> FamiliesScreen(modifier = modifier)
+        Box(modifier = Modifier.padding(innerPadding)) {
+            when (selectedItem) {
+                is BottomNavItem.Home -> HomeScreen()
+                is BottomNavItem.Map -> MapScreen()
+                is BottomNavItem.Families -> FamiliesScreen()
+            }
         }
     }
 }

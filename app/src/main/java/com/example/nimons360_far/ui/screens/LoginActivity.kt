@@ -1,10 +1,8 @@
 package com.example.nimons360_far.ui.screens
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -14,19 +12,21 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.nimons360_far.LauncherActivity
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.models.LoginRequest
+import com.example.nimons360_far.backend.utils.navigateTo
 import com.example.nimons360_far.backend.viewmodels.AuthState
 import com.example.nimons360_far.backend.viewmodels.AuthViewModel
 import com.example.nimons360_far.databinding.ActivityLoginBinding
+import com.example.nimons360_far.ui.base.BaseActivity
 import kotlinx.coroutines.launch
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private lateinit var authViewModel: AuthViewModel
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Initialize ViewModel and set up layout with View Binding
+        // initialize ViewModel and set up layout with View Binding components
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
         enableEdgeToEdge()
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Observes ViewModel state and update UI based on the state
+        // observes auth state data and updates UI accordingly
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authViewModel.authState.collect { state ->
@@ -66,9 +66,8 @@ class LoginActivity : AppCompatActivity() {
                         is AuthState.Success -> {
                             binding.loginButton.isEnabled = true
                             binding.loginButton.text = "Success!"
-                            val intent = Intent(this@LoginActivity, LauncherActivity::class.java)
-                            startActivity(intent)
-                            finish()
+                            // redirect to Launcher to handle session routing
+                            navigateTo(LauncherActivity::class.java, clearStack = true)
                         }
                         is AuthState.Error -> {
                             binding.loginButton.isEnabled = true
@@ -81,3 +80,4 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
+

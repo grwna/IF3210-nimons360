@@ -33,8 +33,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 val response = authApi.login(request)
                 if (response.isSuccessful && response.body() != null) {
                     val authData = response.body()!!.data
-                    // Store Token
+                    // Store Token and User Data
                     sessionManager.saveAuthToken(authData.token)
+                    sessionManager.saveUserData(authData.user.fullName, authData.user.email)
                     _authState.value = AuthState.Success
                 } else {
                     // check for invalid logins

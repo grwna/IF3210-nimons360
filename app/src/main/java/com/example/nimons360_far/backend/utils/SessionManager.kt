@@ -26,18 +26,23 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    fun fetchAuthToken(): String? {
-        return sharedPreferences.getString(USER_TOKEN, null)
-    }
-
-    fun saveUserEmail(email: String) {
+    fun saveUserData(name: String, email: String) {
         val editor = sharedPreferences.edit()
+        editor.putString(USER_NAME, name)
         editor.putString(USER_EMAIL, email)
         editor.apply()
     }
 
+    fun fetchAuthToken(): String? {
+        return sharedPreferences.getString(USER_TOKEN, null)
+    }
+
     fun fetchUserEmail(): String? {
         return sharedPreferences.getString(USER_EMAIL, null)
+    }
+
+    fun fetchUserName(): String? {
+        return sharedPreferences.getString(USER_NAME, null)
     }
 
     fun clearSession() {
@@ -48,6 +53,7 @@ class SessionManager(context: Context) {
 
     companion object {
         const val USER_TOKEN = "user_token"
+        const val USER_NAME = "user_name"
         const val USER_EMAIL = "user_email"
     }
 }

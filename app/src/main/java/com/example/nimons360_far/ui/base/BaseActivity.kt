@@ -26,6 +26,10 @@ abstract class BaseActivity : AppCompatActivity() {
     // forced logout events receiver from interceptor
     private val logoutReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            // Clear caches
+            context?.let {
+                com.example.nimons360_far.backend.utils.UserRepository.getInstance(it).clearCache()
+            }
             if (this@BaseActivity !is LoginActivity) {
                 navigateTo(LoginActivity::class.java, clearStack = true)
             }

@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.CellTower
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -119,9 +120,9 @@ fun UserInfoCard(
                 )
 
                 InfoMiniCard(
-                    icon = Icons.Default.Language,
-                    iconTint = Color(0xFF64B5F6),
-                    value = "Wi-Fi",
+                    icon = if (user.internet == "wifi") Icons.Default.Wifi else Icons.Default.CellTower,
+                    iconTint = if (user.internet == "wifi") Color(0xFF64B5F6) else Color(0xFF9C27B0),
+                    value = if (user.internet == "wifi") "Wi-Fi" else "Seluler",
                     label = "Network",
                     modifier = Modifier.weight(1f)
                 )

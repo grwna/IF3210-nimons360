@@ -86,7 +86,8 @@ class MainActivity : BaseActivity(), SensorEventListener {
                 longitude = payload.longitude,
                 heading = payload.rotation,
                 battery = payload.batteryLevel,
-                lastUpdateTime = System.currentTimeMillis()
+                lastUpdateTime = System.currentTimeMillis(),
+                internet = payload.internetStatus
             )
             familyMembers.value = updatedList
         }
@@ -130,24 +131,34 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
         trackingJob = lifecycleScope.launch {
             while (isActive) {
-                val network = connectivityManager.activeNetwork
-                val capabilities = connectivityManager.getNetworkCapabilities(network)
-                val isMobileData = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
-                val internetStatus = if (isMobileData) "mobile" else "wifi"
-                val batteryLvl = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+                try {
+                    val network = connectivityManager.activeNetwork
+                    val capabilities = connectivityManager.getNetworkCapabilities(network)
+                    val isMobileData = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+                    val internetStatus = if (isMobileData) "mobile" else "wifi"
+                    val batteryLvl = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
 
-                userGeoPoint.value?.let { myLoc ->
-                    wsManager.sendPresence(
-                        PresencePayload(
-                            name = userName,
-                            latitude = myLoc.latitude,
-                            longitude = myLoc.longitude,
-                            rotation = currentHeading.value,
-                            batteryLevel = batteryLvl,
-                            isCharging = batteryManager.isCharging,
-                            internetStatus = internetStatus
+                    userGeoPoint.value?.let { myLoc ->
+                        wsManager.sendPresence(
+                            PresencePayload(
+                                name = userName,
+                                latitude = myLoc.latitude,
+                                longitude = myLoc.longitude,
+                                rotation = currentHeading.value,
+                                batteryLevel = batteryLvl,
+                                isCharging = batteryManager.isCharging,
+                                internetStatus = internetStatus
+                            )
                         )
-                    )
+                    }
+                } catch (e: Exception) {
+                    // jika jaringan terputus coba reconnect
+                    e.printStackTrace()
+                    try {
+                        wsManager.connect()
+                    } catch (reconnectException: Exception) {
+                        reconnectException.printStackTrace()
+                    }
                 }
 
                 val now = System.currentTimeMillis()
@@ -160,7 +171,6 @@ class MainActivity : BaseActivity(), SensorEventListener {
         }
     }
 
-    // --- LIFECYCLE SENSOR KOMPAS ---
     override fun onResume() {
         super.onResume()
         rotationSensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
@@ -168,7 +178,7 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
     override fun onPause() {
         super.onPause()
-        sensorManager.unregisterListener(this) // Matikan kompas saat aplikasi ditutup agar irit baterai
+        sensorManager.unregisterListener(this)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -186,7 +196,6 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
-    // --- KODE UI ASLI ANDA DI BAWAH SINI ---
     private fun setupUI() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {

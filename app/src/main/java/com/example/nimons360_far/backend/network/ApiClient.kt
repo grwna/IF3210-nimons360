@@ -2,6 +2,7 @@ package com.example.nimons360_far.backend.network
 
 import android.content.Context
 import com.example.nimons360_far.backend.api.AuthApi
+import com.example.nimons360_far.backend.api.FamilyApi
 import com.example.nimons360_far.backend.api.UserApi
 import com.example.nimons360_far.backend.utils.SessionManager
 import okhttp3.OkHttpClient
@@ -35,5 +36,9 @@ object ApiClient {
 
     fun getUserApi(context: Context): UserApi {
         return getClient(context).create(UserApi::class.java)
+    }
+
+    fun getFamilyApi(context: Context): FamilyApi {
+        return getClient(context).create(FamilyApi::class.java)
     }
 }

@@ -46,4 +46,9 @@ interface FamilyApi {
         @Header("Authorization") token: String,
         @Body request: LeaveFamilyRequest
     ): Response<Any>
-}
+
+    @GET("/api/families/discover")
+    suspend fun getDiscoverFamilies(
+        @Header("Authorization") token: String
+    ): Response<FamilyResponse>
+}

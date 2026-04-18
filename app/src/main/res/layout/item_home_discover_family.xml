@@ -52,8 +52,8 @@
             <LinearLayout
                 android:id="@+id/avatar_container"
                 android:layout_width="match_parent"
-                android:layout_height="20.dp"
-                android:layout_marginTop="4.dp"
+                android:layout_height="32.dp"
+                android:layout_marginTop="8.dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
             </LinearLayout>

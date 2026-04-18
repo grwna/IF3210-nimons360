@@ -15,13 +15,13 @@ class AuthInterceptor(private val context: Context, private val sessionManager: 
 
         // inject JWT to request header
         sessionManager.fetchAuthToken()?.let {
-            requestBuilder.addHeader("Authorization", "Bearer $it")
+            requestBuilder.header("Authorization", "Bearer $it")
         }
 
         val response = chain.proceed(requestBuilder.build())
 
         // if res 401, reset session, will cause user to get redirect to login
-        if (response.code() == 401) {
+        if (response.code == 401) {
             sessionManager.clearSession()
             val intent = Intent("com.example.nimons360_far.ACTION_LOGOUT")
             intent.setPackage(context.packageName)

@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/nimons_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Nimons360FAR">
+
         <activity
             android:name=".LauncherActivity"
             android:exported="true">
@@ -22,13 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <activity
-            android:name=".ui.screens.LoginActivity"
+            android:name=".ui.auth.LoginActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.screens.ProfileActivity"
+            android:name=".ui.auth.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
 
         <meta-data

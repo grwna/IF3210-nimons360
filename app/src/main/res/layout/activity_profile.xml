@@ -43,7 +43,7 @@
             android:layout_gravity="center"
             android:textColor="#FFFFFF"
             android:textSize="48sp"
-            tools:text="L" />
+            tools:text="A" />
 
     </FrameLayout>
 

@@ -70,7 +70,7 @@ fun UserInfoCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = user.name.firstOrNull()?.uppercase() ?: "U",
+                        text = user.name?.firstOrNull()?.uppercase() ?: "U",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -80,12 +80,14 @@ fun UserInfoCard(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column {
-                    Text(
-                        text = user.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF1C1B1F)
-                    )
+                    user.name?.let {
+                        Text(
+                            text = it,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color(0xFF1C1B1F)
+                        )
+                    }
                     user.email?.let {
                         Text(
                             text = it,

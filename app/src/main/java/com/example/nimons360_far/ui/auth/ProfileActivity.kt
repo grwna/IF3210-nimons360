@@ -143,6 +143,10 @@ class ProfileActivity : BaseActivity() {
             dialog.show()
         }
     }
+
+    override fun onNetworkAvailable() {
+        profileViewModel.fetchProfile(forceRefresh = true)
+    }
 }
 
 

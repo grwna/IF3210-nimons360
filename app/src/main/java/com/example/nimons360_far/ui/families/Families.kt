@@ -10,6 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -34,6 +37,11 @@ import coil.compose.AsyncImage
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.models.Family
 import com.example.nimons360_far.backend.viewmodels.FamiliesViewModel
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.foundation.shape.CircleShape
+import android.app.Activity
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 val DesignBg = Color(0xFFF8F9FA)
 val DesignBlue = Color(0xFF1868D8)
@@ -83,6 +91,14 @@ fun FamiliesScreen(
         viewModelStoreOwner = LocalContext.current as AppCompatActivity
     )
 ) {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
+        }
+    }
+
     val allFamilies by viewModel.allFamilies.collectAsState()
     val myFamilies by viewModel.myFamilies.collectAsState()
     val pinnedIds by viewModel.pinnedIds.collectAsState()
@@ -94,6 +110,33 @@ fun FamiliesScreen(
     val searchedList = baseList.filter { it.name.contains(searchQuery, ignoreCase = true) }
     val pinnedList = searchedList.filter { pinnedIds.contains(it.id) }
     val unpinnedList = searchedList.filter { !pinnedIds.contains(it.id) }
+
+    val listState = rememberLazyListState()
+    var displayLimit by remember { mutableIntStateOf(10) }
+
+    LaunchedEffect(filterType, searchQuery) {
+        displayLimit = 10
+    }
+
+    val isAtBottom by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItemsCount = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+
+            totalItemsCount > 0 && lastVisibleItemIndex >= totalItemsCount - 3
+        }
+    }
+
+    val currentUnpinnedSize by rememberUpdatedState(newValue = unpinnedList.size)
+
+    LaunchedEffect(isAtBottom) {
+        if (isAtBottom && displayLimit < currentUnpinnedSize) {
+            displayLimit += 10
+        }
+    }
+
+    val paginatedUnpinnedList = unpinnedList.take(displayLimit)
 
     LaunchedEffect(Unit) {
         viewModel.fetchFamilies()
@@ -120,6 +163,7 @@ fun FamiliesScreen(
         containerColor = DesignBg
     ) { paddingValues ->
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .background(DesignBg)
@@ -159,42 +203,102 @@ fun FamiliesScreen(
                         CircularProgressIndicator(color = DesignBlue)
                     }
                 }
+            } else if (searchedList.isEmpty()) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 80.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(72.dp)
+                                .background(Color(0xFFFFEBEE), shape = CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Empty",
+                                tint = Color(0xFFD32F2F),
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        val emptyMessage = if (searchQuery.isNotEmpty()) {
+                            "No families found for '$searchQuery'"
+                        } else if (filterType == "My Families") {
+                            "You haven't joined any families"
+                        } else {
+                            "No families available"
+                        }
+
+                        Text(
+                            text = emptyMessage,
+                            color = DesignTextBlack,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        if (searchQuery.isEmpty() && filterType == "My Families") {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Create a new family or join an existing one.",
+                                color = DesignTextGrey,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
             } else {
                 if (pinnedList.isNotEmpty()) {
                     item { SectionHeader("PINNED") }
-                    item {
-                        Card(
+                    itemsIndexed(pinnedList) { index, family ->
+                        val isFirst = index == 0
+                        val isLast = index == pinnedList.lastIndex
+                        val shape = when {
+                            isFirst && isLast -> RoundedCornerShape(16.dp)
+                            isFirst -> RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                            isLast -> RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                            else -> RectangleShape
+                        }
+
+                        Surface(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                            shape = shape,
+                            color = Color.White
                         ) {
                             Column {
-                                pinnedList.forEachIndexed { index, family ->
-                                    FamilyItemRow(family, true, { onNavigateToDetail(family.id) }, { viewModel.togglePin(family.id, true) })
-                                    if (index < pinnedList.size - 1) {
-                                        HorizontalDivider(color = DesignBg, thickness = 1.dp)
-                                    }
-                                }
+                                FamilyItemRow(family, true, { onNavigateToDetail(family.id) }, { viewModel.togglePin(family.id, true) })
+                                if (!isLast) HorizontalDivider(color = DesignBg, thickness = 1.dp)
                             }
                         }
                     }
                 }
 
-                if (unpinnedList.isNotEmpty()) {
+                if (paginatedUnpinnedList.isNotEmpty()) {
                     item { SectionHeader("ALL FAMILIES") }
-                    item {
-                        Card(
+                    itemsIndexed(paginatedUnpinnedList) { index, family ->
+                        val isFirst = index == 0
+                        val isLast = index == paginatedUnpinnedList.lastIndex
+
+                        val shape = when {
+                            isFirst && isLast -> RoundedCornerShape(16.dp)
+                            isFirst -> RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                            isLast -> RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                            else -> RectangleShape
+                        }
+
+                        Surface(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                            shape = shape,
+                            color = Color.White
                         ) {
                             Column {
-                                unpinnedList.forEachIndexed { index, family ->
-                                    FamilyItemRow(family, false, { onNavigateToDetail(family.id) }, { viewModel.togglePin(family.id, false) })
-                                    if (index < unpinnedList.size - 1) {
-                                        HorizontalDivider(color = DesignBg, thickness = 1.dp)
-                                    }
-                                }
+                                FamilyItemRow(family, false, { onNavigateToDetail(family.id) }, { viewModel.togglePin(family.id, false) })
+                                if (!isLast) HorizontalDivider(color = DesignBg, thickness = 1.dp)
                             }
                         }
                     }

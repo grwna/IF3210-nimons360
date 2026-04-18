@@ -1,4 +1,4 @@
-package com.example.nimons360_far.ui.screens
+package com.example.nimons360_far.ui.auth
 
 import android.os.Bundle
 import android.widget.Toast

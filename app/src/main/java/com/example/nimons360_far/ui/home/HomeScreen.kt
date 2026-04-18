@@ -1,4 +1,4 @@
-package com.example.nimons360_far.ui.screen
+package com.example.nimons360_far.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text

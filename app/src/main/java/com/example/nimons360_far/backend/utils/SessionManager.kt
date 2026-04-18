@@ -37,12 +37,12 @@ class SessionManager(context: Context) {
         return sharedPreferences.getString(USER_TOKEN, null)
     }
 
-    fun fetchUserName(): String? {
-        return sharedPreferences.getString(USER_NAME, null)
-    }
-
     fun fetchUserEmail(): String? {
         return sharedPreferences.getString(USER_EMAIL, null)
+    }
+
+    fun fetchUserName(): String? {
+        return sharedPreferences.getString(USER_NAME, null)
     }
 
     fun clearSession() {

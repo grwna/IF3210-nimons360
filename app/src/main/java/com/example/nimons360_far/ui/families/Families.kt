@@ -42,6 +42,8 @@ import androidx.compose.foundation.shape.CircleShape
 import android.app.Activity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider
+import com.example.nimons360_far.backend.utils.Refreshable
 
 val DesignBg = Color(0xFFF8F9FA)
 val DesignBlue = Color(0xFF1868D8)
@@ -50,7 +52,14 @@ val DesignTextGrey = Color(0xFF666666)
 val DesignSearchBg = Color(0xFFFFFFFF)
 val DesignFabBg = Color(0xFFEAF2FF)
 
-class Families : Fragment() {
+class Families : Fragment(), Refreshable {
+    private lateinit var viewModel: FamiliesViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(FamiliesViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,6 +88,10 @@ class Families : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onRefresh() {
+        viewModel.fetchFamilies()
     }
 }
 

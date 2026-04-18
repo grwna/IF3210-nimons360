@@ -35,10 +35,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun fetchProfile(forceRefresh: Boolean = false) {
         if (_profileState.value is ProfileState.Loading) return
-        _profileState.value = ProfileState.Loading
+        
+        // Only show loading if there's no data
+        if (_profileState.value !is ProfileState.Success) {
+            _profileState.value = ProfileState.Loading
+        }
+        
         viewModelScope.launch {
             val result = userRepository.fetchProfile(forceRefresh)
-            if (result.isFailure) {
+            if (result.isSuccess) {
+                _profileState.value = ProfileState.Success(result.getOrThrow())
+            } else if (result.isFailure) {
                 _profileState.value = ProfileState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         }
@@ -49,7 +56,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         _profileState.value = ProfileState.Loading
         viewModelScope.launch {
             val result = userRepository.updateProfile(fullName)
-            if (result.isFailure) {
+            if (result.isSuccess) {
+                _profileState.value = ProfileState.Success(result.getOrThrow())
+            } else if (result.isFailure) {
                 _profileState.value = ProfileState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         }

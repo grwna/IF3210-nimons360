@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.nimons360_far.R
 import com.example.nimons360_far.databinding.ActivityMainBinding
+import com.example.nimons360_far.backend.utils.Refreshable
 import com.example.nimons360_far.ui.base.BaseActivity
 import com.example.nimons360_far.ui.families.CreateFamily
 import com.example.nimons360_far.ui.families.Families
@@ -25,6 +26,13 @@ class MainActivity : BaseActivity() {
         
         if (savedInstanceState == null) {
             loadFragment(HomeFragment(), showNav = true, showFab = true)
+        }
+    }
+
+    override fun onNetworkAvailable() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (currentFragment is Refreshable) {
+            currentFragment.onRefresh()
         }
     }
 

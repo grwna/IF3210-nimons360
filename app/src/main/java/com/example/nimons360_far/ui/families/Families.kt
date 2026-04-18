@@ -39,6 +39,9 @@ import com.example.nimons360_far.backend.models.Family
 import com.example.nimons360_far.backend.viewmodels.FamiliesViewModel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.foundation.shape.CircleShape
+import android.app.Activity
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 val DesignBg = Color(0xFFF8F9FA)
 val DesignBlue = Color(0xFF1868D8)
@@ -88,6 +91,14 @@ fun FamiliesScreen(
         viewModelStoreOwner = LocalContext.current as AppCompatActivity
     )
 ) {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
+        }
+    }
+
     val allFamilies by viewModel.allFamilies.collectAsState()
     val myFamilies by viewModel.myFamilies.collectAsState()
     val pinnedIds by viewModel.pinnedIds.collectAsState()

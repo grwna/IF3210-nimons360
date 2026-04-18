@@ -46,6 +46,9 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.views.overlay.MapEventsOverlay
+
 
 import com.example.nimons360_far.ui.components.UserInfoCard
 
@@ -54,7 +57,7 @@ import com.example.nimons360_far.ui.components.UserInfoCard
 data class UserLocationData(
     val userId: String,
     val name: String,
-    val email: String,
+    val email: String?,
     val latitude: Double,
     val longitude: Double,
     val heading: Float,
@@ -157,7 +160,6 @@ fun MapScreen(modifier: Modifier = Modifier) {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         while(true) {
-            // -- CEK STATUS INTERNET --
             val network = connectivityManager.activeNetwork
             val capabilities = connectivityManager.getNetworkCapabilities(network)
             val isMobileData = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
@@ -207,8 +209,22 @@ fun MapScreen(modifier: Modifier = Modifier) {
                         }
                     }
                 },
+
                 update = { mapView ->
                     mapView.overlays.clear()
+
+                    val mapEventsReceiver = object : MapEventsReceiver {
+                        override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                            selectedUser = null
+                            showUserDialog = false
+                            return true
+                        }
+
+                        override fun longPressHelper(p: GeoPoint?): Boolean {
+                            return false
+                        }
+                    }
+                    mapView.overlays.add(MapEventsOverlay(mapEventsReceiver))
 
                     userGeoPoint?.let { myLoc ->
                         if (!isMapCentered) {
@@ -220,6 +236,23 @@ fun MapScreen(modifier: Modifier = Modifier) {
                         myMarker.position = myLoc
                         myMarker.title = "Lokasi Saya Saat Ini"
                         myMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        myMarker.rotation = currentHeading
+
+                        val myData = UserLocationData(
+                            userId = "me",
+                            name = userName ?: "Saya",
+                            email = sessionManager.fetchUserEmail(),
+                            latitude = myLoc.latitude,
+                            longitude = myLoc.longitude,
+                            heading = currentHeading,
+                            battery = 100
+                        )
+
+                        myMarker.setOnMarkerClickListener { _, _ ->
+                            selectedUser = myData
+                            showUserDialog = true
+                            true
+                        }
 
                         mapView.overlays.add(myMarker)
                     }

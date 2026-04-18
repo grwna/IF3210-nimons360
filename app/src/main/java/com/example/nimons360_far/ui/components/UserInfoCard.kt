@@ -86,11 +86,13 @@ fun UserInfoCard(
                         fontSize = 16.sp,
                         color = Color(0xFF1C1B1F)
                     )
-                    Text(
-                        text = user.email,
-                        color = Color.Gray,
-                        fontSize = 13.sp
-                    )
+                    user.email?.let {
+                        Text(
+                            text = it,
+                            color = Color.Gray,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
             }
 

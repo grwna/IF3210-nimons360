@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="160.dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="8.dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="16.dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16.dp">
+
+        <FrameLayout
+            android:id="@+id/icon_container"
+            android:layout_width="48.dp"
+            android:layout_height="48.dp"
+            android:background="@color/design_light_blue_bg"
+            android:padding="8.dp"
+            android:layout_marginBottom="12.dp">
+            <ImageView
+                android:id="@+id/iv_family_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@android:drawable/ic_menu_myplaces" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_family_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/design_text_black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Maulana Family" />
+
+        <TextView
+            android:id="@+id/tv_member_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4.dp"
+            android:textColor="@color/design_text_grey"
+            android:textSize="12sp"
+            tools:text="4 members" />
+
+        <LinearLayout
+            android:id="@+id/avatar_container"
+            android:layout_width="match_parent"
+            android:layout_height="24.dp"
+            android:layout_marginTop="12.dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <!-- Programmatically added avatars -->
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

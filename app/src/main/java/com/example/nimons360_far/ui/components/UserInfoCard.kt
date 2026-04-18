@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,7 +43,7 @@ fun UserInfoCard(
     Card(
         modifier = modifier
             .width(366.dp)
-            .height(172.dp)
+            .wrapContentHeight()
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(16.dp),
@@ -56,7 +57,6 @@ fun UserInfoCard(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -102,7 +102,7 @@ fun UserInfoCard(
             ) {
                 InfoMiniCard(
                     icon = Icons.Default.BatteryFull,
-                    iconTint = Color(0xFF4CAF50), // Hijau
+                    iconTint = Color(0xFF4CAF50),
                     value = "${user.battery}%",
                     label = "Battery",
                     modifier = Modifier.weight(1f)
@@ -110,7 +110,7 @@ fun UserInfoCard(
 
                 InfoMiniCard(
                     icon = Icons.Default.LocationOn,
-                    iconTint = Color(0xFFF44336), // Merah
+                    iconTint = Color(0xFFF44336),
                     value = "${"%.3f".format(user.latitude)}, ${"%.3f".format(user.longitude)}",
                     label = "Location",
                     modifier = Modifier.weight(1f)
@@ -118,7 +118,7 @@ fun UserInfoCard(
 
                 InfoMiniCard(
                     icon = Icons.Default.Language,
-                    iconTint = Color(0xFF64B5F6), // Biru muda
+                    iconTint = Color(0xFF64B5F6),
                     value = "Wi-Fi",
                     label = "Network",
                     modifier = Modifier.weight(1f)
@@ -139,7 +139,7 @@ fun InfoMiniCard(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFF4F5F7)) // Warna abu-abu sangat muda
+            .background(Color(0xFFF4F5F7))
             .padding(10.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

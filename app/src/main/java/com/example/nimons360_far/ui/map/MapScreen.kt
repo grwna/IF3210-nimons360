@@ -17,9 +17,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.collectAsState
 import android.annotation.SuppressLint
+import android.net.NetworkCapabilities
+import android.net.ConnectivityManager
 import com.example.nimons360_far.backend.utils.SessionManager
 import android.os.BatteryManager
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.nimons360_far.backend.utils.UserRepository
 
 import org.osmdroid.config.Configuration
@@ -42,7 +45,8 @@ data class UserLocationData(
     val longitude: Double,
     val heading: Float,
     val battery: Int,
-    val lastUpdateTime: Long = System.currentTimeMillis()
+    val lastUpdateTime: Long = System.currentTimeMillis(),
+    val internet: String
 )
 
 @SuppressLint("MissingPermission")
@@ -65,6 +69,14 @@ fun MapScreen(
     val sessionManager = remember { SessionManager(context) }
     val arrow_family = ContextCompat.getDrawable(context, R.drawable.arrow_family)
     val my_arrow = ContextCompat.getDrawable(context, R.drawable.my_arrow)
+
+    val internetStatus = remember(userGeoPoint) {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        val isMobileData = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+        if (isMobileData) "mobile" else "wifi"
+    }
     
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
@@ -110,7 +122,8 @@ fun MapScreen(
                         latitude = myLoc.latitude,
                         longitude = myLoc.longitude,
                         heading = currentHeading,
-                        battery = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+                        battery = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY),
+                        internet = internetStatus
                     )
 
                     myMarker.setOnMarkerClickListener { _, _ ->

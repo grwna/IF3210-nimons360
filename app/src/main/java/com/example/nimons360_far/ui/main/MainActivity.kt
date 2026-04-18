@@ -24,6 +24,9 @@ class MainActivity : BaseActivity() {
 
         setupUI()
         
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        updateComponentVisibility(currentFragment)
+
         if (savedInstanceState == null) {
             loadFragment(HomeFragment(), showNav = true, showFab = true)
         }

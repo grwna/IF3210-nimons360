@@ -43,10 +43,14 @@ class LoginActivity : BaseActivity() {
             val email = binding.loginEmailInput.text.toString().trim()
             val password = binding.editTextTextPassword.text.toString().trim()
 
+            binding.emailInputLayout.error = null
+            binding.passwordInputLayout.error = null
+
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 authViewModel.login(LoginRequest(email, password))
             } else {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                if (email.isEmpty()) binding.emailInputLayout.error = "Email is required"
+                if (password.isEmpty()) binding.passwordInputLayout.error = "Password is required"
             }
         }
 
@@ -72,7 +76,8 @@ class LoginActivity : BaseActivity() {
                         is AuthState.Error -> {
                             binding.loginButton.isEnabled = true
                             binding.loginButton.text = getString(R.string.login_button_text)
-                            Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_SHORT).show()
+                            // Show server error on email field
+                            binding.emailInputLayout.error = state.message
                         }
                     }
                 }

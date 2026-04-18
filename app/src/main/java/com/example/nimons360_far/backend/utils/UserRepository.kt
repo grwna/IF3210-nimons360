@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 // Repository for User profile data with caching 
 class UserRepository private constructor(context: Context) {
     private val userApi = ApiClient.getUserApi(context)
+    private val sessionManager = SessionManager(context)
     
     private val _userProfile = MutableStateFlow<UserProfileData?>(null)
     val userProfile: StateFlow<UserProfileData?> = _userProfile.asStateFlow()
@@ -43,6 +44,8 @@ class UserRepository private constructor(context: Context) {
             if (response.isSuccessful && response.body() != null) {
                 val data = response.body()!!.data
                 _userProfile.value = data
+                // update cache
+                sessionManager.saveUserData(data.fullName, data.email)
                 Result.success(data)
             } else {
                 Result.failure(Exception(response.message() ?: "Failed to update profile"))

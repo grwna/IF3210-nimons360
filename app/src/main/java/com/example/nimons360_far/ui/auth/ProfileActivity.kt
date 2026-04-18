@@ -55,15 +55,22 @@ class ProfileActivity : BaseActivity() {
                         is ProfileState.Idle -> { }
                         is ProfileState.Loading -> {
                             binding.tvProfileName.text = "Loading..."
+                            binding.loadingIndicator.visibility = View.VISIBLE
+                            binding.tvError.visibility = View.GONE
                         }
                         is ProfileState.Success -> {
+                            binding.loadingIndicator.visibility = View.GONE
+                            binding.tvError.visibility = View.GONE
                             val data = state.profile
                             binding.tvProfileName.text = data.fullName
                             binding.tvProfileEmail.text = data.email
                             binding.tvAvatarInitial.text = data.fullName.substring(0, 1).uppercase()
                         }
                         is ProfileState.Error -> {
-                            Toast.makeText(this@ProfileActivity, state.message, Toast.LENGTH_SHORT).show()
+                            binding.loadingIndicator.visibility = View.GONE
+                            binding.tvError.text = state.message
+                            binding.tvError.visibility = View.VISIBLE
+                            
                             // fallback to locally saved session if API fetch fails
                             val name = sessionManager.fetchUserName() ?: "Unknown User"
                             val email = sessionManager.fetchUserEmail() ?: "user@example.com"
@@ -92,6 +99,8 @@ class ProfileActivity : BaseActivity() {
             val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
             val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
 
+            val tilName = sheetView.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.til_name)
+
             // Populate current name
             etName.setText(binding.tvProfileName.text.toString())
 
@@ -101,11 +110,13 @@ class ProfileActivity : BaseActivity() {
 
             btnSave.setOnClickListener {
                 val newName = etName.text.toString().trim()
+                tilName.error = null
+                
                 if (newName.isNotEmpty()) {
                     profileViewModel.updateProfile(newName)
                     bottomSheetDialog.dismiss()
                 } else {
-                    Toast.makeText(this, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+                    tilName.error = "Name cannot be empty"
                 }
             }
 

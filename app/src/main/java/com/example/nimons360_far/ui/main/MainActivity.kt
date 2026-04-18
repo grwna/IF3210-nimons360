@@ -61,6 +61,10 @@ class MainActivity : BaseActivity(), SensorEventListener {
         setupUI()
         initTrackingEngine()
 
+
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        updateComponentVisibility(currentFragment)
+
         if (savedInstanceState == null) {
             loadFragment(HomeFragment(), showNav = true, showFab = true)
         }

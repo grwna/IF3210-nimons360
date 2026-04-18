@@ -31,7 +31,7 @@ fun MainScreen() {
 
     Scaffold(
         topBar = {
-            if (selectedItem != BottomNavItem.Families) {
+            if (selectedItem != BottomNavItem.Families && selectedItem != BottomNavItem.Map) {
                 HeadBar(
                     currentTitle = selectedItem.title,
                     onProfileClick = { /*TODO: Navigasi ke Form Profile */ },

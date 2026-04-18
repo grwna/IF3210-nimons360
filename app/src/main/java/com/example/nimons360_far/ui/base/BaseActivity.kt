@@ -7,11 +7,20 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.nimons360_far.backend.utils.NetworkObserver
 import com.example.nimons360_far.backend.utils.navigateTo
 import com.example.nimons360_far.ui.auth.LoginActivity
+import com.example.nimons360_far.ui.components.NoInternetDialog
+import kotlinx.coroutines.launch
 
 // ABC for common functionality for all activities
 abstract class BaseActivity : AppCompatActivity() {
+
+    private var noInternetDialog: NoInternetDialog? = null
+    private lateinit var networkObserver: NetworkObserver
 
     // forced logout events receiver from interceptor
     private val logoutReceiver = object : BroadcastReceiver() {
@@ -24,8 +33,44 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        networkObserver = NetworkObserver.getInstance(this)
         registerLogoutReceiver()
+        observeNetwork()
     }
+
+    // Network Sensing
+    private fun observeNetwork() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkObserver.isConnected.collect { isConnected ->
+                    if (isConnected) {
+                        val wasOffline = noInternetDialog != null
+                        dismissNoInternetDialog()
+                        if (wasOffline) {
+                            onNetworkAvailable()
+                        }
+                    } else {
+                        showNoInternetDialog()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showNoInternetDialog() {
+        if (noInternetDialog == null) {
+            noInternetDialog = NoInternetDialog.newInstance()
+            noInternetDialog?.show(supportFragmentManager, NoInternetDialog.TAG)
+        }
+    }
+
+    private fun dismissNoInternetDialog() {
+        noInternetDialog?.dismiss()
+        noInternetDialog = null
+    }
+
+    // Internet restoration behaviour
+    open fun onNetworkAvailable() {}
 
     private fun registerLogoutReceiver() {
         val filter = IntentFilter("com.example.nimons360_far.ACTION_LOGOUT")

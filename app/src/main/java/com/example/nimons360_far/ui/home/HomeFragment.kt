@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import android.content.Intent
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.utils.SessionManager
+import com.example.nimons360_far.backend.utils.Refreshable
 import com.example.nimons360_far.backend.viewmodels.HomeViewModel
 import com.example.nimons360_far.databinding.FragmentHomeBinding
 import com.example.nimons360_far.ui.auth.ProfileActivity
@@ -19,7 +20,7 @@ import com.example.nimons360_far.ui.families.FamilyDetail
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), Refreshable {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -105,6 +106,10 @@ class HomeFragment : Fragment() {
             .replace(R.id.fragment_container, familyDetail)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onRefresh() {
+        viewModel.refreshAll()
     }
 
     override fun onDestroyView() {

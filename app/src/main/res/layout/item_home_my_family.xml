@@ -27,7 +27,7 @@
                 android:id="@+id/iv_family_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:src="@android:drawable/ic_menu_myplaces" />
+                tools:src="@drawable/ic_fam_vec" />
         </FrameLayout>
 
         <TextView

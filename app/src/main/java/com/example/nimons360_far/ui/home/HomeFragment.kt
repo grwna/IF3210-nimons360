@@ -47,9 +47,13 @@ class HomeFragment : Fragment(), Refreshable {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         // Notification Bar Inset
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.homeHeader) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.homeHeader.setPadding(0, bars.top, 0, 0)
+            // Preserve horizontal padding
+            val leftPadding = v.paddingLeft
+            val rightPadding = v.paddingRight
+            val bottomPadding = v.paddingBottom
+            v.setPadding(leftPadding, bars.top, rightPadding, bottomPadding)
             insets
         }
 
@@ -85,7 +89,6 @@ class HomeFragment : Fragment(), Refreshable {
             onItemClick = { family -> navigateToDetail(family.id) },
             onJoinClick = { family -> 
                 navigateToDetail(family.id)
-                Toast.makeText(context, "Please enter family code in details to join", Toast.LENGTH_SHORT).show()
             }
         )
         binding.rvDiscoverFamilies.adapter = discoverAdapter

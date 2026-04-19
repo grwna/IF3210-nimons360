@@ -1,4 +1,4 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -51,7 +51,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // Stub for bottom sheet integration
     fun updateProfile(fullName: String) {
         _profileState.value = ProfileState.Loading
         viewModelScope.launch {

@@ -9,19 +9,6 @@
         
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-    </style>
-
-    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-        <item name="android:background">@color/white</item>
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
-    </style>
-
-    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
-        <item name="android:background">@color/white</item>
-        <item name="colorSecondaryContainer">@color/design_light_blue_bg</item>
-        <item name="colorOnSecondaryContainer">@color/design_blue</item>
-        <item name="android:textColorPrimary">@color/nav_item_color</item>
     </style>
 
     <style name="Theme.Nimons360FAR" parent="Base.Theme.Nimons360FAR" />

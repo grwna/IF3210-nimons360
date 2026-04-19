@@ -1,4 +1,4 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -15,7 +15,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sessionManager = SessionManager(application)
     private val token = sessionManager.fetchAuthToken() ?: ""
-    private val bearerToken = "Bearer $token"
     private val familyApi = ApiClient.getFamilyApi(application)
 
     private val _myFamilies = MutableStateFlow<List<Family>>(emptyList())
@@ -41,8 +40,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             _isLoading.value = true
             _error.value = null
             try {
-                val myRes = familyApi.getMyFamilies(bearerToken)
-                val discRes = familyApi.getDiscoverFamilies(bearerToken)
+                val myRes = familyApi.getMyFamilies()
+                val discRes = familyApi.getDiscoverFamilies()
 
                 if (myRes.isSuccessful) {
                     _myFamilies.value = myRes.body()?.data ?: emptyList()

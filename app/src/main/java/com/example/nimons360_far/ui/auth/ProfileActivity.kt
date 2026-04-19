@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
@@ -17,8 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.utils.SessionManager
-import com.example.nimons360_far.backend.viewmodels.ProfileState
-import com.example.nimons360_far.backend.viewmodels.ProfileViewModel
+import com.example.nimons360_far.ui.viewmodels.ProfileState
+import com.example.nimons360_far.ui.viewmodels.ProfileViewModel
 import com.example.nimons360_far.databinding.ActivityProfileBinding
 import com.example.nimons360_far.ui.base.BaseActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog

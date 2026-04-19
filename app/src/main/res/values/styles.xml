@@ -1,3 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/white</item>
+        <item name="elevation">0dp</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+
+        <item name="itemIconTint">@color/nav_item_color</item>
+        <item name="itemTextColor">@color/nav_item_color</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="ThemeOverlay.Material3.BottomNavigationView">
+        <item name="colorSecondaryContainer">@color/design_light_blue_bg</item>
+        <item name="colorOnSecondaryContainer">@color/design_blue</item>
+    </style>
 </resources>

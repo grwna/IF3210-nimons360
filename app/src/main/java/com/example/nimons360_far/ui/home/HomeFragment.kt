@@ -5,22 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.utils.SessionManager
 import com.example.nimons360_far.backend.utils.Refreshable
-import com.example.nimons360_far.backend.viewmodels.HomeViewModel
+import com.example.nimons360_far.ui.viewmodels.HomeViewModel
 import com.example.nimons360_far.databinding.FragmentHomeBinding
 import com.example.nimons360_far.ui.auth.ProfileActivity
 import com.example.nimons360_far.ui.families.FamilyDetail
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.Lifecycle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -58,7 +55,15 @@ class HomeFragment : Fragment(), Refreshable {
         }
 
         setupRecyclerViews()
+        setupSwipeRefresh()
         observeViewModel()
+    }
+
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.setColorSchemeResources(R.color.design_blue)
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.refreshAll()
+        }
     }
 
     override fun onResume() {
@@ -111,7 +116,8 @@ class HomeFragment : Fragment(), Refreshable {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoading.collectLatest { isLoading ->
-                binding.loadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+                binding.loadingIndicator.visibility = if (isLoading && !binding.swipeRefresh.isRefreshing) View.VISIBLE else View.GONE
+                binding.swipeRefresh.isRefreshing = isLoading
                 binding.homeContent.alpha = if (isLoading) 0.5f else 1.0f
             }
         }

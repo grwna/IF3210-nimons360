@@ -1,12 +1,9 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nimons360_far.backend.api.FamilyApi
 import com.example.nimons360_far.backend.models.CreateFamilyRequest
-import com.example.nimons360_far.backend.network.AuthInterceptor
-import com.example.nimons360_far.backend.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +11,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // Sealed Class - Handling One Time UI Events
 sealed class CreateEvent {
@@ -26,21 +20,8 @@ sealed class CreateEvent {
 
 // Main Class - Create Family View Model
 class CreateFamilyViewModel(application: Application) : AndroidViewModel(application) {
-    // State Session Manager
-    private val sessionManager = SessionManager(application)
-
-    // Lazy API Initialization With Auth Interceptor
-    private val api: FamilyApi by lazy {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(application, sessionManager))
-            .build()
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyApi::class.java)
-    }
+    // API Initialization
+    private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
 
     // State Flow - Holding Selected Icon URL
     private val _selectedIconUrl = MutableStateFlow<String?>(null)
@@ -76,16 +57,12 @@ class CreateFamilyViewModel(application: Application) : AndroidViewModel(applica
             return
         }
 
-        // Create Bearer Token
-        val token = sessionManager.fetchAuthToken() ?: ""
-        val bearerToken = "Bearer $token"
-
         // Execute Network Request (Background Thread)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // Send Request & Get Response
                 val request = CreateFamilyRequest(familyName, currentIcon)
-                val response = api.createFamily(bearerToken, request)
+                val response = api.createFamily(request)
                 if (response.isSuccessful && response.body() != null) {
                     // Execution Success
                     val newFamily = response.body()!!.data

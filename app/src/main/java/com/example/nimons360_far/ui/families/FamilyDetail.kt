@@ -38,12 +38,16 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.nimons360_far.backend.viewmodels.DetailEvent
-import com.example.nimons360_far.backend.viewmodels.FamilyDetailViewModel
+import com.example.nimons360_far.ui.viewmodels.DetailEvent
+import com.example.nimons360_far.ui.viewmodels.FamilyDetailViewModel
+import com.example.nimons360_far.utils.AppColors.LightBlueBg
+import com.example.nimons360_far.utils.AppColors.RedDanger
+import com.example.nimons360_far.utils.AppColors.DesignBg
+import com.example.nimons360_far.utils.AppColors.DesignTextBlack
+import com.example.nimons360_far.utils.AppColors.DesignTextGrey
+import com.example.nimons360_far.utils.AppColors.DesignBlue
 
 // UI Colors Configuration
-val LightBlueBg = Color(0xFFEAF2FF)
-val RedDanger = Color(0xFFD32F2F)
 val YellowWarningBg = Color(0xFFFFF9E6)
 val YellowWarningBorder = Color(0xFFFBC02D)
 
@@ -155,12 +159,7 @@ fun FamilyDetailScreen(
                             Row(modifier = Modifier.padding(24.dp), verticalAlignment = Alignment.CenterVertically) {
                                 // Family Icon
                                 Box(
-                                    modifier = Modifier
-                                        .size(64.dp)
-                                        .background(
-                                            Color.White.copy(alpha = 0.2f),
-                                            RoundedCornerShape(12.dp)
-                                        ),
+                                    modifier = Modifier.size(64.dp).background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     AsyncImage(model = family.iconUrl, contentDescription = null, modifier = Modifier.size(40.dp))
@@ -222,7 +221,7 @@ fun FamilyDetailScreen(
                                         ) {
                                             // Code
                                             Text(
-                                                family.familyCode ?: "XXXXXX",
+                                                family.familyCode ?: "SECRET",
                                                 fontSize = 28.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 color = DesignBlue,
@@ -236,12 +235,7 @@ fun FamilyDetailScreen(
                                                     clipboard.setPrimaryClip(ClipData.newPlainText("Code", family.familyCode))
                                                     Toast.makeText(context, "Code copied!", Toast.LENGTH_SHORT).show()
                                                 },
-                                                modifier = Modifier
-                                                    .background(
-                                                        DesignBlue,
-                                                        RoundedCornerShape(8.dp)
-                                                    )
-                                                    .size(40.dp)
+                                                modifier = Modifier.background(DesignBlue, RoundedCornerShape(8.dp)).size(40.dp)
                                             ) {
                                                 Icon(Icons.Outlined.ContentCopy, null, tint = Color.White, modifier = Modifier.size(20.dp))
                                             }
@@ -293,9 +287,7 @@ fun FamilyDetailScreen(
                             } else {
                                 // Join Family Button & Join Note
                                 Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 16.dp),
+                                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                                     colors = CardDefaults.cardColors(containerColor = YellowWarningBg),
                                     border = BorderStroke(1.dp, YellowWarningBorder)
                                 ) {
@@ -307,9 +299,7 @@ fun FamilyDetailScreen(
                                 }
                                 Button(
                                     onClick = { showJoinDialog = true; viewModel.resetJoinError() },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(56.dp),
+                                    modifier = Modifier.fillMaxWidth().height(56.dp),
                                     colors = ButtonDefaults.buttonColors(containerColor = DesignBlue),
                                     shape = RoundedCornerShape(28.dp)
                                 ) {
@@ -371,9 +361,7 @@ fun FamilyDetailScreen(
                 // Dialog Title - Join Family
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier
-                            .size(56.dp)
-                            .background(LightBlueBg, CircleShape), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.size(56.dp).background(LightBlueBg, CircleShape), contentAlignment = Alignment.Center) {
                             Icon(Icons.Default.People, null, tint = DesignBlue)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -456,9 +444,7 @@ fun FamilyDetailScreen(
                 // Dialog Title - Leave Family
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier
-                            .size(56.dp)
-                            .background(Color(0xFFFFEBEE), CircleShape), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.size(56.dp).background(Color(0xFFFFEBEE), CircleShape), contentAlignment = Alignment.Center) {
                             Icon(Icons.Default.People, null, tint = RedDanger)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -491,17 +477,13 @@ fun FamilyDetailScreen(
 @Composable
 fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isJoined) {
             // Show Member Detail
             Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(DesignBlue, CircleShape),
+                modifier = Modifier.size(40.dp).background(DesignBlue, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
@@ -531,7 +513,7 @@ fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
             }
         } else {
             // Hide Member Detail
-            val avatarColors = listOf(Color(0xFF1868D8), Color(0xFFD32F2F), Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
+            val avatarColors = listOf(DesignBlue, RedDanger, Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
             val safeHash = name.hashCode().let { if (it < 0) it * -1 else it }
             val blurColor = avatarColors[safeHash % avatarColors.size]
 

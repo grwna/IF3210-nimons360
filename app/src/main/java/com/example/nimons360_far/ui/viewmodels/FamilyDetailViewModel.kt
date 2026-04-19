@@ -1,13 +1,11 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nimons360_far.backend.api.FamilyApi
 import com.example.nimons360_far.backend.models.Family
 import com.example.nimons360_far.backend.models.JoinFamilyRequest
 import com.example.nimons360_far.backend.models.LeaveFamilyRequest
-import com.example.nimons360_far.backend.network.AuthInterceptor
 import com.example.nimons360_far.backend.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,9 +14,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // Sealed Class - UI Triggers (Toast & Navigation)
 sealed class DetailEvent {
@@ -31,22 +26,10 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
 
     // Initialize Dependencies
     private val sessionManager = SessionManager(application)
-    private val token = sessionManager.fetchAuthToken() ?: ""
-    private val bearerToken = "Bearer $token"
     val userEmail = sessionManager.fetchUserEmail() ?: ""
 
-    // Lazy API Initialization With Auth Interceptor
-    private val api: FamilyApi by lazy {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(application, sessionManager))
-            .build()
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyApi::class.java)
-    }
+    // API Initialization
+    private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
 
     // UI State Flow - Family Data
     private val _familyData = MutableStateFlow<Family?>(null)
@@ -71,8 +54,8 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
             _isLoading.value = true
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    // Try Execute Load Family Detail
-                    val response = api.getFamilyDetail(bearerToken, familyId)
+                    // Try To Execute Load Family Detail
+                    val response = api.getFamilyDetail(familyId)
                     if (response.isSuccessful) {
                         // Execution Success
                         _familyData.value = response.body()?.data
@@ -95,8 +78,8 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
     fun joinFamily(familyId: Int, joinCode: String, onSuccess: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // Try Execute Join Family
-                val res = api.joinFamily(bearerToken, JoinFamilyRequest(familyId, joinCode))
+                // Try To Execute Join Family
+                val res = api.joinFamily(JoinFamilyRequest(familyId, joinCode))
                 if (res.isSuccessful) {
                     // Execution Success
                     _joinErrorMessage.value = null
@@ -117,8 +100,8 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
     fun leaveFamily(familyId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // Try Execute Load Family
-                val res = api.leaveFamily(token, LeaveFamilyRequest(familyId))
+                // Try To Execute Load Family
+                val res = api.leaveFamily(LeaveFamilyRequest(familyId))
                 if (res.isSuccessful) {
                     // Execution Success
                     _events.emit(DetailEvent.NavigateBack)

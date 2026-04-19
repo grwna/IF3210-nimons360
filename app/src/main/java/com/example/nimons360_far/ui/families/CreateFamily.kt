@@ -1,6 +1,5 @@
 package com.example.nimons360_far.ui.families
 
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
@@ -18,11 +17,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import coil.load
-import com.example.nimons360_far.R
-import com.example.nimons360_far.backend.viewmodels.CreateEvent
-import com.example.nimons360_far.backend.viewmodels.CreateFamilyViewModel
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
+import com.example.nimons360_far.R
+import com.example.nimons360_far.ui.viewmodels.CreateEvent
+import com.example.nimons360_far.ui.viewmodels.CreateFamilyViewModel
+import com.google.android.material.textfield.TextInputEditText
 
 // Fragment - Create Family - Bound To Create Family XML
 class CreateFamily : Fragment(R.layout.create_family) {
@@ -176,14 +175,14 @@ class CreateFamily : Fragment(R.layout.create_family) {
     private fun updateIconSelectionUI(selectedView: ImageView) {
         // Unselected Icon
         val unselectedBg = GradientDrawable().apply {
-            setColor(Color.parseColor("#F8F9FA"))
+            setColor(com.example.nimons360_far.utils.AppColors.DesignBgInt)
             cornerRadius = 16f * resources.displayMetrics.density
         }
 
         // Selected Icon
         val selectedBg = GradientDrawable().apply {
-            setColor(Color.parseColor("#EAF2FF"))
-            setStroke((2 * resources.displayMetrics.density).toInt(), Color.parseColor("#1868D8"))
+            setColor(com.example.nimons360_far.utils.AppColors.LightBlueBgInt)
+            setStroke((2 * resources.displayMetrics.density).toInt(), com.example.nimons360_far.utils.AppColors.DesignBlueInt)
             cornerRadius = 16f * resources.displayMetrics.density
         }
 

@@ -1,22 +1,17 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nimons360_far.backend.api.FamilyApi
 import com.example.nimons360_far.backend.data.AppDatabase
 import com.example.nimons360_far.backend.data.PinnedFamily
 import com.example.nimons360_far.backend.models.Family
-import com.example.nimons360_far.backend.network.AuthInterceptor
 import com.example.nimons360_far.backend.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // Main Class - Families View Model
 class FamiliesViewModel(application: Application) : AndroidViewModel(application) {
@@ -25,20 +20,9 @@ class FamiliesViewModel(application: Application) : AndroidViewModel(application
     private val database = AppDatabase.getDatabase(application)
     private val pinnedDao = database.pinnedFamilyDao()
     private val token = sessionManager.fetchAuthToken() ?: ""
-    private val bearerToken = "Bearer $token"
 
-    // Lazy API Initialization With Auth Interceptor
-    private val api: FamilyApi by lazy {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(application, sessionManager))
-            .build()
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyApi::class.java)
-    }
+    // API Initialization
+    private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
 
     // UI State Flow - Fetched All Families
     private val _allFamilies = MutableStateFlow<List<Family>>(emptyList())
@@ -76,8 +60,8 @@ class FamiliesViewModel(application: Application) : AndroidViewModel(application
             try {
                 // Try Fetch Data
                 if (token.isNotEmpty()) {
-                    val allRes = api.getAllFamilies(bearerToken)
-                    val myRes = api.getMyFamilies(bearerToken)
+                    val allRes = api.getAllFamilies()
+                    val myRes = api.getMyFamilies()
 
                     // Success Fetch All Families
                     if (allRes.isSuccessful) {

@@ -1,7 +1,6 @@
 package com.example.nimons360_far.ui.auth
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -13,8 +12,8 @@ import com.example.nimons360_far.LauncherActivity
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.models.LoginRequest
 import com.example.nimons360_far.backend.utils.navigateTo
-import com.example.nimons360_far.backend.viewmodels.AuthState
-import com.example.nimons360_far.backend.viewmodels.AuthViewModel
+import com.example.nimons360_far.ui.viewmodels.AuthState
+import com.example.nimons360_far.ui.viewmodels.AuthViewModel
 import com.example.nimons360_far.databinding.ActivityLoginBinding
 import com.example.nimons360_far.ui.base.BaseActivity
 import kotlinx.coroutines.launch

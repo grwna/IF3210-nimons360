@@ -31,23 +31,21 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.foundation.shape.CircleShape
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.models.Family
-import com.example.nimons360_far.backend.viewmodels.FamiliesViewModel
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.foundation.shape.CircleShape
-import androidx.lifecycle.ViewModelProvider
 import com.example.nimons360_far.backend.utils.Refreshable
-
-// UI Colors Configuration
-val DesignBg = Color(0xFFF8F9FA)
-val DesignBlue = Color(0xFF1868D8)
-val DesignTextBlack = Color(0xFF222222)
-val DesignTextGrey = Color(0xFF666666)
-val DesignSearchBg = Color(0xFFFFFFFF)
+import com.example.nimons360_far.ui.viewmodels.FamiliesViewModel
+import com.example.nimons360_far.utils.AppColors.DesignBg
+import com.example.nimons360_far.utils.AppColors.DesignBlue
+import com.example.nimons360_far.utils.AppColors.DesignTextBlack
+import com.example.nimons360_far.utils.AppColors.DesignTextGrey
+import com.example.nimons360_far.utils.AppColors.DesignSearchBg
 
 // Fragment - Families - Jetpack Compose UI & Implements Refreshable
 class Families : Fragment(), Refreshable {
@@ -235,7 +233,7 @@ fun FamiliesScreen(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Empty",
-                                tint = Color(0xFFD32F2F),
+                                tint = com.example.nimons360_far.utils.AppColors.RedDanger,
                                 modifier = Modifier.size(36.dp)
                             )
                         }

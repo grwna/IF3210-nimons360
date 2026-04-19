@@ -38,7 +38,7 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 | **Wajib - README** | None | 13523021 |
 | **Bonus - Search Family** | Jetpack Compose | 13523021 |
 | **Bonus - Internet Status** | Jetpack Compose | 13523005 |
-| **Bonus - Livestreaming** | Jetpack Compose | None |
+| **Bonus - Livestreaming** | None | None |
 | **Bonus - Mark Favorite Location** | Jetpack Compose | 13523005 |
 | **Bonus - Accessibility Testing** | None | None |
 

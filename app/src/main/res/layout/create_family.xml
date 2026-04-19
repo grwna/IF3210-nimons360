@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Create Family XML Layout : Bound To Create Family KT -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,6 +8,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+    <!-- Head Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerBar"
         android:layout_width="match_parent"
@@ -15,6 +18,7 @@
         android:background="@color/white"
         android:elevation="8dp">
 
+        <!-- Head Bar : Cancel Button -->
         <TextView
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
@@ -26,6 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Head Bar : New Family Text -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,6 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Head Bar : Create Button -->
         <TextView
             android:id="@+id/btnHeaderCreate"
             android:layout_width="wrap_content"
@@ -51,17 +57,20 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Scroll View -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- Scroll View : Linear Layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp">
 
+            <!-- Selected Icon Preview -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,6 +94,7 @@
                 </com.google.android.material.card.MaterialCardView>
             </FrameLayout>
 
+            <!-- Family Name Text -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,6 +104,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
+            <!-- Input Family Name & Counter -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,6 +148,8 @@
                     android:textColor="@color/design_text_grey"
                     android:textSize="12sp" />
             </FrameLayout>
+
+            <!-- Information Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -174,6 +187,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Choose An Icon Text -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -183,6 +197,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
+            <!-- Grid Icon Display -->
             <GridLayout
                 android:id="@+id/gridIcons"
                 android:layout_width="match_parent"
@@ -191,7 +206,6 @@
                 android:columnCount="5"
                 android:rowCount="3"
                 android:useDefaultMargins="true" />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

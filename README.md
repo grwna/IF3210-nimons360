@@ -35,9 +35,12 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 | **Wajib - Profile** | XML | 13523035 |
 | **Wajib - Network Sensing** | Jetpack Compose | 13523035 |
 | **Wajib - OpenAPI** | None | 13523035 |
+| **Wajib - README** | None | 13523021 |
 | **Bonus - Search Family** | Jetpack Compose | 13523021 |
 | **Bonus - Internet Status** | Jetpack Compose | 13523005 |
+| **Bonus - Livestreaming** | Jetpack Compose | 13523005 |
 | **Bonus - Mark Favorite Location** | Jetpack Compose | 13523005 |
+| **Bonus - Accessibility Testing** | None | 13523035 |
 
 ## Waktu Pengerjaan
 | NIM | Jam Persiapan | Jam Pengerjaan | Total Jam |
@@ -116,6 +119,11 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 - **Rename Favorite Location (Success)** <img src="screenshot/favorite4.jpg" width="250">
 - **Rename Favorite Location (Failed)** <img src="screenshot/favorite5.jpg" width="250">
 - **Delete Favorite Location (Display)** <img src="screenshot/favorite6.jpg" width="250">
+
+### Bonus - Accessibility Testing
+- Rincian Hasil Test 1 <img src="screenshot/accessibility1.jpg" width="250">
+- Rincian Hasil Test 2 <img src="screenshot/accessibility2.jpg" width="250">
+- Rincian Hasil Test 3 <img src="screenshot/accessibility3.jpg" width="250">
 
 ### Other
 Secara lebih lengkap, smua dokumentasi visual aplikasi dapat ditemukan pada direktori berikut : `./screenshot`

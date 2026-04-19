@@ -108,7 +108,8 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
     <td align="center"><img src="screenshot/map2.jpg" width="240"><br><b>Family Location</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/map3.jpg" width="240"><br><b>Phone Orientation</b></td>
+    <td align="center"><img src="screenshot/map3.jpg" width="240"><br><b>Phone Orientation A (hadap kiri)</b></td>
+    <td align="center"><img src="screenshot/map3_b.jpg" width="240"><br><b>Phone Orientation B (hadap kanan)</b></td>
     <td align="center"><img src="screenshot/map4.jpg" width="240"><br><b>User Information</b></td>
   </tr>
 </table>
@@ -139,18 +140,24 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 </table>
 
 ### Bonus - Internet Status
-- **Internet Status (Display)** <img src="screenshot/internet1.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/internet1.jpg" width="240"><br><b>Internet Status (Wifi)</b></td>
+    <td align="center"><img src="screenshot/internet2.jpg" width="240"><br><b>Internet Status (Mobile Network)</b></td>
+  </tr>
+</table>
 
 ### Bonus - Mark Favorite Location
 <table>
   <tr>
     <td align="center"><img src="screenshot/favorite1.jpg" width="240"><br><b>Map View</b></td>
     <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
+    <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
     <td align="center"><img src="screenshot/favorite3.jpg" width="240"><br><b>Add (Failed)</b></td>
   </tr>
   <tr>
     <td align="center"><img src="screenshot/favorite4.jpg" width="240"><br><b>Rename (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite5.jpg" width="240"><br><b>Rename (Failed)</b></td>
+    <td align="center"><img src="screenshot/favorite5.jpg" width="240"><br><b>Rename (Success)</b></td>
     <td align="center"><img src="screenshot/favorite6.jpg" width="240"><br><b>Delete (Display)</b></td>
   </tr>
 </table>

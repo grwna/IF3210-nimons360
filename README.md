@@ -75,29 +75,34 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Families
 <table>
   <tr>
-    <td align="center"><img src="screenshot/families1.jpg" width="240"><br><b>Create Family (Input)</b></td>
-    <td align="center"><img src="screenshot/families2.jpg" width="240"><br><b>Create Family (Success)</b></td>
-    <td align="center"><img src="screenshot/families3.jpg" width="240"><br><b>Create Family (Failed)</b></td>
+    <td align="center"><img src="screenshot/families1.jpeg" width="240"><br><b>Create Family (Input)</b></td>
+    <td align="center"><img src="screenshot/families2.jpeg" width="240"><br><b>Create Family (Success)</b></td>
+    <td align="center"><img src="screenshot/families3.jpeg" width="240"><br><b>Create Family (Failed)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families4.jpg" width="240"><br><b>Family Detail (Joined)</b></td>
-    <td align="center"><img src="screenshot/families5.jpg" width="240"><br><b>Family Detail (Not Joined)</b></td>
-    <td align="center"><img src="screenshot/families6.jpg" width="240"><br><b>Join Family (Input)</b></td>
+    <td align="center"><img src="screenshot/families4.jpeg" width="240"><br><b>Family Detail (Joined)</b></td>
+    <td align="center"><img src="screenshot/families5.jpeg" width="240"><br><b>Family Detail (Not Joined)</b></td>
+    <td align="center"><img src="screenshot/families6.jpeg" width="240"><br><b>Join Family (Input)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families7.jpg" width="240"><br><b>Join (Error Length)</b></td>
-    <td align="center"><img src="screenshot/families8.jpg" width="240"><br><b>Join (Wrong Code)</b></td>
-    <td align="center"><img src="screenshot/families9.jpg" width="240"><br><b>Leave (Display)</b></td>
+    <td align="center"><img src="screenshot/families7.jpeg" width="240"><br><b>Join (Error Length)</b></td>
+    <td align="center"><img src="screenshot/families8.jpeg" width="240"><br><b>Join (Wrong Code)</b></td>
+    <td align="center"><img src="screenshot/families9.jpeg" width="240"><br><b>Join (Success)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families10.jpg" width="240"><br><b>Pinned (Display)</b></td>
-    <td align="center"><img src="screenshot/families11.jpg" width="240"><br><b>Pinned (Add)</b></td>
-    <td align="center"><img src="screenshot/families12.jpg" width="240"><br><b>Pinned (Delete)</b></td>
+    <td align="center"><img src="screenshot/families10.jpeg" width="240"><br><b>Leave (Display)</b></td>
+    <td align="center"><img src="screenshot/families11.jpeg" width="240"><br><b>Leave (Success)</b></td>
+    <td align="center"><img src="screenshot/families12.jpeg" width="240"><br><b>Pinned (Display >0)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families13.jpg" width="240"><br><b>Filter (All)</b></td>
-    <td align="center"><img src="screenshot/families14.jpg" width="240"><br><b>Filter (My > 0)</b></td>
-    <td align="center"><img src="screenshot/families15.jpg" width="240"><br><b>Filter (My = 0)</b></td>
+    <td align="center"><img src="screenshot/families13.jpeg" width="240"><br><b>Pinned (Display =0)</b></td>
+    <td align="center"><img src="screenshot/families14.jpeg" width="240"><br><b>Pinned (Add)</b></td>
+    <td align="center"><img src="screenshot/families15.jpeg" width="240"><br><b>Pinned (Delete)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/families16.jpeg" width="240"><br><b>Filter (All)</b></td>
+    <td align="center"><img src="screenshot/families17.jpeg" width="240"><br><b>Filter (My > 0)</b></td>
+    <td align="center"><img src="screenshot/families18.jpeg" width="240"><br><b>Filter (My = 0)</b></td>
   </tr>
 </table>
 
@@ -124,26 +129,29 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 </table>
 
 ### Wajib - Network Sensing
-- **Disconnected** <img src="screenshot/network1.jpg" width="250">
-
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/network1.jpg" width="240"><br><b>Disconnected</b></td>
+  </tr>
+</table>
 
 ### Bonus - Search Family
 <table>
   <tr>
-    <td align="center"><img src="screenshot/search1.jpg" width="240"><br><b>All (Found)</b></td>
-    <td align="center"><img src="screenshot/search2.jpg" width="240"><br><b>All (Not Found)</b></td>
+    <td align="center"><img src="screenshot/search1.jpeg" width="240"><br><b>All (Found)</b></td>
+    <td align="center"><img src="screenshot/search2.jpeg" width="240"><br><b>All (Not Found)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/search3.jpg" width="240"><br><b>My (Found)</b></td>
-    <td align="center"><img src="screenshot/search4.jpg" width="240"><br><b>My (Not Found)</b></td>
+    <td align="center"><img src="screenshot/search3.jpeg" width="240"><br><b>My (Found)</b></td>
+    <td align="center"><img src="screenshot/search4.jpeg" width="240"><br><b>My (Not Found)</b></td>
   </tr>
 </table>
 
 ### Bonus - Internet Status
 <table>
   <tr>
-    <td align="center"><img src="screenshot/internet1.jpg" width="240"><br><b>Internet Status (Wifi)</b></td>
-    <td align="center"><img src="screenshot/internet2.jpg" width="240"><br><b>Internet Status (Mobile Network)</b></td>
+    <td align="center"><img src="screenshot/internet1.jpg" width="240"><br><b>Internet Status Wi-Fi (Display)</b></td>
+    <td align="center"><img src="screenshot/internet2.jpg" width="240"><br><b>Internet Status Cellular (Display)</b></td>
   </tr>
 </table>
 

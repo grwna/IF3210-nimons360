@@ -28,7 +28,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun login(request: LoginRequest) {
         _authState.value = AuthState.Loading
-        // Execute login request in coroutine for responsive UI
         viewModelScope.launch {
             try {
                 val response = authApi.login(request)

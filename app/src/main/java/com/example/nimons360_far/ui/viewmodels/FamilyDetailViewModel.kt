@@ -16,9 +16,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 sealed class DetailEvent {
     data class ShowToast(val message: String) : DetailEvent()
@@ -28,20 +25,9 @@ sealed class DetailEvent {
 class FamilyDetailViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sessionManager = SessionManager(application)
-    private val token = "Bearer ${sessionManager.fetchAuthToken() ?: ""}"
     val userEmail = sessionManager.fetchUserEmail() ?: ""
 
-    private val api: FamilyApi by lazy {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(application, sessionManager))
-            .build()
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyApi::class.java)
-    }
+    private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
 
     private val _familyData = MutableStateFlow<Family?>(null)
     val familyData: StateFlow<Family?> = _familyData.asStateFlow()
@@ -60,7 +46,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = api.getFamilyDetail(token, familyId)
+                val response = api.getFamilyDetail(familyId)
                 if (response.isSuccessful) {
                     _familyData.value = response.body()?.data
                 } else {
@@ -77,7 +63,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
     fun joinFamily(familyId: Int, joinCode: String, onSuccess: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val res = api.joinFamily(token, JoinFamilyRequest(familyId, joinCode))
+                val res = api.joinFamily(JoinFamilyRequest(familyId, joinCode))
                 if (res.isSuccessful) {
                     _joinErrorMessage.value = null
                     onSuccess()
@@ -94,7 +80,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
     fun leaveFamily(familyId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val res = api.leaveFamily(token, LeaveFamilyRequest(familyId))
+                val res = api.leaveFamily(LeaveFamilyRequest(familyId))
                 if (res.isSuccessful) {
                     _events.emit(DetailEvent.NavigateBack)
                 } else {

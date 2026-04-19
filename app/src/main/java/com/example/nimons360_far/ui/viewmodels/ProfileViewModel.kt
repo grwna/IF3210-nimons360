@@ -51,7 +51,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // Stub for bottom sheet integration
     fun updateProfile(fullName: String) {
         _profileState.value = ProfileState.Loading
         viewModelScope.launch {

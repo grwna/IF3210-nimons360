@@ -66,7 +66,7 @@ fun FavoriteInfoCard(
                 Button(
                     onClick = onRename,
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                    colors = ButtonDefaults.buttonColors(containerColor = com.example.nimons360_far.utils.AppColors.BlueAction)
                 ) {
                     Icon(Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
@@ -76,7 +76,7 @@ fun FavoriteInfoCard(
                 Button(
                     onClick = onDelete,
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+                    colors = ButtonDefaults.buttonColors(containerColor = com.example.nimons360_far.utils.AppColors.RedDanger)
                 ) {
                     Icon(Default.Delete, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))

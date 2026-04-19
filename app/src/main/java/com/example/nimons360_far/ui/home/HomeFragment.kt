@@ -58,7 +58,15 @@ class HomeFragment : Fragment(), Refreshable {
         }
 
         setupRecyclerViews()
+        setupSwipeRefresh()
         observeViewModel()
+    }
+
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.setColorSchemeResources(R.color.design_blue)
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.refreshAll()
+        }
     }
 
     override fun onResume() {
@@ -111,7 +119,8 @@ class HomeFragment : Fragment(), Refreshable {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoading.collectLatest { isLoading ->
-                binding.loadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+                binding.loadingIndicator.visibility = if (isLoading && !binding.swipeRefresh.isRefreshing) View.VISIBLE else View.GONE
+                binding.swipeRefresh.isRefreshing = isLoading
                 binding.homeContent.alpha = if (isLoading) 0.5f else 1.0f
             }
         }

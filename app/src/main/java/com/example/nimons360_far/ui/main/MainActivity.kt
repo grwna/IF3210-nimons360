@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.models.PresencePayload
 import com.example.nimons360_far.backend.network.MapWebSocketManager
+import com.example.nimons360_far.backend.utils.Refreshable
 import com.example.nimons360_far.backend.utils.SessionManager
 import com.example.nimons360_far.databinding.ActivityMainBinding
 import com.example.nimons360_far.ui.base.BaseActivity
@@ -29,6 +30,7 @@ import com.example.nimons360_far.ui.families.Families
 import com.example.nimons360_far.ui.home.HomeFragment
 import com.example.nimons360_far.ui.map.MapFragment
 import com.example.nimons360_far.ui.map.UserLocationData
+import android.content.res.ColorStateList
 import com.google.android.gms.location.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -195,6 +197,14 @@ class MainActivity : BaseActivity(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    
+    override fun onNetworkAvailable() {
+        super.onNetworkAvailable()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (currentFragment is Refreshable) {
+            currentFragment.onRefresh()
+        }
+    }
 
     private fun setupUI() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->

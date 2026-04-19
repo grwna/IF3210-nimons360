@@ -11,12 +11,18 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 - **Profil Pengguna** : Pengelolaan informasi akun dan sesi.
 
 ## Library yang Digunakan
-- **Jetpack Compose** : Untuk membangun UI yang modern dan deklaratif.
-- **Material Design 3** : Implementasi komponen UI standar industri.
-- **Retrofit & Gson** : Untuk menangani komunikasi jaringan dan parsing data API.
-- **Room Database** : Untuk penyimpanan data lokal dan fitur penyematan keluarga.
-- **Coil**: Untuk pemuatan gambar dan ikon keluarga secara asinkron.
-- **Lifecycle & ViewModel**: Untuk manajemen state aplikasi yang robust.
+- **Material Components** : Implementasi standar komponen antarmuka Material Design 3.
+- **Jetpack Compose** : Framework modern untuk membangun UI deklaratif secara penuh.
+- **Retrofit & OKHttp** : Client HTTP untuk berkomunikasi dengan REST API secara efisien.
+- **GSON & Retrofit Converter GSON** : Serialisasi dan deserialisasi data JSON menjadi objek model.
+- **Room Database** : Sistem manajemen database lokal (ORM) untuk penyimpanan data persisten.
+- **Kotlinx Coroutines** : Library untuk menangani operasi asinkron dan concurrency.
+- **Lifecycle (ViewModel, Runtime, Compose)** : Manajemen state aplikasi dan data UI.
+- **Security Crypto** : Implementasi enkripsi untuk penyimpanan data sensitif (EncryptedSharedPreferences).
+- **Coil & Coil Compose** : Library pemuatan gambar yang dioptimalkan untuk performa tinggi, termasuk dukungan Compose.
+- **OSMDroid** : Integrasi dan rendering peta interaktif menggunakan sumber OpenStreetMap.
+- **Google Play Services Location** : API untuk pengambilan data lokasi presisi dan koordinat GPS.
+- **SwipeRefreshLayout** : Komponen UI untuk fitur "pull down to refresh" pada layout XML.
 
 ## Pembagian Kerja Anggota Kelompok
 | Spesifikasi | UI Framework | Kontributor |

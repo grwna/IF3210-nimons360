@@ -44,18 +44,21 @@ abstract class BaseActivity : AppCompatActivity() {
         observeNetwork()
     }
 
+    private var isCurrentlyOffline = false
+
     // Network Sensing
     private fun observeNetwork() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 networkObserver.isConnected.collect { isConnected ->
                     if (isConnected) {
-                        val wasOffline = noInternetDialog != null
-                        dismissNoInternetDialog()
-                        if (wasOffline) {
+                        if (isCurrentlyOffline) {
+                            isCurrentlyOffline = false
+                            dismissNoInternetDialog()
                             onNetworkAvailable()
                         }
                     } else {
+                        isCurrentlyOffline = true
                         showNoInternetDialog()
                     }
                 }

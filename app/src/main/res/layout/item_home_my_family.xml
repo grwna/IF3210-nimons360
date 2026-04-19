@@ -13,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         android:padding="16.dp">
 
@@ -20,9 +21,10 @@
             android:id="@+id/icon_container"
             android:layout_width="48.dp"
             android:layout_height="48.dp"
+            android:layout_marginBottom="12.dp"
             android:background="@color/design_light_blue_bg"
-            android:padding="8.dp"
-            android:layout_marginBottom="12.dp">
+            android:padding="8.dp">
+
             <ImageView
                 android:id="@+id/iv_family_icon"
                 android:layout_width="match_parent"

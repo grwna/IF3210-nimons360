@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -105,6 +106,11 @@ fun MapScreen(
     var selectedFavorite by remember { mutableStateOf<FavoriteLocation?>(null) }
     var showRenameDialog by remember { mutableStateOf(false) }
     var newLocationName by remember { mutableStateOf("") }
+
+    // Fetch profile to get id
+    LaunchedEffect(Unit) {
+        userRepository.fetchProfile()
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(

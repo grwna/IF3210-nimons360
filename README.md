@@ -55,63 +55,105 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 - **Logo (Display)** <img src="screenshot/logo1.jpg" width="250">
 
 ### Wajib - Auth
-- **Login (Input)** <img src="screenshot/auth1.jpg" width="250">
-- **Login (Failed)** <img src="screenshot/auth2.jpg" width="250">
-- **Logout** <img src="screenshot/auth3.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/auth1.jpg" width="240"><br><b>Login (Input)</b></td>
+    <td align="center"><img src="screenshot/auth2.jpg" width="240"><br><b>Login (Failed)</b></td>
+    <td align="center"><img src="screenshot/auth3.jpg" width="240"><br><b>Logout</b></td>
+  </tr>
+</table>
 
 
 ### Wajib - Home
-- **Home** <img src="screenshot/home1.jpg" width="250">
-- **Home (Empty)** <img src="screenshot/home2.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/home1.jpg" width="240"><br><b>Home</b></td>
+    <td align="center"><img src="screenshot/home2.jpg" width="240"><br><b>Home (Empty)</b></td>
+  </tr>
+</table>
 
 ### Wajib - Families
-- **Create Family (Input)** <img src="screenshot/families1.jpg" width="250">
-- **Create Family (Success)** <img src="screenshot/families2.jpg" width="250">
-- **Create Family (Failed)** <img src="screenshot/families3.jpg" width="250">
-- **Family Detail (Joined)** <img src="screenshot/families4.jpg" width="250">
-- **Family Detail (Not Joined)** <img src="screenshot/families5.jpg" width="250">
-- **Join Family (Input)** <img src="screenshot/families6.jpg" width="250">
-- **Join Family (Error Minimum Character)** <img src="screenshot/families7.jpg" width="250">
-- **Join Family (Error Wrong Code)** <img src="screenshot/families8.jpg" width="250">
-- **Leave Family (Display)** <img src="screenshot/families9.jpg" width="250">
-- **Pinned Family (Display)** <img src="screenshot/families10.jpg" width="250">
-- **Pinned Family (Add)** <img src="screenshot/families11.jpg" width="250">
-- **Pinned Family (Delete)** <img src="screenshot/families12.jpg" width="250">
-- **Filter Family (All)** <img src="screenshot/families13.jpg" width="250">
-- **Filter Family (My Families > 0)** <img src="screenshot/families14.jpg" width="250">
-- **Filter Family (My Families = 0)** <img src="screenshot/families15.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/families1.jpg" width="240"><br><b>Create Family (Input)</b></td>
+    <td align="center"><img src="screenshot/families2.jpg" width="240"><br><b>Create Family (Success)</b></td>
+    <td align="center"><img src="screenshot/families3.jpg" width="240"><br><b>Create Family (Failed)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/families4.jpg" width="240"><br><b>Family Detail (Joined)</b></td>
+    <td align="center"><img src="screenshot/families5.jpg" width="240"><br><b>Family Detail (Not Joined)</b></td>
+    <td align="center"><img src="screenshot/families6.jpg" width="240"><br><b>Join Family (Input)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/families7.jpg" width="240"><br><b>Join (Error Length)</b></td>
+    <td align="center"><img src="screenshot/families8.jpg" width="240"><br><b>Join (Wrong Code)</b></td>
+    <td align="center"><img src="screenshot/families9.jpg" width="240"><br><b>Leave (Display)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/families10.jpg" width="240"><br><b>Pinned (Display)</b></td>
+    <td align="center"><img src="screenshot/families11.jpg" width="240"><br><b>Pinned (Add)</b></td>
+    <td align="center"><img src="screenshot/families12.jpg" width="240"><br><b>Pinned (Delete)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/families13.jpg" width="240"><br><b>Filter (All)</b></td>
+    <td align="center"><img src="screenshot/families14.jpg" width="240"><br><b>Filter (My > 0)</b></td>
+    <td align="center"><img src="screenshot/families15.jpg" width="240"><br><b>Filter (My = 0)</b></td>
+  </tr>
+</table>
 
 ### Wajib - Map
-- **Map (Display)** <img src="screenshot/map1.jpg" width="250">
-- **Family Location (Display)** <img src="screenshot/map2.jpg" width="250">
-- **Phone Orientation (Display)** <img src="screenshot/map3.jpg" width="250">
-- **User Information (Display)** <img src="screenshot/map4.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/map1.jpg" width="240"><br><b>Map (Display)</b></td>
+    <td align="center"><img src="screenshot/map2.jpg" width="240"><br><b>Family Location</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/map3.jpg" width="240"><br><b>Phone Orientation</b></td>
+    <td align="center"><img src="screenshot/map4.jpg" width="240"><br><b>User Information</b></td>
+  </tr>
+</table>
 
 ### Wajib - Profile
-- **Profile** <img src="screenshot/profile1.jpg" width="250">
-- **Rename** <img src="screenshot/profile2.jpg" width="250">
-- **Rename (Failed)** <img src="screenshot/profile3.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/profile1.jpg" width="240"><br><b>Profile Main</b></td>
+    <td align="center"><img src="screenshot/profile2.jpg" width="240"><br><b>Rename Profile</b></td>
+    <td align="center"><img src="screenshot/profile3.jpg" width="240"><br><b>Rename (Failed)</b></td>
+  </tr>
+</table>
 
 ### Wajib - Network Sensing
 - **Disconnected** <img src="screenshot/network1.jpg" width="250">
 
 
 ### Bonus - Search Family
-- **All Families (Found)** <img src="screenshot/search1.jpg" width="250">
-- **All Families (Not Found)** <img src="screenshot/search2.jpg" width="250">
-- **My Families (Found)** <img src="screenshot/search3.jpg" width="250">
-- **My Families (Not Found)** <img src="screenshot/search4.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/search1.jpg" width="240"><br><b>All (Found)</b></td>
+    <td align="center"><img src="screenshot/search2.jpg" width="240"><br><b>All (Not Found)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/search3.jpg" width="240"><br><b>My (Found)</b></td>
+    <td align="center"><img src="screenshot/search4.jpg" width="240"><br><b>My (Not Found)</b></td>
+  </tr>
+</table>
 
 ### Bonus - Internet Status
 - **Internet Status (Display)** <img src="screenshot/internet1.jpg" width="250">
 
 ### Bonus - Mark Favorite Location
-- **Map (Display)** <img src="screenshot/favorite1.jpg" width="250">
-- **Add Favorite Location (Success)** <img src="screenshot/favorite2.jpg" width="250">
-- **Add Favorite Location (Failed)** <img src="screenshot/favorite3.jpg" width="250">
-- **Rename Favorite Location (Success)** <img src="screenshot/favorite4.jpg" width="250">
-- **Rename Favorite Location (Failed)** <img src="screenshot/favorite5.jpg" width="250">
-- **Delete Favorite Location (Display)** <img src="screenshot/favorite6.jpg" width="250">
+<table>
+  <tr>
+    <td align="center"><img src="screenshot/favorite1.jpg" width="240"><br><b>Map View</b></td>
+    <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
+    <td align="center"><img src="screenshot/favorite3.jpg" width="240"><br><b>Add (Failed)</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/favorite4.jpg" width="240"><br><b>Rename (Success)</b></td>
+    <td align="center"><img src="screenshot/favorite5.jpg" width="240"><br><b>Rename (Failed)</b></td>
+    <td align="center"><img src="screenshot/favorite6.jpg" width="240"><br><b>Delete (Display)</b></td>
+  </tr>
+</table>
 
 ## Contributors
 

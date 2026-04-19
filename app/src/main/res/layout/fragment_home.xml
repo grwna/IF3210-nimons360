@@ -16,6 +16,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="20.dp"
+        android:paddingBottom="12.dp"
         android:elevation="8dp"
         android:background="@color/white">
 

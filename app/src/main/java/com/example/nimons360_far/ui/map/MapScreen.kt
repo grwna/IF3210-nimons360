@@ -21,6 +21,12 @@ import android.net.NetworkCapabilities
 import android.net.ConnectivityManager
 import com.example.nimons360_far.backend.utils.SessionManager
 import android.os.BatteryManager
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.nimons360_far.backend.utils.UserRepository
@@ -34,6 +40,15 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.views.overlay.MapEventsOverlay
 import com.example.nimons360_far.R
 import com.example.nimons360_far.ui.components.UserInfoCard
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.UUID
+import com.example.nimons360_far.backend.data.AppDatabase
+import com.example.nimons360_far.backend.data.FavoriteLocation
+import com.example.nimons360_far.ui.components.FavoriteInfoCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -67,8 +82,8 @@ fun MapScreen(
     val userRepository = remember { UserRepository.getInstance(context) }
     val currentUser by userRepository.userProfile.collectAsState()
     val sessionManager = remember { SessionManager(context) }
-    val arrow_family = ContextCompat.getDrawable(context, R.drawable.arrow_family)
-    val my_arrow = ContextCompat.getDrawable(context, R.drawable.my_arrow)
+    val arrowFamily = ContextCompat.getDrawable(context, R.drawable.arrow_family)
+    val myArrow = ContextCompat.getDrawable(context, R.drawable.my_arrow)
 
     val internetStatus = remember(userGeoPoint) {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -77,7 +92,20 @@ fun MapScreen(
         val isMobileData = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
         if (isMobileData) "mobile" else "wifi"
     }
-    
+
+//    Favorite Location stuff
+    val db = remember { AppDatabase.getDatabase(context) }
+    val coroutineScope = rememberCoroutineScope()
+    val currentUserId = currentUser?.id?.toString() ?: ""
+    val favoriteLocations by db.favoriteLocationDao().getFavoritesByUser(currentUserId).collectAsState(initial = emptyList())
+    var showFavDialog by remember { mutableStateOf(false) }
+    var tempFavGeoPoint by remember { mutableStateOf<GeoPoint?>(null) }
+    var favLocationName by remember { mutableStateOf("") }
+    val favIcon = ContextCompat.getDrawable(context, R.drawable.ic_fav_location)
+    var selectedFavorite by remember { mutableStateOf<FavoriteLocation?>(null) }
+    var showRenameDialog by remember { mutableStateOf(false) }
+    var newLocationName by remember { mutableStateOf("") }
+
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
@@ -98,7 +126,15 @@ fun MapScreen(
                         showUserDialog = false
                         return true
                     }
-                    override fun longPressHelper(p: GeoPoint?): Boolean = false
+
+                    override fun longPressHelper(p: GeoPoint?): Boolean {
+                        if (p != null) {
+                            tempFavGeoPoint = p
+                            favLocationName = ""
+                            showFavDialog = true
+                        }
+                        return true
+                    }
                 }
                 mapView.overlays.add(MapEventsOverlay(mapEventsReceiver))
 
@@ -113,7 +149,7 @@ fun MapScreen(
                     myMarker.title = "Lokasi Saya Saat Ini"
                     myMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                     myMarker.rotation = currentHeading
-                    myMarker.icon = my_arrow
+                    myMarker.icon = myArrow
 
                     val myData = UserLocationData(
                         userId = currentUser?.id?.toString(),
@@ -140,7 +176,7 @@ fun MapScreen(
                     familyMarker.title = member.name
                     familyMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_TOP)
                     familyMarker.rotation = member.heading
-                    familyMarker.icon = arrow_family
+                    familyMarker.icon = arrowFamily
 
                     familyMarker.setOnMarkerClickListener { _, _ ->
                         selectedUser = member
@@ -148,6 +184,19 @@ fun MapScreen(
                         true
                     }
                     mapView.overlays.add(familyMarker)
+                }
+
+                favoriteLocations.forEach { fav ->
+                    val favMarker = Marker(mapView)
+                    favMarker.position = GeoPoint(fav.latitude, fav.longitude)
+                    favMarker.icon = favIcon
+
+                    favMarker.setOnMarkerClickListener { _, _ ->
+                        showUserDialog = false
+                        selectedFavorite = fav
+                        true
+                    }
+                    mapView.overlays.add(favMarker)
                 }
 
                 mapView.invalidate()
@@ -163,6 +212,112 @@ fun MapScreen(
             ) {
                 UserInfoCard(user = selectedUser!!)
             }
+        }
+        if (showFavDialog) {
+            AlertDialog(
+                onDismissRequest = { showFavDialog = false },
+                title = { Text("Simpan Lokasi Favorit") },
+                text = {
+                    Column {
+                        Text("Masukkan nama lokasi:")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = favLocationName,
+                            onValueChange = { favLocationName = it },
+                            placeholder = { Text("Misal: Rumah") },
+                            singleLine = true
+                        )
+                    }
+                },
+                confirmButton = {
+                    val isFormValid = favLocationName.isNotBlank() && tempFavGeoPoint != null && currentUserId.isNotEmpty()
+                    Button(
+                        onClick = {
+                            if (favLocationName.isNotBlank() && tempFavGeoPoint != null && currentUserId.isNotEmpty()) {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    val newFav = FavoriteLocation(
+                                        id = UUID.randomUUID().toString(),
+                                        userId = currentUserId,
+                                        name = favLocationName,
+                                        latitude = tempFavGeoPoint!!.latitude,
+                                        longitude = tempFavGeoPoint!!.longitude
+                                    )
+                                    db.favoriteLocationDao().insertFavorite(newFav)
+                                }
+                                showFavDialog = false
+                            }
+                        },
+                        enabled = isFormValid,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2196F3)
+                        )
+                    ) {
+                        Text("Simpan")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showFavDialog = false
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD54848)
+                        )
+                    ) {
+                        Text("Batal")
+                    }
+                }
+            )
+        }
+        if (selectedFavorite != null) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(bottom = 24.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                FavoriteInfoCard(
+                    favorite = selectedFavorite!!,
+                    onClose = { selectedFavorite = null },
+                    onRename = {
+                        newLocationName = selectedFavorite!!.name
+                        showRenameDialog = true
+                    },
+                    onDelete = {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            db.favoriteLocationDao().deleteFavorite(selectedFavorite!!.id)
+                            selectedFavorite = null
+                        }
+                    }
+                )
+            }
+        }
+
+        if (showRenameDialog) {
+            AlertDialog(
+                onDismissRequest = { showRenameDialog = false },
+                title = { Text("Ubah Nama Lokasi") },
+                text = {
+                    OutlinedTextField(
+                        value = newLocationName,
+                        onValueChange = { newLocationName = it },
+                        label = { Text("Nama Baru") }
+                    )
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        selectedFavorite?.let { fav ->
+                            coroutineScope.launch(Dispatchers.IO) {
+                                val updatedFav = fav.copy(name = newLocationName)
+                                db.favoriteLocationDao().insertFavorite(updatedFav)
+                                selectedFavorite = null
+                                showRenameDialog = false
+                            }
+                        }
+                    }) { Text("Simpan") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showRenameDialog = false }) { Text("Batal") }
+                }
+            )
         }
     }
 }

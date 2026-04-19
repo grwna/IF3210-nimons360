@@ -1,4 +1,4 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -9,6 +9,7 @@ import com.example.nimons360_far.backend.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -27,14 +28,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun login(request: LoginRequest) {
         _authState.value = AuthState.Loading
-        // Execute login request in coroutine for responsive UI
         viewModelScope.launch {
             try {
                 val response = authApi.login(request)
                 if (response.isSuccessful && response.body() != null) {
                     val authData = response.body()!!.data
-                    // Store Token
+                    // Store Token and User Data
                     sessionManager.saveAuthToken(authData.token)
+                    sessionManager.saveUserData(authData.user.fullName, authData.user.email)
                     _authState.value = AuthState.Success
                 } else {
                     // check for invalid logins
@@ -46,7 +47,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         val errorBodyString = response.errorBody()?.string()
                         if (!errorBodyString.isNullOrEmpty()) {
                             try {
-                                val jsonObject = org.json.JSONObject(errorBodyString)
+                                val jsonObject = JSONObject(errorBodyString)
                                 val errorObj = jsonObject.optJSONObject("error")
                                 if (errorObj != null && errorObj.has("message")) {
                                     parsedMessage = errorObj.getString("message")

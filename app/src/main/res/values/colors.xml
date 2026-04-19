@@ -5,4 +5,10 @@
 	<color name="background">#F5F4F7</color>
 	<color name="primary">#1565C0</color>
 	<color name="border_dark">#79747E</color>
+    <color name="design_blue">#1868D8</color>
+    <color name="design_light_blue_bg">#F4F8FD</color>
+    <color name="design_icon_bg">#F8F9FA</color>
+    <color name="design_text_grey">#666666</color>
+    <color name="design_text_black">#222222</color>
+    <color name="design_border_grey">#E0E0E0</color>
 </resources>

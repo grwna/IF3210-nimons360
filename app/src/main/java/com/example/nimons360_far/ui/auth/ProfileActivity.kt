@@ -1,0 +1,162 @@
+package com.example.nimons360_far.ui.auth
+
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.nimons360_far.R
+import com.example.nimons360_far.backend.utils.SessionManager
+import com.example.nimons360_far.ui.viewmodels.ProfileState
+import com.example.nimons360_far.ui.viewmodels.ProfileViewModel
+import com.example.nimons360_far.databinding.ActivityProfileBinding
+import com.example.nimons360_far.ui.base.BaseActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
+
+class ProfileActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityProfileBinding
+    private lateinit var sessionManager: SessionManager
+    private lateinit var profileViewModel: ProfileViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.profileRoot) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        sessionManager = SessionManager(this)
+
+        // listen for profile state updates
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                profileViewModel.profileState.collect { state ->
+                    when (state) {
+                        is ProfileState.Idle -> { }
+                        is ProfileState.Loading -> {
+                            binding.tvProfileName.text = "Loading..."
+                            binding.loadingIndicator.visibility = View.VISIBLE
+                            binding.tvError.visibility = View.GONE
+                        }
+                        is ProfileState.Success -> {
+                            binding.loadingIndicator.visibility = View.GONE
+                            binding.tvError.visibility = View.GONE
+                            val data = state.profile
+                            binding.tvProfileName.text = data.fullName
+                            binding.tvProfileEmail.text = data.email
+                            binding.tvAvatarInitial.text = data.fullName.substring(0, 1).uppercase()
+                        }
+                        is ProfileState.Error -> {
+                            binding.loadingIndicator.visibility = View.GONE
+                            binding.tvError.visibility = View.GONE
+                            android.widget.Toast.makeText(this@ProfileActivity, state.message, android.widget.Toast.LENGTH_SHORT).show()
+                            
+                            // fallback to locally saved session if API fetch fails
+                            val name = sessionManager.fetchUserName() ?: "Unknown User"
+                            val email = sessionManager.fetchUserEmail() ?: "user@example.com"
+                            binding.tvProfileName.text = name
+                            binding.tvProfileEmail.text = email
+                            binding.tvAvatarInitial.text = name.substring(0, 1).uppercase()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fetch data (will use cache if available)
+        profileViewModel.fetchProfile()
+
+        // Bottom Sheet trigger
+        binding.ivEditPencil.setOnClickListener {
+            val bottomSheetDialog = BottomSheetDialog(this)
+            val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
+            bottomSheetDialog.setContentView(sheetView)
+            
+            // Set background transparent to show curved top corners
+            (sheetView.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
+
+            val etName = sheetView.findViewById<TextInputEditText>(R.id.et_name)
+            val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
+            val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
+
+            val tilName = sheetView.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.til_name)
+
+            // Populate current name
+            etName.setText(binding.tvProfileName.text.toString())
+
+            btnCancel.setOnClickListener {
+                bottomSheetDialog.dismiss()
+            }
+
+            btnSave.setOnClickListener {
+                val newName = etName.text.toString().trim()
+                tilName.error = null
+                
+                if (newName.isNotEmpty()) {
+                    profileViewModel.updateProfile(newName)
+                    bottomSheetDialog.dismiss()
+                } else {
+                    tilName.error = "Name cannot be empty"
+                }
+            }
+
+            bottomSheetDialog.show()
+        }
+
+        // Sign Out Modal Trigger
+        binding.btnSignOut.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_sign_out, null)
+            builder.setView(dialogView)
+            val dialog = builder.create()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btn_cancel)
+            val btnSignOutConfirm = dialogView.findViewById<MaterialButton>(R.id.btn_sign_out_confirm)
+            val tvDialogAvatar = dialogView.findViewById<TextView>(R.id.tv_dialog_avatar_initial)
+
+            tvDialogAvatar.text = binding.tvAvatarInitial.text
+
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            btnSignOutConfirm.setOnClickListener {
+                dialog.dismiss()
+                sessionManager.clearSession()
+                
+                // broadcast logout to be handled globally by BaseActivity
+                val intent = Intent("com.example.nimons360_far.ACTION_LOGOUT")
+                intent.setPackage(packageName)
+                sendBroadcast(intent)
+            }
+
+            dialog.show()
+        }
+    }
+
+    override fun onNetworkAvailable() {
+        profileViewModel.fetchProfile(forceRefresh = true)
+    }
+}
+
+

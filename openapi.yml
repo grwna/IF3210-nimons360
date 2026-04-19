@@ -1,0 +1,369 @@
+openapi: 3.0.0
+info:
+  title: Nimons360 REST API
+  description: API documentation for the Nimons360 app.
+  version: 1.0.0
+
+servers:
+  - url: https://mad.labpro.hmif.dev
+    description: Backend Server
+
+paths:
+  /api/login:
+    post:
+      summary: Login
+      description: Authenticate user using email and password to receive a JWT token.
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /api/me:
+    get:
+      summary: Get User Profile
+      description: Retrieve information about the current user.
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+    patch:
+      summary: Update User Profile
+      description: Update the full name of the current user.
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+
+  /api/families:
+    get:
+      summary: Get All Families
+      description: Retrieve a list of all available families with their information.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of families
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyListResponse'
+    post:
+      summary: Create a New Family
+      description: Create a new family with a name and selected icon.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFamilyRequest'
+      responses:
+        '200':
+          description: Family created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyDetailResponse'
+
+  /api/me/families:
+    get:
+      summary: Get My Families
+      description: Retrieve a list of families that the user has joined along with their information.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of joined families
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyListResponse'
+
+  /api/families/discover:
+    get:
+      summary: Get Discovery Families
+      description: Retrieve 5 random families that the user hasn't joined yet. Member information is partially hidden.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of discovery families
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyListResponse'
+
+  /api/families/{familyId}:
+    get:
+      summary: Get Family Details
+      description: Retrieve details for a specific family. Member information is partially hidden if the user is not a member.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: familyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detailed family information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyDetailResponse'
+
+  /api/families/join:
+    post:
+      summary: Join Family
+      description: Join a family using a valid family ID and code.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinFamilyRequest'
+      responses:
+        '200':
+          description: Successfully joined family
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      joined:
+                        type: boolean
+
+  /api/families/leave:
+    post:
+      summary: Leave Family
+      description: Leave a family that the user is currently a member of.
+      tags:
+        - Family
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveFamilyRequest'
+      responses:
+        '200':
+          description: Successfully left family
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      left:
+                        type: boolean
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # Data Types
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        nim:
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Family:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        iconUrl:
+          type: string
+          format: uri
+        familyCode:
+          type: string
+          nullable: true
+        isMember:
+          type: boolean
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+
+    Member:
+      type: object
+      properties:
+        id:
+          type: integer
+          nullable: true
+        fullName:
+          type: string
+        email:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    # Requests
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UpdateProfileRequest:
+      type: object
+      required:
+        - fullName
+      properties:
+        fullName:
+          type: string
+
+    CreateFamilyRequest:
+      type: object
+      required:
+        - name
+        - iconUrl
+      properties:
+        name:
+          type: string
+        iconUrl:
+          type: string
+
+    JoinFamilyRequest:
+      type: object
+      required:
+        - familyId
+        - familyCode
+      properties:
+        familyId:
+          type: integer
+        familyCode:
+          type: string
+
+    LeaveFamilyRequest:
+      type: object
+      required:
+        - familyId
+      properties:
+        familyId:
+          type: integer
+
+    # Responses
+    LoginResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+            expiresAt:
+              type: string
+              format: date-time
+            user:
+              $ref: '#/components/schemas/User'
+
+    UserProfileResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/User'
+
+    FamilyListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Family'
+
+    FamilyDetailResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Family'

@@ -51,9 +51,6 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 
 ## Screenshot Aplikasi
 
-### Wajib - Preview Aplikasi
-- **Logo (Display)** <img src="screenshot/logo1.jpg" width="250">
-
 ### Wajib - Auth
 <table>
   <tr>
@@ -62,7 +59,6 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
     <td align="center"><img src="screenshot/auth3.jpg" width="240"><br><b>Logout</b></td>
   </tr>
 </table>
-
 
 ### Wajib - Home
 <table>

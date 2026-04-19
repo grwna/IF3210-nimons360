@@ -212,7 +212,9 @@ fun FamiliesScreen(
 
             if (isLoading) {
                 item {
-                    Box(modifier = Modifier.fillMaxWidth().padding(50.dp), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(50.dp), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = DesignBlue)
                     }
                 }
@@ -279,7 +281,9 @@ fun FamiliesScreen(
                         }
 
                         Surface(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                             shape = shape,
                             color = Color.White
                         ) {
@@ -305,7 +309,9 @@ fun FamiliesScreen(
                         }
 
                         Surface(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                             shape = shape,
                             color = Color.White
                         ) {
@@ -363,7 +369,9 @@ fun FamilyItemRow(family: Family, isPinned: Boolean, onClick: () -> Unit, onPinC
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             Box(
-                modifier = Modifier.size(48.dp).background(DesignBg, RoundedCornerShape(8.dp)),
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(DesignBg, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(model = family.iconUrl, contentDescription = null, modifier = Modifier.size(32.dp))
@@ -376,7 +384,9 @@ fun FamilyItemRow(family: Family, isPinned: Boolean, onClick: () -> Unit, onPinC
                 imageVector = if (isPinned) Icons.Default.PushPin else Icons.Outlined.PushPin,
                 contentDescription = "Pin",
                 tint = if (isPinned) DesignBlue else Color.LightGray,
-                modifier = Modifier.size(20.dp).rotate(45f)
+                modifier = Modifier
+                    .size(20.dp)
+                    .rotate(45f)
             )
         }
     }

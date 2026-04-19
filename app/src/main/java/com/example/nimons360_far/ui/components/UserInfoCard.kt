@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.CellTower
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -70,7 +71,7 @@ fun UserInfoCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = user.name.firstOrNull()?.uppercase() ?: "U",
+                        text = user.name?.firstOrNull()?.uppercase() ?: "U",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -80,12 +81,14 @@ fun UserInfoCard(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column {
-                    Text(
-                        text = user.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color(0xFF1C1B1F)
-                    )
+                    user.name?.let {
+                        Text(
+                            text = it,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color(0xFF1C1B1F)
+                        )
+                    }
                     user.email?.let {
                         Text(
                             text = it,
@@ -117,9 +120,9 @@ fun UserInfoCard(
                 )
 
                 InfoMiniCard(
-                    icon = Icons.Default.Language,
-                    iconTint = Color(0xFF64B5F6),
-                    value = "Wi-Fi",
+                    icon = if (user.internet == "wifi") Icons.Default.Wifi else Icons.Default.CellTower,
+                    iconTint = if (user.internet == "wifi") Color(0xFF64B5F6) else Color(0xFF9C27B0),
+                    value = if (user.internet == "wifi") "Wi-Fi" else "Seluler",
                     label = "Network",
                     modifier = Modifier.weight(1f)
                 )

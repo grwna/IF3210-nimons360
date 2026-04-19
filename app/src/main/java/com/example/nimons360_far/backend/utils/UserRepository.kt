@@ -31,6 +31,8 @@ class UserRepository private constructor(context: Context) {
             } else {
                 Result.failure(Exception(response.message() ?: "Failed to fetch profile"))
             }
+        } catch (e: java.io.IOException) {
+            Result.failure(Exception("No internet connection"))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -50,6 +52,8 @@ class UserRepository private constructor(context: Context) {
             } else {
                 Result.failure(Exception(response.message() ?: "Failed to update profile"))
             }
+        } catch (e: java.io.IOException) {
+            Result.failure(Exception("No internet connection"))
         } catch (e: Exception) {
             Result.failure(e)
         }

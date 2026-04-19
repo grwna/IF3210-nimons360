@@ -67,8 +67,8 @@ class ProfileActivity : BaseActivity() {
                         }
                         is ProfileState.Error -> {
                             binding.loadingIndicator.visibility = View.GONE
-                            binding.tvError.text = state.message
-                            binding.tvError.visibility = View.VISIBLE
+                            binding.tvError.visibility = View.GONE
+                            android.widget.Toast.makeText(this@ProfileActivity, state.message, android.widget.Toast.LENGTH_SHORT).show()
                             
                             // fallback to locally saved session if API fetch fails
                             val name = sessionManager.fetchUserName() ?: "Unknown User"

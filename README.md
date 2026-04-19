@@ -38,9 +38,9 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 | **Wajib - README** | None | 13523021 |
 | **Bonus - Search Family** | Jetpack Compose | 13523021 |
 | **Bonus - Internet Status** | Jetpack Compose | 13523005 |
-| **Bonus - Livestreaming** | Jetpack Compose | 13523005 |
+| **Bonus - Livestreaming** | Jetpack Compose | None |
 | **Bonus - Mark Favorite Location** | Jetpack Compose | 13523005 |
-| **Bonus - Accessibility Testing** | None | 13523035 |
+| **Bonus - Accessibility Testing** | None | None |
 
 ## Waktu Pengerjaan
 | NIM | Jam Persiapan | Jam Pengerjaan | Total Jam |
@@ -56,17 +56,13 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 
 ### Wajib - Auth
 - **Login (Input)** <img src="screenshot/auth1.jpg" width="250">
-- **Login (Success)** <img src="screenshot/auth2.jpg" width="250">
-- **Login (Failed)** <img src="screenshot/auth3.jpg" width="250">
-- **Logout (Display)** <img src="screenshot/auth4.jpg" width="250">
+- **Login (Failed)** <img src="screenshot/auth2.jpg" width="250">
+- **Logout** <img src="screenshot/auth3.jpg" width="250">
 
-### Wajib - Header & Navbar
-- **Header (Display)** <img src="screenshot/nav1.jpg" width="250">
-- **Navbar (Display)** <img src="screenshot/nav2.jpg" width="250">
 
 ### Wajib - Home
-- **My Families (Display)** <img src="screenshot/home1.jpg" width="250">
-- **Discover Families (Display)** <img src="screenshot/home2.jpg" width="250">
+- **Home** <img src="screenshot/home1.jpg" width="250">
+- **Home (Empty)** <img src="screenshot/home2.jpg" width="250">
 
 ### Wajib - Families
 - **Create Family (Input)** <img src="screenshot/families1.jpg" width="250">
@@ -92,16 +88,13 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 - **User Information (Display)** <img src="screenshot/map4.jpg" width="250">
 
 ### Wajib - Profile
-- **Profile (Display)** <img src="screenshot/profile1.jpg" width="250">
-- **Rename (Success)** <img src="screenshot/profile2.jpg" width="250">
+- **Profile** <img src="screenshot/profile1.jpg" width="250">
+- **Rename** <img src="screenshot/profile2.jpg" width="250">
 - **Rename (Failed)** <img src="screenshot/profile3.jpg" width="250">
 
 ### Wajib - Network Sensing
-- **Connected (Display)** <img src="screenshot/network1.jpg" width="250">
-- **Disconnected (Display)** <img src="screenshot/network2.jpg" width="250">
+- **Disconnected** <img src="screenshot/network1.jpg" width="250">
 
-### Wajib - OpenAPI
-- **Documentation (Display)** <img src="screenshot/openapi1.jpg" width="250">
 
 ### Bonus - Search Family
 - **All Families (Found)** <img src="screenshot/search1.jpg" width="250">
@@ -120,10 +113,30 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 - **Rename Favorite Location (Failed)** <img src="screenshot/favorite5.jpg" width="250">
 - **Delete Favorite Location (Display)** <img src="screenshot/favorite6.jpg" width="250">
 
-### Bonus - Accessibility Testing
-- Rincian Hasil Test 1 <img src="screenshot/accessibility1.jpg" width="250">
-- Rincian Hasil Test 2 <img src="screenshot/accessibility2.jpg" width="250">
-- Rincian Hasil Test 3 <img src="screenshot/accessibility3.jpg" width="250">
+## Contributors
 
-### Other
-Secara lebih lengkap, smua dokumentasi visual aplikasi dapat ditemukan pada direktori berikut : `./screenshot`
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/malfansya">
+        <img src="https://avatars.githubusercontent.com/malfansya" width="100" style="border-radius: 50%;" /><br />
+        <span><b>Muhammad Alfansya</b></span><br/>
+        <p>13523005 </p>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/RNXFreeze">
+        <img src="https://avatars.githubusercontent.com/RNXFreeze" width="100" style="border-radius: 50%;" /><br />
+        <span><b>Muhammad Raihan Nazhim Oktana</b></span><br/>
+        <p>13523021</p>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/grwna">
+        <img src="https://avatars.githubusercontent.com/grwna" width="100" style="border-radius: 50%;" /><br />
+        <span><b>M. Rayhan Farrukh</b></span><br/>
+        <p>13523035</p>
+      </a>
+    </td>
+  </tr>
+</table>

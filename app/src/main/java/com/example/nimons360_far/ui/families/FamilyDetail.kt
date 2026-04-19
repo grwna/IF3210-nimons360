@@ -41,16 +41,20 @@ import coil.compose.AsyncImage
 import com.example.nimons360_far.backend.viewmodels.DetailEvent
 import com.example.nimons360_far.backend.viewmodels.FamilyDetailViewModel
 
+// UI Colors Configuration
 val LightBlueBg = Color(0xFFEAF2FF)
 val RedDanger = Color(0xFFD32F2F)
 val YellowWarningBg = Color(0xFFFFF9E6)
 val YellowWarningBorder = Color(0xFFFBC02D)
 
+// Fragment - Family Detail - Jetpack Compose UI
 class FamilyDetail : Fragment() {
+    // Function - On Create View
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Return Compose View - Clean Up When View Destroyed
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -66,18 +70,23 @@ class FamilyDetail : Fragment() {
     }
 }
 
+// Function - Helper Format Created At
 fun formatCreatedAt(dateString: String?): String {
-    if (dateString.isNullOrEmpty()) return ""
-    return try {
-        val instant = java.time.Instant.parse(dateString)
-        val formatter = java.time.format.DateTimeFormatter.ofPattern("MMM yyyy")
-            .withZone(java.time.ZoneId.systemDefault())
-        " · Created ${formatter.format(instant)}"
-    } catch (e: Exception) {
-        " · Created $dateString"
+    if (dateString.isNullOrEmpty()) {
+        return ""
+    } else {
+        return try {
+            val instant = java.time.Instant.parse(dateString)
+            val formatter = java.time.format.DateTimeFormatter.ofPattern("MMM yyyy")
+                .withZone(java.time.ZoneId.systemDefault())
+            " · Created ${formatter.format(instant)}"
+        } catch (e: Exception) {
+            " · Created $dateString"
+        }
     }
 }
 
+// Main Composable - Family Detail Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FamilyDetailScreen(
@@ -85,19 +94,25 @@ fun FamilyDetailScreen(
     onBack: () -> Unit,
     viewModel: FamilyDetailViewModel = viewModel()
 ) {
+    // Collect Current Local Context
     val context = LocalContext.current
+
+    // Collect UI States From View Model
     val familyData by viewModel.familyData.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val joinErrorMessage by viewModel.joinErrorMessage.collectAsState()
 
+    // Local UI States For Dialog Visibility
     var showJoinDialog by remember { mutableStateOf(false) }
     var showLeaveDialog by remember { mutableStateOf(false) }
     var joinCodeInput by remember { mutableStateOf("") }
 
+    // Fetch Family Detail On Family ID Changes
     LaunchedEffect(familyId) {
         viewModel.loadFamilyDetail(familyId)
     }
 
+    // Observe View Model Events (Toast & Navigation)
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
@@ -107,7 +122,9 @@ fun FamilyDetailScreen(
         }
     }
 
+    // UI Layout Structure
     Scaffold(
+        // Head Bar
         topBar = {
             TopAppBar(
                 title = { Text(familyData?.name ?: "Loading...", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
@@ -118,12 +135,17 @@ fun FamilyDetailScreen(
         containerColor = DesignBg
     ) { paddingValues ->
         if (isLoading) {
+            // Loading State
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = DesignBlue)
             }
         } else {
+            // Display Family Data
             familyData?.let { family ->
-                LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)) {
+                    // Header : Family Icon & Family Name & Member Count & Created At
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -131,23 +153,32 @@ fun FamilyDetailScreen(
                             shape = RoundedCornerShape(0.dp)
                         ) {
                             Row(modifier = Modifier.padding(24.dp), verticalAlignment = Alignment.CenterVertically) {
+                                // Family Icon
                                 Box(
-                                    modifier = Modifier.size(64.dp).background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .background(
+                                            Color.White.copy(alpha = 0.2f),
+                                            RoundedCornerShape(12.dp)
+                                        ),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     AsyncImage(model = family.iconUrl, contentDescription = null, modifier = Modifier.size(40.dp))
                                 }
                                 Spacer(modifier = Modifier.width(16.dp))
+
+                                // Family Name & Member Count & Created At
                                 Column {
                                     Text(family.name, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                                     val memberCount = family.members?.size ?: 0
                                     val memberLabel = if (memberCount <= 1) "member" else "members"
-
                                     Text(
                                         text = "$memberCount $memberLabel${formatCreatedAt(family.createdAt)}",
                                         color = Color.White.copy(alpha = 0.8f),
                                         fontSize = 13.sp
                                     )
+
+                                    // Not A Member
                                     if (family.isMember == false) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Surface(
@@ -169,8 +200,10 @@ fun FamilyDetailScreen(
                         }
                     }
 
+                    // Content : Family Code & Family Members & Buttons
                     item {
                         Column(modifier = Modifier.padding(24.dp)) {
+                            // Is A Member
                             if (family.isMember == true) {
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
@@ -178,6 +211,7 @@ fun FamilyDetailScreen(
                                     border = BorderStroke(1.dp, DesignBlue.copy(alpha = 0.1f)),
                                     shape = RoundedCornerShape(16.dp)
                                 ) {
+                                    // Family Code
                                     Column(modifier = Modifier.padding(16.dp)) {
                                         Text("FAMILY CODE", color = DesignBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                         Spacer(modifier = Modifier.height(4.dp))
@@ -186,6 +220,7 @@ fun FamilyDetailScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
+                                            // Code
                                             Text(
                                                 family.familyCode ?: "XXXXXX",
                                                 fontSize = 28.sp,
@@ -193,17 +228,26 @@ fun FamilyDetailScreen(
                                                 color = DesignBlue,
                                                 letterSpacing = 4.sp
                                             )
+
+                                            // Copy Button
                                             IconButton(
                                                 onClick = {
                                                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                                     clipboard.setPrimaryClip(ClipData.newPlainText("Code", family.familyCode))
                                                     Toast.makeText(context, "Code copied!", Toast.LENGTH_SHORT).show()
                                                 },
-                                                modifier = Modifier.background(DesignBlue, RoundedCornerShape(8.dp)).size(40.dp)
+                                                modifier = Modifier
+                                                    .background(
+                                                        DesignBlue,
+                                                        RoundedCornerShape(8.dp)
+                                                    )
+                                                    .size(40.dp)
                                             ) {
                                                 Icon(Icons.Outlined.ContentCopy, null, tint = Color.White, modifier = Modifier.size(20.dp))
                                             }
                                         }
+
+                                        // Share Note
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text("Share this code so others can join your family", fontSize = 13.sp, color = DesignTextGrey)
                                     }
@@ -211,9 +255,9 @@ fun FamilyDetailScreen(
                                 Spacer(modifier = Modifier.height(24.dp))
                             }
 
+                            // Family Members
                             Text("MEMBERS", color = DesignTextGrey, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(12.dp))
-
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(16.dp),
@@ -221,7 +265,6 @@ fun FamilyDetailScreen(
                             ) {
                                 Column {
                                     val membersList = family.members ?: emptyList()
-
                                     membersList.forEachIndexed { index, member ->
                                         MemberItem(
                                             name = member.fullName,
@@ -235,10 +278,11 @@ fun FamilyDetailScreen(
                                     }
                                 }
                             }
-
                             Spacer(modifier = Modifier.height(24.dp))
 
+                            // Join / Leave Family Button
                             if (family.isMember == true) {
+                                // Leave Family Button
                                 TextButton(
                                     onClick = { showLeaveDialog = true },
                                     modifier = Modifier.fillMaxWidth()
@@ -247,8 +291,11 @@ fun FamilyDetailScreen(
                                 }
                                 Spacer(modifier = Modifier.height(32.dp))
                             } else {
+                                // Join Family Button & Join Note
                                 Card(
-                                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
                                     colors = CardDefaults.cardColors(containerColor = YellowWarningBg),
                                     border = BorderStroke(1.dp, YellowWarningBorder)
                                 ) {
@@ -260,13 +307,17 @@ fun FamilyDetailScreen(
                                 }
                                 Button(
                                     onClick = { showJoinDialog = true; viewModel.resetJoinError() },
-                                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp),
                                     colors = ButtonDefaults.buttonColors(containerColor = DesignBlue),
                                     shape = RoundedCornerShape(28.dp)
                                 ) {
                                     Text("Join Family", fontWeight = FontWeight.Bold)
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
+
+                                // Need Family Code Note
                                 Text(
                                     text = "You'll need the family code to join",
                                     color = DesignTextGrey,
@@ -282,21 +333,31 @@ fun FamilyDetailScreen(
             }
         }
 
+        // Local Error Triggered
         var localErrorTriggered by remember { mutableStateOf(false) }
 
+        // Dialog - Join Family
         if (showJoinDialog) {
             AlertDialog(
+                // Cancel
                 onDismissRequest = { showJoinDialog = false },
+
+                // Confirm
                 confirmButton = {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Cancel Button
                         TextButton(onClick = { showJoinDialog = false }, modifier = Modifier.weight(1f)) {
                             Text("Cancel", color = DesignTextGrey)
                         }
+
+                        // Join Button
                         Button(
                             onClick = {
                                 if (joinCodeInput.length < 6) {
+                                    // Error Handling - Invalid Code Length
                                     localErrorTriggered = true
                                 } else {
+                                    // Try Join Family
                                     viewModel.joinFamily(familyId, joinCodeInput) { showJoinDialog = false }
                                 }
                             },
@@ -306,17 +367,24 @@ fun FamilyDetailScreen(
                         ) { Text("Join") }
                     }
                 },
+
+                // Dialog Title - Join Family
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.size(56.dp).background(LightBlueBg, CircleShape), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier
+                            .size(56.dp)
+                            .background(LightBlueBg, CircleShape), contentAlignment = Alignment.Center) {
                             Icon(Icons.Default.People, null, tint = DesignBlue)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Text("Join Family", fontWeight = FontWeight.Bold)
                     }
                 },
+
+                // Dialog Text - Join Family
                 text = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        // Family Code Note
                         Text(
                             "Enter the family code shared by a member of the family to join.",
                             textAlign = TextAlign.Center,
@@ -324,10 +392,9 @@ fun FamilyDetailScreen(
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
                         Spacer(modifier = Modifier.height(24.dp))
-
                         val hasError = joinErrorMessage != null || localErrorTriggered
-
                         OutlinedTextField(
+                            // Family Code Input
                             value = joinCodeInput,
                             onValueChange = {
                                 if (it.length <= 6) {
@@ -348,9 +415,11 @@ fun FamilyDetailScreen(
                             isError = hasError,
                             supportingText = {
                                 if (hasError) {
+                                    // Display Error
                                     val errorText = if (localErrorTriggered) "Family code must contain 6 characters" else joinErrorMessage
                                     Text(errorText ?: "", color = RedDanger)
                                 } else {
+                                    // Display Info Note
                                     Text("Ask a member of the family for the code", color = DesignTextGrey)
                                 }
                             }
@@ -362,28 +431,44 @@ fun FamilyDetailScreen(
             )
         }
 
+        // Dialog - Leave Family
         if (showLeaveDialog) {
             AlertDialog(
+                // Cancel
                 onDismissRequest = { showLeaveDialog = false },
+
+                // Confirm
                 confirmButton = {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = { showLeaveDialog = false }, modifier = Modifier.weight(1f)) { Text("Cancel", color = DesignTextGrey) }
+                        // Cancel Button
+                        TextButton(onClick = { showLeaveDialog = false }, modifier = Modifier.weight(1f)) {
+                            Text("Cancel", color = DesignTextGrey)
+                        }
+
+                        // Leave Button
                         Button(
                             onClick = { viewModel.leaveFamily(familyId); showLeaveDialog = false },
                             colors = ButtonDefaults.buttonColors(containerColor = RedDanger), modifier = Modifier.weight(1f), shape = RoundedCornerShape(24.dp)
                         ) { Text("Leave") }
                     }
                 },
+
+                // Dialog Title - Leave Family
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.size(56.dp).background(Color(0xFFFFEBEE), CircleShape), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier
+                            .size(56.dp)
+                            .background(Color(0xFFFFEBEE), CircleShape), contentAlignment = Alignment.Center) {
                             Icon(Icons.Default.People, null, tint = RedDanger)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Text("Leave Family", fontWeight = FontWeight.Bold)
                     }
                 },
+
+                // Dialog Text - Leave Family
                 text = {
+                    // Confirmation Text
                     Text(
                         text = buildAnnotatedString {
                             append("Are you sure you want to leave ")
@@ -402,25 +487,37 @@ fun FamilyDetailScreen(
     }
 }
 
+// Reusable Composable - Member Item
 @Composable
 fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isJoined) {
+            // Show Member Detail
             Box(
-                modifier = Modifier.size(40.dp).background(DesignBlue, CircleShape),
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(DesignBlue, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
             }
             Spacer(modifier = Modifier.width(16.dp))
+
+            // Username & Email
             Column(modifier = Modifier.weight(1f)) {
+                // Username
                 Text(name, fontWeight = FontWeight.Bold, color = DesignTextBlack, fontSize = 15.sp)
+
+                // Email
                 Text(email, color = DesignTextGrey, fontSize = 12.sp)
             }
 
+            // You Tag
             if (isMe) {
                 Surface(color = YellowWarningBg, shape = RoundedCornerShape(12.dp)) {
                     Text(
@@ -433,10 +530,12 @@ fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
                 }
             }
         } else {
+            // Hide Member Detail
             val avatarColors = listOf(Color(0xFF1868D8), Color(0xFFD32F2F), Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
             val safeHash = name.hashCode().let { if (it < 0) it * -1 else it }
             val blurColor = avatarColors[safeHash % avatarColors.size]
 
+            // User Avatar
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -446,10 +545,11 @@ fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
             ) {
                 Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White.copy(alpha = 0.6f))
             }
-
             Spacer(modifier = Modifier.width(16.dp))
 
+            // Username & Email
             Column(modifier = Modifier.weight(1f)) {
+                // Username
                 Box(
                     modifier = Modifier
                         .width(140.dp)
@@ -457,6 +557,8 @@ fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
                         .background(Color.LightGray.copy(alpha = 0.8f), RoundedCornerShape(7.dp))
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
+                // Email
                 Box(
                     modifier = Modifier
                         .width(100.dp)

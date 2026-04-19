@@ -39,42 +39,39 @@ import com.example.nimons360_far.backend.models.Family
 import com.example.nimons360_far.backend.viewmodels.FamiliesViewModel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.foundation.shape.CircleShape
-import android.app.Activity
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.nimons360_far.backend.utils.Refreshable
 
+// UI Colors Configuration
 val DesignBg = Color(0xFFF8F9FA)
 val DesignBlue = Color(0xFF1868D8)
 val DesignTextBlack = Color(0xFF222222)
 val DesignTextGrey = Color(0xFF666666)
 val DesignSearchBg = Color(0xFFFFFFFF)
-val DesignFabBg = Color(0xFFEAF2FF)
 
+// Fragment - Families - Jetpack Compose UI & Implements Refreshable
 class Families : Fragment(), Refreshable {
+    // Initialize View Model
     private lateinit var viewModel: FamiliesViewModel
 
+    // Function - On Create - Share View Model With Activity (Persistent State)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(FamiliesViewModel::class.java)
     }
 
+    // Function - On Create View
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Return Compose View - Clean Up When View Destroyed
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
                     FamiliesScreen(
-                        onNavigateToCreate = {
-                            requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container, CreateFamily())
-                                .addToBackStack(null)
-                                .commit()
-                        },
                         onNavigateToDetail = { familyId ->
                             val familyDetail = FamilyDetail().apply {
                                 arguments = Bundle().apply { putInt("familyId", familyId) }
@@ -90,28 +87,22 @@ class Families : Fragment(), Refreshable {
         }
     }
 
+    // Function - On Refresh
     override fun onRefresh() {
         viewModel.fetchFamilies()
     }
 }
 
+// Main Composable - Families Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FamiliesScreen(
-    onNavigateToCreate: () -> Unit,
     onNavigateToDetail: (Int) -> Unit,
     viewModel: FamiliesViewModel = viewModel(
         viewModelStoreOwner = LocalContext.current as AppCompatActivity
     )
 ) {
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
-        }
-    }
-
+    // Collect UI States From View Model
     val allFamilies by viewModel.allFamilies.collectAsState()
     val myFamilies by viewModel.myFamilies.collectAsState()
     val pinnedIds by viewModel.pinnedIds.collectAsState()
@@ -119,43 +110,48 @@ fun FamiliesScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
+    // Filter & Search Logic
     val baseList = if (filterType == "All") allFamilies else myFamilies
     val searchedList = baseList.filter { it.name.contains(searchQuery, ignoreCase = true) }
     val pinnedList = searchedList.filter { pinnedIds.contains(it.id) }
     val unpinnedList = searchedList.filter { !pinnedIds.contains(it.id) }
 
+    // Pagination / Infinite Scroll Logic
     val listState = rememberLazyListState()
     var displayLimit by remember { mutableIntStateOf(10) }
 
+    // Reset Pagination Limit On Filter / Search Changes
     LaunchedEffect(filterType, searchQuery) {
         displayLimit = 10
     }
 
+    // Check If User At The Bottom List
     val isAtBottom by remember {
         derivedStateOf {
             val layoutInfo = listState.layoutInfo
             val totalItemsCount = layoutInfo.totalItemsCount
             val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-
             totalItemsCount > 0 && lastVisibleItemIndex >= totalItemsCount - 3
         }
     }
 
+    // Load More Items
     val currentUnpinnedSize by rememberUpdatedState(newValue = unpinnedList.size)
-
     LaunchedEffect(isAtBottom) {
         if (isAtBottom && displayLimit < currentUnpinnedSize) {
             displayLimit += 10
         }
     }
-
     val paginatedUnpinnedList = unpinnedList.take(displayLimit)
 
+    // Initial Data Fetch
     LaunchedEffect(Unit) {
         viewModel.fetchFamilies()
     }
 
+    // UI Layout Structure
     Scaffold(
+        // Head Bar
         topBar = {
             Surface(
                 color = Color.White,
@@ -183,6 +179,7 @@ fun FamiliesScreen(
                 .padding(paddingValues)
         ) {
             item {
+                // Search Families
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = searchQuery,
@@ -201,6 +198,7 @@ fun FamiliesScreen(
                     shape = RoundedCornerShape(24.dp)
                 )
 
+                // Filter Families
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.padding(horizontal = 24.dp)) {
                     CustomFilterChip("All", filterType == "All") { viewModel.setFilterType("All") }
@@ -211,6 +209,7 @@ fun FamiliesScreen(
             }
 
             if (isLoading) {
+                // Loading State
                 item {
                     Box(modifier = Modifier
                         .fillMaxWidth()
@@ -219,6 +218,7 @@ fun FamiliesScreen(
                     }
                 }
             } else if (searchedList.isEmpty()) {
+                // Empty Data State - Search
                 item {
                     Column(
                         modifier = Modifier
@@ -240,8 +240,8 @@ fun FamiliesScreen(
                             )
                         }
 
+                        // Empty Message
                         Spacer(modifier = Modifier.height(16.dp))
-
                         val emptyMessage = if (searchQuery.isNotEmpty()) {
                             "No families found for '$searchQuery'"
                         } else if (filterType == "My Families") {
@@ -249,14 +249,12 @@ fun FamiliesScreen(
                         } else {
                             "No families available"
                         }
-
                         Text(
                             text = emptyMessage,
                             color = DesignTextBlack,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
-
                         if (searchQuery.isEmpty() && filterType == "My Families") {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
@@ -268,7 +266,9 @@ fun FamiliesScreen(
                     }
                 }
             } else {
+                // Not Empty Data State - Pinned
                 if (pinnedList.isNotEmpty()) {
+                    // Render Pinned Families
                     item { SectionHeader("PINNED") }
                     itemsIndexed(pinnedList) { index, family ->
                         val isFirst = index == 0
@@ -279,7 +279,6 @@ fun FamiliesScreen(
                             isLast -> RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                             else -> RectangleShape
                         }
-
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -289,25 +288,26 @@ fun FamiliesScreen(
                         ) {
                             Column {
                                 FamilyItemRow(family, true, { onNavigateToDetail(family.id) }, { viewModel.togglePin(family.id, true) })
-                                if (!isLast) HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                if (!isLast) {
+                                    HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                }
                             }
                         }
                     }
                 }
 
+                // Render All Unpinned Families
                 if (paginatedUnpinnedList.isNotEmpty()) {
                     item { SectionHeader("ALL FAMILIES") }
                     itemsIndexed(paginatedUnpinnedList) { index, family ->
                         val isFirst = index == 0
                         val isLast = index == paginatedUnpinnedList.lastIndex
-
                         val shape = when {
                             isFirst && isLast -> RoundedCornerShape(16.dp)
                             isFirst -> RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                             isLast -> RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                             else -> RectangleShape
                         }
-
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -317,7 +317,9 @@ fun FamiliesScreen(
                         ) {
                             Column {
                                 FamilyItemRow(family, false, { onNavigateToDetail(family.id) }, { viewModel.togglePin(family.id, false) })
-                                if (!isLast) HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                if (!isLast) {
+                                    HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                }
                             }
                         }
                     }
@@ -328,6 +330,7 @@ fun FamiliesScreen(
     }
 }
 
+// Reusable Composable - Section Header
 @Composable
 fun SectionHeader(text: String) {
     Text(
@@ -339,6 +342,7 @@ fun SectionHeader(text: String) {
     )
 }
 
+// Reusable Composable - Custom Filter Chip
 @Composable
 fun CustomFilterChip(label: String, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
@@ -357,6 +361,7 @@ fun CustomFilterChip(label: String, isSelected: Boolean, onClick: () -> Unit) {
     }
 }
 
+// Reusable Composable - Family Item Row
 @Composable
 fun FamilyItemRow(family: Family, isPinned: Boolean, onClick: () -> Unit, onPinClick: () -> Unit) {
     Row(

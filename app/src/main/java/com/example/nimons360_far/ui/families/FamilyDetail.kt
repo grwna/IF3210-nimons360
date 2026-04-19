@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.nimons360_far.backend.viewmodels.DetailEvent
-import com.example.nimons360_far.backend.viewmodels.FamilyDetailViewModel
+import com.example.nimons360_far.ui.viewmodels.DetailEvent
+import com.example.nimons360_far.ui.viewmodels.FamilyDetailViewModel
 
 val LightBlueBg = Color(0xFFEAF2FF)
 val RedDanger = Color(0xFFD32F2F)

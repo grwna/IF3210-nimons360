@@ -19,8 +19,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import coil.load
 import com.example.nimons360_far.R
-import com.example.nimons360_far.backend.viewmodels.CreateEvent
-import com.example.nimons360_far.backend.viewmodels.CreateFamilyViewModel
+import com.example.nimons360_far.ui.viewmodels.CreateEvent
+import com.example.nimons360_far.ui.viewmodels.CreateFamilyViewModel
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 

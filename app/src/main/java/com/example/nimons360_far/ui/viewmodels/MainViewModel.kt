@@ -1,4 +1,4 @@
-package com.example.nimons360_far.backend.viewmodels
+package com.example.nimons360_far.ui.viewmodels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

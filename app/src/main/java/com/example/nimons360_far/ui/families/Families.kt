@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.foundation.shape.CircleShape
 import android.app.Activity
@@ -44,7 +43,7 @@ import coil.compose.AsyncImage
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.models.Family
 import com.example.nimons360_far.backend.utils.Refreshable
-import com.example.nimons360_far.backend.viewmodels.FamiliesViewModel
+import com.example.nimons360_far.ui.viewmodels.FamiliesViewModel
 
 val DesignBg = Color(0xFFF8F9FA)
 val DesignBlue = Color(0xFF1868D8)

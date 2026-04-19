@@ -139,7 +139,8 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 </table>
 
 ### Bonus - Internet Status
-- **Internet Status (Display)** <img src="screenshot/internet1.jpg" width="250">
+- **Internet Status Wi-Fi (Display)** <img src="screenshot/internet1.jpg" width="250">
+- **Internet Status Cellular (Display)** <img src="screenshot/internet2.jpg" width="250">
 
 ### Bonus - Mark Favorite Location
 <table>

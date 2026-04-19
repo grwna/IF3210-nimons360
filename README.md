@@ -32,8 +32,9 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 | **Wajib - README** | None | 13523021 |
 | **Bonus - Search Family** | Jetpack Compose | 13523021 |
 | **Bonus - Internet Status** | Jetpack Compose | 13523005 |
+| **Bonus - Livestreaming** | Jetpack Compose | 13523005 |
 | **Bonus - Mark Favorite Location** | Jetpack Compose | 13523005 |
-| **Bonus - Accessibility Testing** | None | 135230035 |
+| **Bonus - Accessibility Testing** | None | 13523035 |
 
 ## Waktu Pengerjaan
 | NIM | Jam Persiapan | Jam Pengerjaan | Total Jam |

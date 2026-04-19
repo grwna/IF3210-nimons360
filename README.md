@@ -160,8 +160,7 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
   <tr>
     <td align="center"><img src="screenshot/favorite1.jpg" width="240"><br><b>Map View</b></td>
     <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite3.jpg" width="240"><br><b>Add (Failed)</b></td>
+    <td align="center"><img src="screenshot/favorite3.jpg" width="240"><br><b>Add (Success)</b></td>
   </tr>
   <tr>
     <td align="center"><img src="screenshot/favorite4.jpg" width="240"><br><b>Rename (Success)</b></td>

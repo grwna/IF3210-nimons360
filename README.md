@@ -111,5 +111,10 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 - **Rename Favorite Location (Failed)** <img src="screenshot/favorite5.jpg" width="250">
 - **Delete Favorite Location (Display)** <img src="screenshot/favorite6.jpg" width="250">
 
+### Bonus - Accessibility Testing
+- Rincian Hasil Test 1 <img src="screenshot/accessibility1.jpg" width="250">
+- Rincian Hasil Test 2 <img src="screenshot/accessibility2.jpg" width="250">
+- Rincian Hasil Test 3 <img src="screenshot/accessibility3.jpg" width="250">
+
 ### Other
 Secara lebih lengkap, smua dokumentasi visual aplikasi dapat ditemukan pada direktori berikut : `./screenshot`

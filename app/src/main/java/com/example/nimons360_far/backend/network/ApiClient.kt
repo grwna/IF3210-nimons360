@@ -14,7 +14,6 @@ object ApiClient {
 
     @Volatile private var retrofit: Retrofit? = null
 
-    // Retrofit Client singleton initialization
     private fun getClient(context: Context): Retrofit {
         return retrofit
                 ?: synchronized(this) {
@@ -23,7 +22,6 @@ object ApiClient {
 
                     val okHttpClient = OkHttpClient.Builder().addInterceptor(authInterceptor).build()
 
-                    // build Retrofit instance
                     Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient)
                             .addConverterFactory(GsonConverterFactory.create())
                             .build().also { retrofit = it }

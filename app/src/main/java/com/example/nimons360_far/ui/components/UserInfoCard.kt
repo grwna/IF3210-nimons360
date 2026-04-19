@@ -67,7 +67,7 @@ fun UserInfoCard(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFF2196F3)),
+                        .background(com.example.nimons360_far.utils.AppColors.BlueAction),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

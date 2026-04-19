@@ -45,12 +45,12 @@ import com.example.nimons360_far.backend.models.Family
 import com.example.nimons360_far.backend.utils.Refreshable
 import com.example.nimons360_far.ui.viewmodels.FamiliesViewModel
 
-val DesignBg = Color(0xFFF8F9FA)
-val DesignBlue = Color(0xFF1868D8)
-val DesignTextBlack = Color(0xFF222222)
-val DesignTextGrey = Color(0xFF666666)
-val DesignSearchBg = Color(0xFFFFFFFF)
-val DesignFabBg = Color(0xFFEAF2FF)
+import com.example.nimons360_far.utils.AppColors.DesignBg
+import com.example.nimons360_far.utils.AppColors.DesignBlue
+import com.example.nimons360_far.utils.AppColors.DesignTextBlack
+import com.example.nimons360_far.utils.AppColors.DesignTextGrey
+import com.example.nimons360_far.utils.AppColors.DesignSearchBg
+import com.example.nimons360_far.utils.AppColors.LightBlueBg as DesignFabBg
 
 class Families : Fragment(), Refreshable {
     private lateinit var viewModel: FamiliesViewModel
@@ -235,7 +235,7 @@ fun FamiliesScreen(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Empty",
-                                tint = Color(0xFFD32F2F),
+                                tint = com.example.nimons360_far.utils.AppColors.RedDanger,
                                 modifier = Modifier.size(36.dp)
                             )
                         }

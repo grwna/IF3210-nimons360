@@ -14,9 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class FamiliesViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,19 +21,8 @@ class FamiliesViewModel(application: Application) : AndroidViewModel(application
     private val database = AppDatabase.getDatabase(application)
     private val pinnedDao = database.pinnedFamilyDao()
     private val token = sessionManager.fetchAuthToken() ?: ""
-    private val bearerToken = "Bearer $token"
 
-    private val api: FamilyApi by lazy {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(application, sessionManager))
-            .build()
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyApi::class.java)
-    }
+    private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
 
     private val _allFamilies = MutableStateFlow<List<Family>>(emptyList())
     val allFamilies: StateFlow<List<Family>> = _allFamilies.asStateFlow()
@@ -65,8 +51,8 @@ class FamiliesViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (token.isNotEmpty()) {
-                    val allRes = api.getAllFamilies(bearerToken)
-                    val myRes = api.getMyFamilies(bearerToken)
+                    val allRes = api.getAllFamilies()
+                    val myRes = api.getMyFamilies()
                     if (allRes.isSuccessful) _allFamilies.value = allRes.body()?.data ?: emptyList()
                     if (myRes.isSuccessful) _myFamilies.value = myRes.body()?.data ?: emptyList()
                 }

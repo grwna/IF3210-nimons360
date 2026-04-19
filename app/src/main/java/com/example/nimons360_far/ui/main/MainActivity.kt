@@ -244,4 +244,12 @@ class MainActivity : BaseActivity(), SensorEventListener {
         if (addToBackStack) transaction.addToBackStack(null)
         transaction.commit()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        trackingJob?.cancel()
+        if (::wsManager.isInitialized) {
+            wsManager.disconnect()
+        }
+    }
 }

@@ -41,8 +41,12 @@ import coil.compose.AsyncImage
 import com.example.nimons360_far.ui.viewmodels.DetailEvent
 import com.example.nimons360_far.ui.viewmodels.FamilyDetailViewModel
 
-val LightBlueBg = Color(0xFFEAF2FF)
-val RedDanger = Color(0xFFD32F2F)
+import com.example.nimons360_far.utils.AppColors.LightBlueBg
+import com.example.nimons360_far.utils.AppColors.RedDanger
+import com.example.nimons360_far.utils.AppColors.DesignBg
+import com.example.nimons360_far.utils.AppColors.DesignTextBlack
+import com.example.nimons360_far.utils.AppColors.DesignTextGrey
+import com.example.nimons360_far.utils.AppColors.DesignBlue
 val YellowWarningBg = Color(0xFFFFF9E6)
 val YellowWarningBorder = Color(0xFFFBC02D)
 
@@ -433,7 +437,7 @@ fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
                 }
             }
         } else {
-            val avatarColors = listOf(Color(0xFF1868D8), Color(0xFFD32F2F), Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
+            val avatarColors = listOf(com.example.nimons360_far.utils.AppColors.DesignBlue, com.example.nimons360_far.utils.AppColors.RedDanger, Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
             val safeHash = name.hashCode().let { if (it < 0) it * -1 else it }
             val blurColor = avatarColors[safeHash % avatarColors.size]
 

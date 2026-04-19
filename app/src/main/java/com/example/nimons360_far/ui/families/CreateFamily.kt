@@ -143,12 +143,12 @@ class CreateFamily : Fragment(R.layout.create_family) {
 
     private fun updateIconSelectionUI(selectedView: ImageView) {
         val unselectedBg = GradientDrawable().apply {
-            setColor(Color.parseColor("#F8F9FA"))
+            setColor(com.example.nimons360_far.utils.AppColors.DesignBgInt)
             cornerRadius = 16f * resources.displayMetrics.density
         }
         val selectedBg = GradientDrawable().apply {
-            setColor(Color.parseColor("#EAF2FF"))
-            setStroke((2 * resources.displayMetrics.density).toInt(), Color.parseColor("#1868D8"))
+            setColor(com.example.nimons360_far.utils.AppColors.LightBlueBgInt)
+            setStroke((2 * resources.displayMetrics.density).toInt(), com.example.nimons360_far.utils.AppColors.DesignBlueInt)
             cornerRadius = 16f * resources.displayMetrics.density
         }
         iconViews.forEach { it.background = unselectedBg }

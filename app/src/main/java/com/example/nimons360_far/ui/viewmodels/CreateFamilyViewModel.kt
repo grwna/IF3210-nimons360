@@ -14,9 +14,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 sealed class CreateEvent {
     data class Success(val newFamilyId: Int, val familyName: String) : CreateEvent()
@@ -26,17 +23,7 @@ sealed class CreateEvent {
 class CreateFamilyViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sessionManager = SessionManager(application)
-    private val api: FamilyApi by lazy {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(application, sessionManager))
-            .build()
-        Retrofit.Builder()
-            .baseUrl("https://mad.labpro.hmif.dev")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FamilyApi::class.java)
-    }
+    private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
 
     private val _selectedIconUrl = MutableStateFlow<String?>(null)
     val selectedIconUrl: StateFlow<String?> = _selectedIconUrl.asStateFlow()
@@ -64,12 +51,11 @@ class CreateFamilyViewModel(application: Application) : AndroidViewModel(applica
         }
 
         val token = sessionManager.fetchAuthToken() ?: ""
-        val bearerToken = "Bearer $token"
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val request = CreateFamilyRequest(familyName, currentIcon)
-                val response = api.createFamily(bearerToken, request)
+                val response = api.createFamily(request)
                 if (response.isSuccessful && response.body() != null) {
                     val newFamily = response.body()!!.data
                     _events.emit(CreateEvent.Success(newFamily.id, newFamily.name))

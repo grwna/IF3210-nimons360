@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,6 +14,9 @@ interface FavoriteLocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavorite(location: FavoriteLocation)
+
+    @Update
+    suspend fun updateFavorite(location: FavoriteLocation)
 
     @Query("DELETE FROM favorite_locations WHERE id = :id")
     suspend fun deleteFavorite(id: String)

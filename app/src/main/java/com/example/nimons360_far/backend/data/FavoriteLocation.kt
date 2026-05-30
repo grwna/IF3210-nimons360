@@ -1,13 +1,14 @@
 package com.example.nimons360_far.backend.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "favorite_locations")
+//  Plain data class untuk lokasi yang ditandai oleh pengguna.
+//  Penyimpanan dikelola oleh LocationDbHelper
+
 data class FavoriteLocation(
-    @PrimaryKey val id: String,
+    val id: String,
     val userId: String,
     val name: String,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val description: String = ""
 )

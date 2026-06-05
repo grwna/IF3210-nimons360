@@ -2,15 +2,22 @@ package com.example.nimons360_far.ui.map
 
 import android.content.Context
 import android.net.Uri
+import android.view.MotionEvent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.runtime.getValue
@@ -103,6 +110,10 @@ fun MapScreen(
     var favoriteLocations by remember { mutableStateOf<List<FavoriteLocation>>(emptyList()) }
     val favIcon = ContextCompat.getDrawable(context, R.drawable.ic_fav_location)
 
+    val isMultiTouch = remember { booleanArrayOf(false) }
+
+    val mapViewRef = remember { mutableStateOf<MapView?>(null) }
+
     // Bottom sheet states
     var longPressGeoPoint by remember { mutableStateOf<GeoPoint?>(null) }
     var showMapActionSheet by remember { mutableStateOf(false) }
@@ -165,11 +176,13 @@ fun MapScreen(
                 MapView(ctx).apply {
                     setTileSource(TileSourceFactory.MAPNIK)
                     setMultiTouchControls(true)
+                    zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
                     controller.setZoom(18.0)
                     controller.setCenter(GeoPoint(-6.8915, 107.6106))
                 }
             },
             update = { mapView ->
+                mapViewRef.value = mapView
                 mapView.overlays.clear()
 
                 val mapEventsReceiver = object : MapEventsReceiver {
@@ -261,6 +274,24 @@ fun MapScreen(
                 mapView.invalidate()
             }
         )
+
+        // Tombol recenter
+        FloatingActionButton(
+            onClick = {
+                userGeoPoint?.let { loc -> mapViewRef.value?.controller?.animateTo(loc) }
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 24.dp),
+            shape = CircleShape,
+            containerColor = Color.White,
+            contentColor = Color(0xFF1976D2)
+        ) {
+            Icon(
+                imageVector = Icons.Default.MyLocation,
+                contentDescription = "Recenter ke lokasi saya"
+            )
+        }
 
         // User info card
         if (showUserDialog && selectedUser != null) {

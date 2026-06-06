@@ -7,4 +7,22 @@
     <string name="login_password_hint">Password</string>
     <string name="login_button_text">Sign In</string>
     <string name="login_show_text">Show</string>
+    <string name="scan_to_join">Scan to Join</string>
+    <string name="create_family">Create Family</string>
+    <string name="profile">Profile</string>
+    <string name="nimons360">© Nimons360</string>
+    <string name="user_profile_photo">User Profile Photo</string>
+    <string name="edit_photo">Edit Photo</string>
+    <string name="settings">SETTINGS</string>
+    <string name="share_location">Share Location</string>
+    <string name="more">MORE</string>
+    <string name="customize_pin">Customize Pin</string>
+    <string name="analytics">Analytics</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="nimons360_only">Nimons360</string>
+    <string name="home_avatar">Home Avatar</string>
+    <string name="my_families">MY FAMILIES</string>
+    <string name="you_havent_joined_any_families_yet">You haven\'t joined any families yet</string>
+    <string name="discover_families">DISCOVER FAMILIES</string>
+    <string name="no_new_families_to_discover">No new families to discover</string>
 </resources>

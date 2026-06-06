@@ -24,7 +24,7 @@
             android:id="@+id/tv_app_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nimons360"
+            android:text="@string/nimons360_only"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -34,17 +34,40 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/tv_home_avatar"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_home_avatar"
             android:layout_width="40.dp"
             android:layout_height="40.dp"
-            android:background="@drawable/shape_rounded_corner_med"
-            android:backgroundTint="@color/design_blue"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="R" />
+            app:cardCornerRadius="20.dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/design_blue">
+
+                <TextView
+                    android:id="@+id/tv_home_avatar_initial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="R" />
+
+                <ImageView
+                    android:id="@+id/iv_home_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/home_avatar"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <FrameLayout
@@ -74,7 +97,7 @@
                     android:layout_marginTop="24.dp"
                     android:layout_marginBottom="12.dp"
                     android:letterSpacing="0.1"
-                    android:text="MY FAMILIES"
+                    android:text="@string/my_families"
                     android:textColor="@color/design_text_grey"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -99,7 +122,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="120.dp"
                         android:gravity="center"
-                        android:text="You haven't joined any families yet"
+                        android:text="@string/you_havent_joined_any_families_yet"
                         android:textColor="@color/design_text_grey"
                         android:visibility="gone" />
                 </FrameLayout>
@@ -111,7 +134,7 @@
                     android:layout_marginTop="32.dp"
                     android:layout_marginBottom="12.dp"
                     android:letterSpacing="0.1"
-                    android:text="DISCOVER FAMILIES"
+                    android:text="@string/discover_families"
                     android:textColor="@color/design_text_grey"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -135,7 +158,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="200.dp"
                         android:gravity="center"
-                        android:text="No new families to discover"
+                        android:text="@string/no_new_families_to_discover"
                         android:textColor="@color/design_text_grey"
                         android:visibility="gone" />
                 </FrameLayout>

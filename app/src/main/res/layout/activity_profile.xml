@@ -1,36 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profile_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fillViewport="true">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/loadingIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:indicatorColor="@color/design_blue"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="#D32F2F"
-        android:textSize="14sp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_profile_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Failed to load profile" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="40dp">
 
     <!-- Header -->
     <TextView
@@ -39,27 +20,46 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textColor="#222222"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        android:layout_marginEnd="24dp" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#D32F2F"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
     <!-- Avatar container -->
-    <FrameLayout
-        android:id="@+id/fl_avatar"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_avatar"
         android:layout_width="112dp"
         android:layout_height="112dp"
         android:layout_marginTop="64dp"
+        app:cardCornerRadius="56dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title">
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
-        <View
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
-            android:background="@drawable/bg_profile_avatar" />
+            android:background="@drawable/bg_profile_avatar" >
 
         <TextView
             android:id="@+id/tv_avatar_initial"
@@ -70,7 +70,14 @@
             android:textSize="48sp"
             tools:text="A" />
 
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/iv_profile_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/user_profile_photo" />
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Pencil -->
     <ImageView
@@ -78,9 +85,12 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@drawable/blue_pencil_vec"
+        android:background="@drawable/bg_menu_item"
+        android:padding="6dp"
+        android:contentDescription="@string/edit_photo"
         android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="@id/fl_avatar"
-        app:layout_constraintEnd_toEndOf="@id/fl_avatar" />
+        app:layout_constraintBottom_toBottomOf="@id/cv_avatar"
+        app:layout_constraintEnd_toEndOf="@id/cv_avatar" />
 
     <!-- Details -->
     <TextView
@@ -93,7 +103,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_avatar"
+        app:layout_constraintTop_toBottomOf="@id/cv_avatar"
         tools:text="Username" />
 
     <TextView
@@ -108,24 +118,6 @@
         app:layout_constraintTop_toBottomOf="@id/tv_profile_name"
         tools:text="[EMAIL_ADDRESS]" />
 
-    <!-- Bottom Background Area -->
-    <View
-        android:id="@+id/v_bottom_bg"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:background="#F9F9FB"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_profile_email" />
-
-    <!-- Divider -->
-    <View
-        android:id="@+id/v_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#EAEAEA"
-        app:layout_constraintBottom_toTopOf="@id/v_bottom_bg" />
-
     <include layout="@layout/layout_profile_settings" />
     <include layout="@layout/layout_profile_more" />
 
@@ -136,7 +128,7 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="24dp"
-        android:text="Sign Out"
+        android:text="@string/sign_out"
         android:textAllCaps="false"
         android:textColor="#D32F2F"
         android:textSize="16sp"
@@ -154,7 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="© Nimons360"
+        android:text="@string/nimons360"
         android:textColor="#C0C0C0"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -162,3 +154,4 @@
         app:layout_constraintTop_toBottomOf="@id/btn_sign_out" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

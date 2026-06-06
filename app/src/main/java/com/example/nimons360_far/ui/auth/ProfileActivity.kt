@@ -2,18 +2,22 @@ package com.example.nimons360_far.ui.auth
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import coil.load
+import coil.request.CachePolicy
 import com.example.nimons360_far.R
 import com.example.nimons360_far.backend.utils.SessionManager
 import com.example.nimons360_far.ui.viewmodels.ProfileState
@@ -33,12 +37,19 @@ class ProfileActivity : BaseActivity() {
     private lateinit var sessionManager: SessionManager
     private lateinit var profileViewModel: ProfileViewModel
 
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            profileViewModel.uploadProfilePhoto(it, this)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+        profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.profileRoot) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -48,7 +59,6 @@ class ProfileActivity : BaseActivity() {
 
         sessionManager = SessionManager(this)
 
-        // listen for profile state updates
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 profileViewModel.profileState.collect { state ->
@@ -66,6 +76,25 @@ class ProfileActivity : BaseActivity() {
                             binding.tvProfileName.text = data.fullName
                             binding.tvProfileEmail.text = data.email
                             binding.tvAvatarInitial.text = data.fullName.substring(0, 1).uppercase()
+
+                            val rawUrl = data.profileImageUrl
+                            val finalUrl = if (rawUrl?.startsWith("/") == true) {
+                                "https://mad.labpro.hmif.dev$rawUrl"
+                            } else {
+                                rawUrl
+                            }
+
+                            if (!finalUrl.isNullOrEmpty()) {
+                                binding.ivProfilePhoto.visibility = View.VISIBLE
+                                binding.ivProfilePhoto.load(finalUrl) {
+                                    crossfade(true)
+                                    memoryCachePolicy(CachePolicy.DISABLED)
+                                    diskCachePolicy(CachePolicy.DISABLED)
+                                    listener(onError = { _, _ -> binding.ivProfilePhoto.visibility = View.GONE })
+                                }
+                            } else {
+                                binding.ivProfilePhoto.visibility = View.GONE
+                            }
                         }
                         is ProfileState.Error -> {
                             binding.loadingIndicator.visibility = View.GONE
@@ -129,6 +158,10 @@ class ProfileActivity : BaseActivity() {
 
         // Bottom Sheet trigger
         binding.ivEditPencil.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+
+        binding.tvProfileName.setOnClickListener {
             val bottomSheetDialog = BottomSheetDialog(this)
             val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
             bottomSheetDialog.setContentView(sheetView)
@@ -170,7 +203,7 @@ class ProfileActivity : BaseActivity() {
             val dialogView = layoutInflater.inflate(R.layout.dialog_sign_out, null)
             builder.setView(dialogView)
             val dialog = builder.create()
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
 
             val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btn_cancel)
             val btnSignOutConfirm = dialogView.findViewById<MaterialButton>(R.id.btn_sign_out_confirm)

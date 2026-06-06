@@ -5,19 +5,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-// Room DB Setup - PinnedFamily & FavoriteLocation Entity
-@Database(entities = [PinnedFamily::class, FavoriteLocation::class], version = 2, exportSchema = false)
+// Room database, mengelola LocationPhoto dan PinnedFamily.
+@Database(
+    entities = [PinnedFamily::class, LocationPhoto::class],
+    version = 3,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     // Provides DAO Access
     abstract fun pinnedFamilyDao(): PinnedFamilyDao
-    abstract fun favoriteLocationDao(): FavoriteLocationDao
+    abstract fun locationPhotoDao(): LocationPhotoDao
 
-    // Singleton Pattern : Ensures Only 1 Database Instance
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        // Return / Create Instance (Synchronized)
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(

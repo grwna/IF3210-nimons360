@@ -2,25 +2,19 @@ package com.example.nimons360_far.ui.main
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.BatteryManager
 import android.os.Bundle
-import android.os.Looper
+import android.os.IBinder
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.nimons360_far.R
-import com.example.nimons360_far.backend.models.PresencePayload
-import com.example.nimons360_far.backend.network.MapWebSocketManager
 import com.example.nimons360_far.backend.utils.Refreshable
 import com.example.nimons360_far.backend.utils.SessionManager
 import com.example.nimons360_far.databinding.ActivityMainBinding
@@ -30,32 +24,40 @@ import com.example.nimons360_far.ui.families.Families
 import com.example.nimons360_far.ui.home.HomeFragment
 import com.example.nimons360_far.ui.map.MapFragment
 import com.example.nimons360_far.ui.map.UserLocationData
-import android.content.res.ColorStateList
-import com.google.android.gms.location.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : BaseActivity(), SensorEventListener {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sessionManager: SessionManager
 
     val userGeoPoint = MutableStateFlow<GeoPoint?>(null)
     val currentHeading = MutableStateFlow(0f)
     val familyMembers = MutableStateFlow<Map<Int, UserLocationData>>(emptyMap())
 
-    private lateinit var wsManager: MapWebSocketManager
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var sensorManager: SensorManager
-    private var rotationSensor: Sensor? = null
-    private lateinit var sessionManager: SessionManager
+    // Service binding
+    private var trackingService: LocationTrackingService? = null
+    private var isBound = false
 
-    private var trackingJob: Job? = null
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            val localBinder = binder as LocationTrackingService.LocalBinder
+            trackingService = localBinder.getService()
+            isBound = true
+            // Mulai mirror StateFlow dari service ke MainActivity
+            observeServiceFlows()
+        }
 
-    // Handle notification preferrence on launch
+        override fun onServiceDisconnected(name: ComponentName?) {
+            trackingService = null
+            isBound = false
+        }
+    }
+
+    // Handle notification preference on launch
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -70,6 +72,7 @@ class MainActivity : BaseActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sessionManager = SessionManager(this)
 
         // Request notification permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -77,22 +80,6 @@ class MainActivity : BaseActivity(), SensorEventListener {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
-
-        setupUI()
-        initTrackingEngine()
-
-
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-        updateComponentVisibility(currentFragment)
-
-        if (savedInstanceState == null) {
-            loadFragment(HomeFragment(), showNav = true, showFab = true)
-        }
-    }
-
-    private fun initTrackingEngine() {
-        sessionManager = SessionManager(this)
-        val token = sessionManager.fetchAuthToken() ?: ""
 
         // Auto subscribe on launch if notif is enabled
         if (sessionManager.fetchNotificationPreference()) {
@@ -112,128 +99,81 @@ class MainActivity : BaseActivity(), SensorEventListener {
             }
         }
 
-        wsManager = MapWebSocketManager(token)
-        wsManager.connect()
-        wsManager.onMemberUpdate = { payload ->
-            val updatedList = familyMembers.value.toMutableMap()
-            updatedList[payload.userId] = UserLocationData(
-                userId = payload.userId.toString(),
-                name = payload.fullName,
-                email = payload.email,
-                latitude = payload.latitude,
-                longitude = payload.longitude,
-                heading = payload.rotation,
-                battery = payload.batteryLevel,
-                lastUpdateTime = System.currentTimeMillis(),
-                internet = payload.internetStatus
-            )
-            familyMembers.value = updatedList
+        setupUI()
+
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        updateComponentVisibility(currentFragment)
+
+        if (savedInstanceState == null) {
+            loadFragment(HomeFragment(), showNav = true, showFab = true)
         }
 
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startLocationUpdates()
-            startWebSocketLoop()
+        // Cek permission lokasi, jika sudah ada langsung start & bind service
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            startAndBindService()
         } else {
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            startLocationUpdates()
-            startWebSocketLoop()
+    override fun onStart() {
+        super.onStart()
+        // Bind ke service yang sudah berjalan jika belum terbind
+        if (!isBound) {
+            val intent = Intent(this, LocationTrackingService::class.java)
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Unbind saat activity tidak visible, tapi service tetap jalan karena startForegroundService
+        if (isBound) {
+            unbindService(serviceConnection)
+            isBound = false
+            trackingService = null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Service hanya berhenti jika user force stop
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).build()
-        val locationCallback = object : LocationCallback() {
-            override fun onLocationResult(result: LocationResult) {
-                result.lastLocation?.let { loc ->
-                    userGeoPoint.value = GeoPoint(loc.latitude, loc.longitude)
-                }
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                startAndBindService()
             }
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-    }
 
-    private fun startWebSocketLoop() {
-        val userName = sessionManager.fetchUserName() ?: "User"
-        val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        trackingJob = lifecycleScope.launch {
-            while (isActive) {
-                try {
-                    val network = connectivityManager.activeNetwork
-                    val capabilities = connectivityManager.getNetworkCapabilities(network)
-                    val isMobileData = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
-                    val internetStatus = if (isMobileData) "mobile" else "wifi"
-                    val batteryLvl = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
-                    userGeoPoint.value?.let { myLoc ->
-                        wsManager.sendPresence(
-                            PresencePayload(
-                                name = userName,
-                                latitude = myLoc.latitude,
-                                longitude = myLoc.longitude,
-                                rotation = currentHeading.value,
-                                batteryLevel = batteryLvl,
-                                isCharging = batteryManager.isCharging,
-                                internetStatus = internetStatus
-                            )
-                        )
-                    }
-                } catch (e: Exception) {
-                    // jika jaringan terputus coba reconnect
-                    e.printStackTrace()
-                    try {
-                        wsManager.connect()
-                    } catch (reconnectException: Exception) {
-                        reconnectException.printStackTrace()
-                    }
-                }
-
-                val now = System.currentTimeMillis()
-                familyMembers.value = familyMembers.value.filter { (_, member) ->
-                    now - member.lastUpdateTime < 5000
-                }
-
-                delay(1000)
-            }
+    // Start service (jika belum berjalan) dan bind ke service
+    // startForegroundService memastikan service tetap hidup di background
+    private fun startAndBindService() {
+        LocationTrackingService.start(this)
+        val intent = Intent(this, LocationTrackingService::class.java)
+        if (!isBound) {
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        rotationSensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sensorManager.unregisterListener(this)
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_ROTATION_VECTOR) {
-            val rotationMatrix = FloatArray(9)
-            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
-            val orientationAngles = FloatArray(3)
-            SensorManager.getOrientation(rotationMatrix, orientationAngles)
-            var azimuth = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
-            azimuth = -azimuth
-            if (azimuth < 0) azimuth += 360f
-            currentHeading.value = azimuth
+    // Kumpulkan StateFlow dari service ke StateFlow MainActivity buat MapFragment 
+    private fun observeServiceFlows() {
+        val service = trackingService ?: return
+        lifecycleScope.launch {
+            service.userGeoPoint.collectLatest { userGeoPoint.value = it }
+        }
+        lifecycleScope.launch {
+            service.currentHeading.collectLatest { currentHeading.value = it }
+        }
+        lifecycleScope.launch {
+            service.familyMembers.collectLatest { familyMembers.value = it }
         }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-    
     override fun onNetworkAvailable() {
         super.onNetworkAvailable()
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
@@ -271,7 +211,7 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
     private fun showComponent(showNav: Boolean, showFab: Boolean) {
         binding.bottomNavigation.visibility = if (showNav) View.VISIBLE else View.GONE
-        binding.fabAddFamily.visibility = if (showFab) View.VISIBLE else View.GONE
+        binding.fabAddFamily.visibility = if (showFab) View.GONE else View.VISIBLE
     }
 
     private fun loadFragment(fragment: Fragment, showNav: Boolean, showFab: Boolean, addToBackStack: Boolean = false) {
@@ -279,13 +219,5 @@ class MainActivity : BaseActivity(), SensorEventListener {
         val transaction = supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
         if (addToBackStack) transaction.addToBackStack(null)
         transaction.commit()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        trackingJob?.cancel()
-        if (::wsManager.isInitialized) {
-            wsManager.disconnect()
-        }
     }
 }

@@ -23,6 +23,8 @@ import com.example.nimons360_far.ui.base.BaseActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.messaging.FirebaseMessaging
+import android.util.Log
 import kotlinx.coroutines.launch
 
 class ProfileActivity : BaseActivity() {
@@ -82,7 +84,47 @@ class ProfileActivity : BaseActivity() {
             }
         }
 
-        // Fetch data (will use cache if available)
+        // Init toggles
+        val switchNotification = findViewById<com.google.android.material.materialswitch.MaterialSwitch>(R.id.switch_notification)
+        val switchLocationPrivacy = findViewById<com.google.android.material.materialswitch.MaterialSwitch>(R.id.switch_location_privacy)
+
+        switchNotification.isChecked = sessionManager.fetchNotificationPreference()
+        switchLocationPrivacy.isChecked = sessionManager.fetchLocationPrivacyPreference()
+
+        switchNotification.setOnCheckedChangeListener { _, isChecked ->
+            sessionManager.saveNotificationPreference(isChecked)
+            
+            val notificationApi = com.example.nimons360_far.backend.network.ApiClient.getNotificationApi(this@ProfileActivity)
+            
+            if (isChecked) {
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val token = task.result
+                        lifecycleScope.launch {
+                            try {
+                                notificationApi.subscribe(com.example.nimons360_far.backend.models.SubscribeRequest(token))
+                            } catch (e: Exception) {
+                                Log.e("ProfileActivity", "Failed to subscribe", e)
+                            }
+                        }
+                    }
+                }
+            } else {
+                lifecycleScope.launch {
+                    try {
+                        notificationApi.unsubscribe()
+                    } catch (e: Exception) {
+                        Log.e("ProfileActivity", "Failed to unsubscribe", e)
+                    }
+                }
+            }
+        }
+
+        switchLocationPrivacy.setOnCheckedChangeListener { _, isChecked ->
+            sessionManager.saveLocationPrivacyPreference(isChecked)
+        }
+
+        // Fetch data (with cache if avail)
         profileViewModel.fetchProfile()
 
         // Bottom Sheet trigger

@@ -55,10 +55,28 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
     private var trackingJob: Job? = null
 
+    // Handle notification preferrence on launch
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            android.util.Log.d("MainActivity", "Notification permission granted")
+        } else {
+            android.util.Log.d("MainActivity", "Notification permission denied")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Request notification permission
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
 
         setupUI()
         initTrackingEngine()
@@ -75,6 +93,24 @@ class MainActivity : BaseActivity(), SensorEventListener {
     private fun initTrackingEngine() {
         sessionManager = SessionManager(this)
         val token = sessionManager.fetchAuthToken() ?: ""
+
+        // Auto subscribe on launch if notif is enabled
+        if (sessionManager.fetchNotificationPreference()) {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val fcmToken = task.result
+                    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                        try {
+                            val notificationApi = com.example.nimons360_far.backend.network.ApiClient.getNotificationApi(this@MainActivity)
+                            notificationApi.subscribe(com.example.nimons360_far.backend.models.SubscribeRequest(fcmToken))
+                            android.util.Log.d("MainActivity", "FCM token subscribed successfully on startup")
+                        } catch (e: java.lang.Exception) {
+                            android.util.Log.e("MainActivity", "Failed to subscribe FCM token on startup", e)
+                        }
+                    }
+                }
+            }
+        }
 
         wsManager = MapWebSocketManager(token)
         wsManager.connect()

@@ -13,8 +13,12 @@ import androidx.compose.material.icons.filled.CellTower
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import java.util.Calendar
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryFull
@@ -39,7 +43,9 @@ import com.example.nimons360_far.ui.map.UserLocationData
 @Composable
 fun UserInfoCard(
     user: UserLocationData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSendGreeting: ((String) -> Unit)? = null,
+    onClose: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier
@@ -56,6 +62,10 @@ fun UserInfoCard(
             containerColor = Color(0xFFFFFBFE)
         )
     ) {
+        val context = androidx.compose.ui.platform.LocalContext.current
+        val sessionManager = com.example.nimons360_far.backend.utils.SessionManager(context)
+        val currentUserEmail = sessionManager.fetchUserEmail()
+
         Column(
             modifier = Modifier
                 .padding(16.dp),
@@ -127,6 +137,27 @@ fun UserInfoCard(
                     modifier = Modifier.weight(1f)
                 )
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            if (user.email != currentUserEmail) {
+                SendGreetingSection(user = user, onSendGreeting = onSendGreeting)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Close Button
+            androidx.compose.material3.OutlinedButton(
+                onClick = { onClose?.invoke() },
+                modifier = Modifier.fillMaxWidth().height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, com.example.nimons360_far.utils.AppColors.BorderGrey),
+                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                    contentColor = com.example.nimons360_far.utils.AppColors.DesignTextBlack
+                )
+            ) {
+                Text("Close", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+            }
         }
     }
 }
@@ -157,3 +188,4 @@ fun InfoMiniCard(
         }
     }
 }
+

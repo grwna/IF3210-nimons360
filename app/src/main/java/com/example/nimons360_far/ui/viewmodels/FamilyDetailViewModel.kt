@@ -63,7 +63,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
                         // Execution Failed
                         _events.emit(DetailEvent.ShowToast("Failed to load family data"))
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Error Handling - Connection Error
                     _events.emit(DetailEvent.ShowToast("Connection error"))
                 } finally {
@@ -89,7 +89,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
                     // Execution Failed - Wrong Family Code
                     _joinErrorMessage.value = "Wrong Family Code!"
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Error Handling - Connection Error
                 _joinErrorMessage.value = "Connection Error"
             }
@@ -109,7 +109,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
                     // Execution Failed
                     _events.emit(DetailEvent.ShowToast("Failed to leave family"))
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Error Handling - Connection Error
                 _events.emit(DetailEvent.ShowToast("Connection Error"))
             }

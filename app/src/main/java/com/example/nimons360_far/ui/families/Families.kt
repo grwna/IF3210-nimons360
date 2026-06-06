@@ -55,7 +55,7 @@ class Families : Fragment(), Refreshable {
     // Function - On Create - Share View Model With Activity (Persistent State)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(FamiliesViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[FamiliesViewModel::class.java]
     }
 
     // Function - On Create View

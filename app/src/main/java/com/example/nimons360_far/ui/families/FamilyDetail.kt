@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -38,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.nimons360_far.ui.viewmodels.DetailEvent
 import com.example.nimons360_far.ui.viewmodels.FamilyDetailViewModel
 import com.example.nimons360_far.utils.AppColors.LightBlueBg
@@ -46,6 +52,9 @@ import com.example.nimons360_far.utils.AppColors.DesignBg
 import com.example.nimons360_far.utils.AppColors.DesignTextBlack
 import com.example.nimons360_far.utils.AppColors.DesignTextGrey
 import com.example.nimons360_far.utils.AppColors.DesignBlue
+import com.example.nimons360_far.utils.generateQrBitmap
+import com.example.nimons360_far.utils.shareQrCodeImage
+import com.example.nimons360_far.utils.shareAsHtml
 
 // UI Colors Configuration
 val YellowWarningBg = Color(0xFFFFF9E6)
@@ -76,15 +85,15 @@ class FamilyDetail : Fragment() {
 
 // Function - Helper Format Created At
 fun formatCreatedAt(dateString: String?): String {
-    if (dateString.isNullOrEmpty()) {
-        return ""
+    return if (dateString.isNullOrEmpty()) {
+        ""
     } else {
-        return try {
+        try {
             val instant = java.time.Instant.parse(dateString)
             val formatter = java.time.format.DateTimeFormatter.ofPattern("MMM yyyy")
                 .withZone(java.time.ZoneId.systemDefault())
             " · Created ${formatter.format(instant)}"
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             " · Created $dateString"
         }
     }
@@ -109,6 +118,7 @@ fun FamilyDetailScreen(
     // Local UI States For Dialog Visibility
     var showJoinDialog by remember { mutableStateOf(false) }
     var showLeaveDialog by remember { mutableStateOf(false) }
+    var showShareSheet by remember { mutableStateOf(false) }
     var joinCodeInput by remember { mutableStateOf("") }
 
     // Fetch Family Detail On Family ID Changes
@@ -264,7 +274,8 @@ fun FamilyDetailScreen(
                                             name = member.fullName,
                                             email = member.email,
                                             isJoined = family.isMember == true,
-                                            isMe = member.email == viewModel.userEmail
+                                            isMe = member.email == viewModel.userEmail,
+                                            profileImageUrl = member.profileImageUrl
                                         )
                                         if (index < membersList.size - 1) {
                                             HorizontalDivider(color = DesignBg, thickness = 1.dp)
@@ -274,8 +285,53 @@ fun FamilyDetailScreen(
                             }
                             Spacer(modifier = Modifier.height(24.dp))
 
-                            // Join / Leave Family Button
+                            // Join / Leave Family Button & Actions
                             if (family.isMember == true) {
+                                // Actions
+                                Text("ACTIONS", color = DesignTextGrey, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                                    shape = RoundedCornerShape(16.dp)
+                                ) {
+                                    Column {
+                                        // Send Message Action
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().clickable { }.padding(16.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.size(44.dp).background(Color(0xFFE3F2FD), RoundedCornerShape(12.dp)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null, tint = DesignTextBlack)
+                                            }
+                                            Spacer(modifier = Modifier.width(16.dp))
+                                            Text("Send Message", fontSize = 16.sp, color = DesignTextBlack, modifier = Modifier.weight(1f))
+                                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
+                                        }
+                                        HorizontalDivider(color = DesignBg, thickness = 1.dp)
+
+                                        // Share Family Link Action
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().clickable { showShareSheet = true }.padding(16.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.size(44.dp).background(Color(0xFFE8F5E9), RoundedCornerShape(12.dp)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(Icons.Default.Link, contentDescription = null, tint = Color(0xFF388E3C))
+                                            }
+                                            Spacer(modifier = Modifier.width(16.dp))
+                                            Text("Share Family Link", fontSize = 16.sp, color = DesignTextBlack, modifier = Modifier.weight(1f))
+                                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
+
                                 // Leave Family Button
                                 TextButton(
                                     onClick = { showLeaveDialog = true },
@@ -325,6 +381,75 @@ fun FamilyDetailScreen(
 
         // Local Error Triggered
         var localErrorTriggered by remember { mutableStateOf(false) }
+
+        // Show Share Sheet
+        if (showShareSheet) {
+            // Create Needed Val
+            val deepLinkUrl = "nimons360://family/${familyId}?code=${familyData?.familyCode}"
+            val qrBitmap = remember(deepLinkUrl) { generateQrBitmap(deepLinkUrl) }
+            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+            // Modal Bottom Sheet
+            ModalBottomSheet(
+                onDismissRequest = { showShareSheet = false },
+                sheetState = sheetState,
+                containerColor = Color.White,
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f).navigationBarsPadding().imePadding()
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        // Share Family
+                        Text("Share Family", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = DesignTextBlack)
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Display QR Code
+                        Box(
+                            modifier = Modifier.size(200.dp).border(1.dp, Color.LightGray, RoundedCornerShape(16.dp)).padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (qrBitmap != null) {
+                                AsyncImage(model = qrBitmap, contentDescription = "QR", modifier = Modifier.fillMaxSize())
+                            }
+                        }
+
+                        // Display Family Code
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text("Family Code: ${familyData?.familyCode}", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = DesignTextGrey)
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        // Share Buttons
+                        Row(
+                            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(bottom = 32.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            // Share as Link Button
+                            OutlinedButton(
+                                onClick = { shareAsHtml(context, deepLinkUrl, familyData?.name ?: "Family") },
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                shape = RoundedCornerShape(24.dp),
+                                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 12.dp)
+                            ) {
+                                Text("Share as\nLink", color = DesignTextBlack, textAlign = TextAlign.Center, lineHeight = 18.sp)
+                            }
+
+                            // Share as QR Code Button
+                            Button(
+                                onClick = { shareQrCodeImage(context, deepLinkUrl, familyData?.name ?: "Family") },
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = DesignBlue),
+                                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 12.dp)
+                            ) {
+                                Text("Share as\nQR Code", textAlign = TextAlign.Center, lineHeight = 18.sp)
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // Dialog - Join Family
         if (showJoinDialog) {
@@ -475,19 +600,32 @@ fun FamilyDetailScreen(
 
 // Reusable Composable - Member Item
 @Composable
-fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
+fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean, profileImageUrl: String? = null) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Get Profile Image URL
+        val finalImageUrl = if (profileImageUrl?.startsWith("/") == true) {
+            "https://mad.labpro.hmif.dev$profileImageUrl"
+        } else {
+            profileImageUrl
+        }
+
         if (isJoined) {
             // Show Member Detail
-            Box(
-                modifier = Modifier.size(40.dp).background(DesignBlue, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
-            }
+            SubcomposeAsyncImage(
+                model = finalImageUrl,
+                contentDescription = "Profile Photo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(40.dp).clip(CircleShape),
+                loading = { CircularProgressIndicator(modifier = Modifier.padding(8.dp), color = DesignBlue, strokeWidth = 2.dp) },
+                error = {
+                    Box(modifier = Modifier.fillMaxSize().background(DesignBlue), contentAlignment = Alignment.Center) {
+                        Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                }
+            )
             Spacer(modifier = Modifier.width(16.dp))
 
             // Username & Email

@@ -72,7 +72,7 @@ class CreateFamilyViewModel(application: Application) : AndroidViewModel(applica
                     val msg = if (response.code() == 401) "Token expired, please re-login" else "Failed to create family"
                     _events.emit(CreateEvent.Error(msg))
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Error Handling - Connection Error
                 _events.emit(CreateEvent.Error("Connection Error"))
             }

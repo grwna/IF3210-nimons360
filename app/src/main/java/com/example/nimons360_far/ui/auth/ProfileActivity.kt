@@ -37,6 +37,26 @@ class ProfileActivity : BaseActivity() {
     private lateinit var sessionManager: SessionManager
     private lateinit var profileViewModel: ProfileViewModel
 
+    private var tempImageUri: Uri? = null
+
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+        if (success) {
+            tempImageUri?.let { uri ->
+                profileViewModel.uploadProfilePhoto(uri, this)
+            }
+        }
+    }
+
+    // Camera permission
+    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            tempImageUri = getTempImageUri()
+            takePictureLauncher.launch(tempImageUri!!)
+        } else {
+            android.widget.Toast.makeText(this, "Camera permission is required to take a photo.", android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             profileViewModel.uploadProfilePhoto(it, this)
@@ -158,7 +178,24 @@ class ProfileActivity : BaseActivity() {
 
         // Bottom Sheet trigger
         binding.ivEditPencil.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            val options = arrayOf("Take Photo", "Choose from Gallery")
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Update Profile Picture")
+                .setItems(options) { dialog, which ->
+                    when (which) {
+                        0 -> {
+                            if (androidx.core.content.ContextCompat.checkSelfPermission(this@ProfileActivity, android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                                tempImageUri = getTempImageUri()
+                                takePictureLauncher.launch(tempImageUri!!)
+                            } else {
+                                requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                            }
+                        }
+                        1 -> pickImageLauncher.launch("image/*")
+                    }
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         binding.tvProfileName.setOnClickListener {
@@ -199,6 +236,19 @@ class ProfileActivity : BaseActivity() {
 
             dialog.show()
         }
+    }
+
+    // Camera functionality
+    private fun getTempImageUri(): Uri {
+        val tempFile = java.io.File.createTempFile("avatar_temp", ".jpg", java.io.File(cacheDir, "shared_files").apply { mkdirs() }).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+        return androidx.core.content.FileProvider.getUriForFile(
+            this,
+            "${packageName}.fileprovider",
+            tempFile
+        )
     }
 
     private fun showEditNameBottomSheet() {

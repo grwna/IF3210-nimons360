@@ -22,8 +22,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +44,8 @@ import com.example.nimons360_far.utils.AppColors.DesignBg
 import com.example.nimons360_far.utils.AppColors.DesignTextBlack
 import com.example.nimons360_far.utils.AppColors.DesignTextGrey
 import com.example.nimons360_far.utils.AppColors.DesignBlue
+import com.example.nimons360_far.utils.AppColors.LightGreenBg
+import com.example.nimons360_far.utils.AppColors.LightRedBg
 
 // UI Colors Configuration
 val YellowWarningBg = Color(0xFFFFF9E6)
@@ -110,6 +110,7 @@ fun FamilyDetailScreen(
     var showJoinDialog by remember { mutableStateOf(false) }
     var showLeaveDialog by remember { mutableStateOf(false) }
     var joinCodeInput by remember { mutableStateOf("") }
+    var showBroadcastSheet by remember { mutableStateOf(false) }
 
     // Fetch Family Detail On Family ID Changes
     LaunchedEffect(familyId) {
@@ -276,6 +277,32 @@ fun FamilyDetailScreen(
 
                             // Join / Leave Family Button
                             if (family.isMember == true) {
+                                // ================== Actions Section ==================
+                                Text("ACTIONS", color = DesignTextGrey, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                                ) {
+                                    Column {
+                                        ActionItem(
+                                            icon = "💬",
+                                            iconBgColor = LightBlueBg,
+                                            title = "Send Message",
+                                            onClick = { showBroadcastSheet = true }
+                                        )
+                                        HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                        ActionItem(
+                                            icon = "🔗",
+                                            iconBgColor = LightGreenBg,
+                                            title = "Share Family Link",
+                                            onClick = {} // TODO: buat link
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
+
                                 // Leave Family Button
                                 TextButton(
                                     onClick = { showLeaveDialog = true },
@@ -444,7 +471,7 @@ fun FamilyDetailScreen(
                 // Dialog Title - Leave Family
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.size(56.dp).background(Color(0xFFFFEBEE), CircleShape), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.size(56.dp).background(LightRedBg, CircleShape), contentAlignment = Alignment.Center) {
                             Icon(Icons.Default.People, null, tint = RedDanger)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -470,84 +497,17 @@ fun FamilyDetailScreen(
                 shape = RoundedCornerShape(28.dp), containerColor = Color.White
             )
         }
-    }
-}
 
-// Reusable Composable - Member Item
-@Composable
-fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (isJoined) {
-            // Show Member Detail
-            Box(
-                modifier = Modifier.size(40.dp).background(DesignBlue, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Username & Email
-            Column(modifier = Modifier.weight(1f)) {
-                // Username
-                Text(name, fontWeight = FontWeight.Bold, color = DesignTextBlack, fontSize = 15.sp)
-
-                // Email
-                Text(email, color = DesignTextGrey, fontSize = 12.sp)
-            }
-
-            // You Tag
-            if (isMe) {
-                Surface(color = YellowWarningBg, shape = RoundedCornerShape(12.dp)) {
-                    Text(
-                        "You",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        fontSize = 11.sp,
-                        color = YellowWarningBorder,
-                        fontWeight = FontWeight.Bold
-                    )
+        // Broadcast Message
+        if (showBroadcastSheet) {
+            BroadcastBottomSheet(
+                onDismiss = { showBroadcastSheet = false },
+                onSend = { message ->
+                    familyData?.let {
+                        viewModel.sendBroadcastMessage(it.id, message)
+                    }
                 }
-            }
-        } else {
-            // Hide Member Detail
-            val avatarColors = listOf(DesignBlue, RedDanger, Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
-            val safeHash = name.hashCode().let { if (it < 0) it * -1 else it }
-            val blurColor = avatarColors[safeHash % avatarColors.size]
-
-            // User Avatar
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .blur(radius = 12.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                    .background(blurColor, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White.copy(alpha = 0.6f))
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Username & Email
-            Column(modifier = Modifier.weight(1f)) {
-                // Username
-                Box(
-                    modifier = Modifier
-                        .width(140.dp)
-                        .height(14.dp)
-                        .background(Color.LightGray.copy(alpha = 0.8f), RoundedCornerShape(7.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Email
-                Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(12.dp)
-                        .background(Color.LightGray.copy(alpha = 0.8f), RoundedCornerShape(6.dp))
-                )
-            }
+            )
         }
     }
 }

@@ -45,7 +45,12 @@ fun BroadcastBottomSheet(onDismiss: () -> Unit, onSend: (String) -> Unit)
             // Outline Input
             OutlinedTextField(
                 value = messageText,
-                onValueChange = { messageText = it },
+                onValueChange = { 
+                    // TODO: atur2 max length
+                    if (it.length <= 150) {
+                        messageText = it
+                    }
+                },
                 label = { Text("Message") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,

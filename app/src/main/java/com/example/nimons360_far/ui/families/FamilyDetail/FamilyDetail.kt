@@ -504,7 +504,7 @@ fun FamilyDetailScreen(
                 onDismiss = { showBroadcastSheet = false },
                 onSend = { message ->
                     familyData?.let {
-                        viewModel.sendBroadcastMessage(it.id, message)
+                        viewModel.sendBroadcastMessage(it.id, "${it.name}: $message")
                     }
                 }
             )

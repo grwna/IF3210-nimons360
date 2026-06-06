@@ -174,8 +174,9 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Bind ke service yang sudah berjalan jika belum terbind
-        if (!isBound) {
+        // Bind ke service yang sudah berjalan jika belum terbind, HANYA JIKA permission sudah diberikan
+        val hasPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (!isBound && hasPermission) {
             val intent = Intent(this, LocationTrackingService::class.java)
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }

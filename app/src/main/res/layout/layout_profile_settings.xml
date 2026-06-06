@@ -13,7 +13,7 @@
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/v_bottom_bg" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_profile_email" />
 
     <!-- Cards -->
     <com.google.android.material.card.MaterialCardView

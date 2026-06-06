@@ -11,7 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.material3.CircularProgressIndicator
+import coil.compose.SubcomposeAsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,19 +26,32 @@ import com.example.nimons360_far.utils.AppColors.RedDanger
 
 // Reusable Composable - Member Item
 @Composable
-fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean) {
+fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean, profileImageUrl: String? = null) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Get Profile Image URL
+        val finalImageUrl = if (profileImageUrl?.startsWith("/") == true) {
+            "https://mad.labpro.hmif.dev$profileImageUrl"
+        } else {
+            profileImageUrl
+        }
+
         if (isJoined) {
             // Show Member Detail
-            Box(
-                modifier = Modifier.size(40.dp).background(DesignBlue, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
-            }
+            SubcomposeAsyncImage(
+                model = finalImageUrl,
+                contentDescription = "Profile Photo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(40.dp).clip(CircleShape),
+                loading = { CircularProgressIndicator(modifier = Modifier.padding(8.dp), color = DesignBlue, strokeWidth = 2.dp) },
+                error = {
+                    Box(modifier = Modifier.fillMaxSize().background(DesignBlue), contentAlignment = Alignment.Center) {
+                        Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                }
+            )
             Spacer(modifier = Modifier.width(16.dp))
 
             // Username & Email

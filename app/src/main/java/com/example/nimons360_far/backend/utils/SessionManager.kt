@@ -45,6 +45,26 @@ class SessionManager(context: Context) {
         return sharedPreferences.getString(USER_NAME, null)
     }
 
+    fun saveNotificationPreference(enabled: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(PREF_NOTIFICATIONS, enabled)
+        editor.apply()
+    }
+
+    fun fetchNotificationPreference(): Boolean {
+        return sharedPreferences.getBoolean(PREF_NOTIFICATIONS, true)
+    }
+
+    fun saveLocationPrivacyPreference(enabled: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(PREF_LOCATION_PRIVACY, enabled)
+        editor.apply()
+    }
+
+    fun fetchLocationPrivacyPreference(): Boolean {
+        return sharedPreferences.getBoolean(PREF_LOCATION_PRIVACY, false)
+    }
+
     fun clearSession() {
         val editor = sharedPreferences.edit()
         editor.clear()
@@ -55,5 +75,7 @@ class SessionManager(context: Context) {
         const val USER_TOKEN = "user_token"
         const val USER_NAME = "user_name"
         const val USER_EMAIL = "user_email"
+        const val PREF_NOTIFICATIONS = "pref_notifications"
+        const val PREF_LOCATION_PRIVACY = "pref_location_privacy"
     }
 }

@@ -57,11 +57,47 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // Handle notification preference on launch
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            android.util.Log.d("MainActivity", "Notification permission granted")
+        } else {
+            android.util.Log.d("MainActivity", "Notification permission denied")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         sessionManager = SessionManager(this)
+
+        // Request notification permission
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        // Auto subscribe on launch if notif is enabled
+        if (sessionManager.fetchNotificationPreference()) {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val fcmToken = task.result
+                    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                        try {
+                            val notificationApi = com.example.nimons360_far.backend.network.ApiClient.getNotificationApi(this@MainActivity)
+                            notificationApi.subscribe(com.example.nimons360_far.backend.models.SubscribeRequest(fcmToken))
+                            android.util.Log.d("MainActivity", "FCM token subscribed successfully on startup")
+                        } catch (e: java.lang.Exception) {
+                            android.util.Log.e("MainActivity", "Failed to subscribe FCM token on startup", e)
+                        }
+                    }
+                }
+            }
+        }
 
         setupUI()
 
@@ -88,7 +124,7 @@ class MainActivity : BaseActivity() {
         if (!isBound) {
             val intent = Intent(this, LocationTrackingService::class.java)
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-                }
+        }
     }
 
     override fun onStop() {
@@ -116,7 +152,6 @@ class MainActivity : BaseActivity() {
 
     // Start service (jika belum berjalan) dan bind ke service
     // startForegroundService memastikan service tetap hidup di background
-
     private fun startAndBindService() {
         LocationTrackingService.start(this)
         val intent = Intent(this, LocationTrackingService::class.java)
@@ -125,7 +160,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    // Kumpulkan StateFlow dari service ke StateFlow  MainActivity buat MapFragment 
+    // Kumpulkan StateFlow dari service ke StateFlow MainActivity buat MapFragment 
     private fun observeServiceFlows() {
         val service = trackingService ?: return
         lifecycleScope.launch {
@@ -134,8 +169,10 @@ class MainActivity : BaseActivity() {
         lifecycleScope.launch {
             service.currentHeading.collectLatest { currentHeading.value = it }
         }
+        lifecycleScope.launch {
+            service.familyMembers.collectLatest { familyMembers.value = it }
+        }
     }
-
 
     override fun onNetworkAvailable() {
         super.onNetworkAvailable()
@@ -174,7 +211,7 @@ class MainActivity : BaseActivity() {
 
     private fun showComponent(showNav: Boolean, showFab: Boolean) {
         binding.bottomNavigation.visibility = if (showNav) View.VISIBLE else View.GONE
-        binding.fabAddFamily.visibility = if (showFab) View.VISIBLE else View.GONE
+        binding.fabAddFamily.visibility = if (showFab) View.GONE else View.VISIBLE
     }
 
     private fun loadFragment(fragment: Fragment, showNav: Boolean, showFab: Boolean, addToBackStack: Boolean = false) {

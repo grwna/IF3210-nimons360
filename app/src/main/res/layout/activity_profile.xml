@@ -126,6 +126,9 @@
         android:background="#EAEAEA"
         app:layout_constraintBottom_toTopOf="@id/v_bottom_bg" />
 
+    <include layout="@layout/layout_profile_settings" />
+    <include layout="@layout/layout_profile_more" />
+
     <!-- Sign Out Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_sign_out"
@@ -144,7 +147,7 @@
         stateListAnimator="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/v_bottom_bg" />
+        app:layout_constraintTop_toBottomOf="@id/cv_more" />
 
     <!-- Copyright -->
     <TextView

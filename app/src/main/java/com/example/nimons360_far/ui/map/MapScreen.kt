@@ -296,12 +296,34 @@ fun MapScreen(
         // User info card
         if (showUserDialog && selectedUser != null) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 24.dp),
+                modifier = Modifier .fillMaxSize() .padding(bottom = 24.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                UserInfoCard(user = selectedUser!!)
+                UserInfoCard(
+                    user = selectedUser!!,
+                    onSendGreeting = { message ->
+                        selectedUser?.userId?.toIntOrNull()?.let { targetId ->
+                            coroutineScope.launch(Dispatchers.IO) {
+                                try {
+                                    val api = com.example.nimons360_far.backend.network.ApiClient.getNotificationApi(context)
+                                    val familyApi = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(context)
+                                    val familiesRes = familyApi.getMyFamilies()
+                                    val family = familiesRes.body()?.data?.firstOrNull()
+                                    val familyId = family?.id ?: 1
+                                    val familyName = family?.name ?: "Family"
+                                    val prependedMessage = "$familyName: $message"
+                                    
+                                    val req = com.example.nimons360_far.backend.models.SendGreetingRequest(familyId, targetId, prependedMessage)
+                                    api.sendGreeting(req)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+                        showUserDialog = false
+                    },
+                    onClose = { showUserDialog = false }
+                )
             }
         }
 

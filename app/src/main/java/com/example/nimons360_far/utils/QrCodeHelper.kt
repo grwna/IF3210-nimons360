@@ -60,14 +60,14 @@ fun shareQrCodeImage(context: Context, deepLink: String, familyName: String) {
     try {
         val cachePath = File(context.cacheDir, "shared_files")
         cachePath.mkdirs()
-        val imageFile = File(cachePath, "family_qr.png")
+        val imageFile = File(cachePath, "Nimons360_Invitation_$familyName.png")
         finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(imageFile))
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "image/png"
             putExtra(Intent.EXTRA_STREAM, uri)
             putExtra(Intent.EXTRA_SUBJECT, "Nimons360 Invitation")
-            putExtra(Intent.EXTRA_TEXT, "Join our family on Nimons360! Scan this QR Code and use the code: $familyCode")
+            putExtra(Intent.EXTRA_TEXT, "Join our family on Nimons360! Scan this QR Code and Use the Code: $familyCode")
             clipData = ClipData.newRawUri("", uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
@@ -120,6 +120,8 @@ fun shareAsHtml(context: Context, deepLink: String, familyName: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/html"
             putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra(Intent.EXTRA_SUBJECT, "Nimons360 Invitation")
+            putExtra(Intent.EXTRA_TEXT, "Join our family on Nimons360! Open the HTML Invitation File and Use the Code: $familyCode")
             clipData = ClipData.newRawUri("", uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }

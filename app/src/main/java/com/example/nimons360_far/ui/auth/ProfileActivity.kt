@@ -162,39 +162,11 @@ class ProfileActivity : BaseActivity() {
         }
 
         binding.tvProfileName.setOnClickListener {
-            val bottomSheetDialog = BottomSheetDialog(this)
-            val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
-            bottomSheetDialog.setContentView(sheetView)
-            
-            // Set background transparent to show curved top corners
-            (sheetView.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
+            showEditNameBottomSheet()
+        }
 
-            val etName = sheetView.findViewById<TextInputEditText>(R.id.et_name)
-            val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
-            val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
-
-            val tilName = sheetView.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.til_name)
-
-            // Populate current name
-            etName.setText(binding.tvProfileName.text.toString())
-
-            btnCancel.setOnClickListener {
-                bottomSheetDialog.dismiss()
-            }
-
-            btnSave.setOnClickListener {
-                val newName = etName.text.toString().trim()
-                tilName.error = null
-                
-                if (newName.isNotEmpty()) {
-                    profileViewModel.updateProfile(newName)
-                    bottomSheetDialog.dismiss()
-                } else {
-                    tilName.error = "Name cannot be empty"
-                }
-            }
-
-            bottomSheetDialog.show()
+        binding.ivEditNamePencil.setOnClickListener {
+            showEditNameBottomSheet()
         }
 
         // Sign Out Modal Trigger
@@ -227,6 +199,42 @@ class ProfileActivity : BaseActivity() {
 
             dialog.show()
         }
+    }
+
+    private fun showEditNameBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
+        bottomSheetDialog.setContentView(sheetView)
+        
+        // Set background transparent to show curved top corners
+        (sheetView.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
+
+        val etName = sheetView.findViewById<TextInputEditText>(R.id.et_name)
+        val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
+        val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
+
+        val tilName = sheetView.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.til_name)
+
+        // Populate current name
+        etName.setText(binding.tvProfileName.text.toString())
+
+        btnCancel.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        btnSave.setOnClickListener {
+            val newName = etName.text.toString().trim()
+            tilName.error = null
+            
+            if (newName.isNotEmpty()) {
+                profileViewModel.updateProfile(newName)
+                bottomSheetDialog.dismiss()
+            } else {
+                tilName.error = "Name cannot be empty"
+            }
+        }
+
+        bottomSheetDialog.show()
     }
 
     override fun onNetworkAvailable() {

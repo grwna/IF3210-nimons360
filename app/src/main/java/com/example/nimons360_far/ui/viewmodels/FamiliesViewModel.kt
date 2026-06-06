@@ -73,7 +73,7 @@ class FamiliesViewModel(application: Application) : AndroidViewModel(application
                         _myFamilies.value = myRes.body()?.data ?: emptyList()
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Silent Error Handling
             } finally {
                 // Set Loading State Off

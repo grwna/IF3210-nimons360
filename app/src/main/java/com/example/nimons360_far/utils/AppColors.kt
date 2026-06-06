@@ -12,6 +12,10 @@ object AppColors {
     val DesignTextBlack = Color(0xFF222222)
     val DesignTextGrey = Color(0xFF666666)
     val DesignSearchBg = Color(0xFFFFFFFF)
+    val LightGreenBg = Color(0xFFE8F5E9)
+    val LightRedBg = Color(0xFFFFEBEE)
+    val CancelTextDark = Color(0xFF333333)
+    val BorderGrey = Color(0xFFEAEAEA)
 
     val DesignBlueInt = AndroidColor.parseColor("#1868D8")
     val RedDangerInt = AndroidColor.parseColor("#D32F2F")

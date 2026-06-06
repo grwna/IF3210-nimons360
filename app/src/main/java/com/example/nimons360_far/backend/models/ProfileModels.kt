@@ -13,6 +13,7 @@ data class UserProfileData(
     val nim: String,
     val email: String,
     val fullName: String,
+    val profileImageUrl: String? = null,
     val createdAt: String,
     val updatedAt: String
 )

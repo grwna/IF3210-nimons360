@@ -39,4 +39,8 @@ object ApiClient {
     fun getFamilyApi(context: Context): FamilyApi {
         return getClient(context).create(FamilyApi::class.java)
     }
+
+    fun getNotificationApi(context: Context): com.example.nimons360_far.backend.api.NotificationApi {
+        return getClient(context).create(com.example.nimons360_far.backend.api.NotificationApi::class.java)
+    }
 }

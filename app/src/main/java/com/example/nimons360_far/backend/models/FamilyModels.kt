@@ -29,7 +29,8 @@ data class Member(
     val id: Int? = null,
     val fullName: String,
     val email: String,
-    val joinedAt: String? = null
+    val joinedAt: String? = null,
+    val profileImageUrl: String? = null
 )
 
 // API Request Model - Payload Create Family

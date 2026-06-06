@@ -3,6 +3,7 @@ package com.example.nimons360_far.ui.main
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -14,7 +15,9 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -30,14 +33,17 @@ import com.example.nimons360_far.ui.families.Families
 import com.example.nimons360_far.ui.home.HomeFragment
 import com.example.nimons360_far.ui.map.MapFragment
 import com.example.nimons360_far.ui.map.UserLocationData
-import android.content.res.ColorStateList
+import com.example.nimons360_far.ui.families.FamilyDetail
 import com.google.android.gms.location.*
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+
 
 class MainActivity : BaseActivity(), SensorEventListener {
 
@@ -55,6 +61,17 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
     private var trackingJob: Job? = null
 
+    private val scanLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, result.contents.toUri())
+                startActivity(intent)
+            } catch (_: Exception) {
+                Toast.makeText(this, "Invalid Nimons360 QR Code", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -63,12 +80,47 @@ class MainActivity : BaseActivity(), SensorEventListener {
         setupUI()
         initTrackingEngine()
 
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.fabContainer) { v, insets ->
+            val bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars() or androidx.core.view.WindowInsetsCompat.Type.displayCutout())
+            val params = v.layoutParams as android.view.ViewGroup.MarginLayoutParams
+            val density = resources.displayMetrics.density
+            val defaultMargin = (16 * density).toInt()
+            params.rightMargin = bars.right + defaultMargin
+            params.bottomMargin = defaultMargin
+            v.layoutParams = params
+            insets
+        }
 
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         updateComponentVisibility(currentFragment)
 
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment(), showNav = true, showFab = true)
+            if (intent?.data != null && intent?.data?.scheme == "nimons360") {
+                handleDeepLink(intent)
+            } else {
+                loadFragment(HomeFragment(), showNav = true, showFab = true)
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent?) {
+        val data = intent?.data
+        if (data != null && data.scheme == "nimons360" && data.host == "family") {
+            val familyIdStr = data.lastPathSegment
+            familyIdStr?.toIntOrNull()?.let { fId ->
+                val familyDetailFrag = FamilyDetail().apply {
+                    arguments = Bundle().apply { putInt("familyId", fId) }
+                }
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, familyDetailFrag)
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
     }
 
@@ -209,14 +261,23 @@ class MainActivity : BaseActivity(), SensorEventListener {
     private fun setupUI() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_home -> { loadFragment(HomeFragment(), true, true); true }
-                R.id.navigation_map -> { loadFragment(MapFragment(), true, false); true }
-                R.id.navigation_families -> { loadFragment(Families(), true, true); true }
+                R.id.navigation_home -> { loadFragment(HomeFragment(), true, showFab = true); true }
+                R.id.navigation_map -> { loadFragment(MapFragment(), showNav = true, showFab = false); true }
+                R.id.navigation_families -> { loadFragment(Families(), showFab = true, showNav = true); true }
                 else -> false
             }
         }
         binding.fabAddFamily.setOnClickListener {
             loadFragment(CreateFamily(), showNav = false, showFab = false, addToBackStack = true)
+        }
+        binding.btnScanJoin.setOnClickListener {
+            val options = ScanOptions().apply {
+                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                setPrompt("Move the Camera to Scan the QR Code.")
+                setBeepEnabled(false)
+                setOrientationLocked(false)
+            }
+            scanLauncher.launch(options)
         }
         supportFragmentManager.addOnBackStackChangedListener {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
@@ -226,16 +287,16 @@ class MainActivity : BaseActivity(), SensorEventListener {
 
     private fun updateComponentVisibility(fragment: Fragment?) {
         when (fragment) {
-            is HomeFragment -> showComponent(true, true)
-            is MapFragment -> showComponent(true, false)
-            is Families -> showComponent(true, true)
-            else -> showComponent(false, false)
+            is HomeFragment -> showComponent(showNav = true, showFab = true)
+            is MapFragment -> showComponent(showNav = true, showFab = false)
+            is Families -> showComponent(showNav = true, showFab = true)
+            else -> showComponent(showNav = false, showFab = false)
         }
     }
 
     private fun showComponent(showNav: Boolean, showFab: Boolean) {
         binding.bottomNavigation.visibility = if (showNav) View.VISIBLE else View.GONE
-        binding.fabAddFamily.visibility = if (showFab) View.VISIBLE else View.GONE
+        binding.fabContainer.visibility = if (showFab) View.VISIBLE else View.GONE
     }
 
     private fun loadFragment(fragment: Fragment, showNav: Boolean, showFab: Boolean, addToBackStack: Boolean = false) {

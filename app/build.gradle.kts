@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.example.nimons360_far"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.labpro.mad"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

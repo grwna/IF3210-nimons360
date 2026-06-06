@@ -55,6 +55,8 @@ import com.example.nimons360_far.utils.AppColors.DesignBlue
 import com.example.nimons360_far.utils.generateQrBitmap
 import com.example.nimons360_far.utils.shareQrCodeImage
 import com.example.nimons360_far.utils.shareAsHtml
+import com.example.nimons360_far.utils.AppColors.LightGreenBg
+import com.example.nimons360_far.utils.AppColors.LightRedBg
 
 // UI Colors Configuration
 val YellowWarningBg = Color(0xFFFFF9E6)
@@ -120,6 +122,7 @@ fun FamilyDetailScreen(
     var showLeaveDialog by remember { mutableStateOf(false) }
     var showShareSheet by remember { mutableStateOf(false) }
     var joinCodeInput by remember { mutableStateOf("") }
+    var showBroadcastSheet by remember { mutableStateOf(false) }
 
     // Fetch Family Detail On Family ID Changes
     LaunchedEffect(familyId) {
@@ -287,47 +290,28 @@ fun FamilyDetailScreen(
 
                             // Join / Leave Family Button & Actions
                             if (family.isMember == true) {
-                                // Actions
+                                // ================== Actions Section ==================
                                 Text("ACTIONS", color = DesignTextGrey, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Card(
-                                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                                    shape = RoundedCornerShape(16.dp)
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color.White)
                                 ) {
                                     Column {
-                                        // Send Message Action
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth().clickable { }.padding(16.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Box(
-                                                modifier = Modifier.size(44.dp).background(Color(0xFFE3F2FD), RoundedCornerShape(12.dp)),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null, tint = DesignTextBlack)
-                                            }
-                                            Spacer(modifier = Modifier.width(16.dp))
-                                            Text("Send Message", fontSize = 16.sp, color = DesignTextBlack, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
-                                        }
+                                        ActionItem(
+                                            icon = "💬",
+                                            iconBgColor = LightBlueBg,
+                                            title = "Send Message",
+                                            onClick = { showBroadcastSheet = true }
+                                        )
                                         HorizontalDivider(color = DesignBg, thickness = 1.dp)
-
-                                        // Share Family Link Action
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth().clickable { showShareSheet = true }.padding(16.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Box(
-                                                modifier = Modifier.size(44.dp).background(Color(0xFFE8F5E9), RoundedCornerShape(12.dp)),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(Icons.Default.Link, contentDescription = null, tint = Color(0xFF388E3C))
-                                            }
-                                            Spacer(modifier = Modifier.width(16.dp))
-                                            Text("Share Family Link", fontSize = 16.sp, color = DesignTextBlack, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
-                                        }
+                                        ActionItem(
+                                            icon = "🔗",
+                                            iconBgColor = LightGreenBg,
+                                            title = "Share Family Link",
+                                            onClick = { showShareSheet = true }
+                                        )
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(24.dp))
@@ -569,7 +553,7 @@ fun FamilyDetailScreen(
                 // Dialog Title - Leave Family
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.size(56.dp).background(Color(0xFFFFEBEE), CircleShape), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.size(56.dp).background(LightRedBg, CircleShape), contentAlignment = Alignment.Center) {
                             Icon(Icons.Default.People, null, tint = RedDanger)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -595,97 +579,17 @@ fun FamilyDetailScreen(
                 shape = RoundedCornerShape(28.dp), containerColor = Color.White
             )
         }
-    }
-}
 
-// Reusable Composable - Member Item
-@Composable
-fun MemberItem(name: String, email: String, isJoined: Boolean, isMe: Boolean, profileImageUrl: String? = null) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Get Profile Image URL
-        val finalImageUrl = if (profileImageUrl?.startsWith("/") == true) {
-            "https://mad.labpro.hmif.dev$profileImageUrl"
-        } else {
-            profileImageUrl
-        }
-
-        if (isJoined) {
-            // Show Member Detail
-            SubcomposeAsyncImage(
-                model = finalImageUrl,
-                contentDescription = "Profile Photo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(40.dp).clip(CircleShape),
-                loading = { CircularProgressIndicator(modifier = Modifier.padding(8.dp), color = DesignBlue, strokeWidth = 2.dp) },
-                error = {
-                    Box(modifier = Modifier.fillMaxSize().background(DesignBlue), contentAlignment = Alignment.Center) {
-                        Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White)
+        // Broadcast Message
+        if (showBroadcastSheet) {
+            BroadcastBottomSheet(
+                onDismiss = { showBroadcastSheet = false },
+                onSend = { message ->
+                    familyData?.let {
+                        viewModel.sendBroadcastMessage(it.id, "${it.name}: $message")
                     }
                 }
             )
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Username & Email
-            Column(modifier = Modifier.weight(1f)) {
-                // Username
-                Text(name, fontWeight = FontWeight.Bold, color = DesignTextBlack, fontSize = 15.sp)
-
-                // Email
-                Text(email, color = DesignTextGrey, fontSize = 12.sp)
-            }
-
-            // You Tag
-            if (isMe) {
-                Surface(color = YellowWarningBg, shape = RoundedCornerShape(12.dp)) {
-                    Text(
-                        "You",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        fontSize = 11.sp,
-                        color = YellowWarningBorder,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        } else {
-            // Hide Member Detail
-            val avatarColors = listOf(DesignBlue, RedDanger, Color(0xFF388E3C), Color(0xFFFBC02D), Color(0xFF7B1FA2))
-            val safeHash = name.hashCode().let { if (it < 0) it * -1 else it }
-            val blurColor = avatarColors[safeHash % avatarColors.size]
-
-            // User Avatar
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .blur(radius = 12.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                    .background(blurColor, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = Color.White.copy(alpha = 0.6f))
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Username & Email
-            Column(modifier = Modifier.weight(1f)) {
-                // Username
-                Box(
-                    modifier = Modifier
-                        .width(140.dp)
-                        .height(14.dp)
-                        .background(Color.LightGray.copy(alpha = 0.8f), RoundedCornerShape(7.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Email
-                Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(12.dp)
-                        .background(Color.LightGray.copy(alpha = 0.8f), RoundedCornerShape(6.dp))
-                )
-            }
         }
     }
 }

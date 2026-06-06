@@ -30,6 +30,7 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
 
     // API Initialization
     private val api = com.example.nimons360_far.backend.network.ApiClient.getFamilyApi(application)
+    private val notificationApi = com.example.nimons360_far.backend.network.ApiClient.getNotificationApi(application)
 
     // UI State Flow - Family Data
     private val _familyData = MutableStateFlow<Family?>(null)
@@ -119,5 +120,22 @@ class FamilyDetailViewModel(application: Application) : AndroidViewModel(applica
     // Function - Helper Reset Join Family Error Message
     fun resetJoinError() {
         _joinErrorMessage.value = null
+    }
+
+    // Function - Send Broadcast Notification
+    fun sendBroadcastMessage(familyId: Int, message: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val req = com.example.nimons360_far.backend.models.SendBroadcastRequest(familyId, message)
+                val res = notificationApi.sendBroadcast(req)
+                if (res.isSuccessful) {
+                    _events.emit(DetailEvent.ShowToast("Message Sent!"))
+                } else {
+                    _events.emit(DetailEvent.ShowToast("Failed to send message"))
+                }
+            } catch (e: Exception) {
+                _events.emit(DetailEvent.ShowToast("Connection Error"))
+            }
+        }
     }
 }

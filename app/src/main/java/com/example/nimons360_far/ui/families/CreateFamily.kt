@@ -138,7 +138,8 @@ class CreateFamily : Fragment(R.layout.create_family) {
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val paddingTotal = (48 * displayMetrics.density).toInt()
-        val availableWidth = screenWidth - paddingTotal
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val availableWidth = if (isLandscape) (screenWidth / 2) - paddingTotal else screenWidth - paddingTotal
         val cellSize = (availableWidth / 5)
         val margin = (4 * displayMetrics.density).toInt()
         val imageSize = cellSize - (margin * 2)

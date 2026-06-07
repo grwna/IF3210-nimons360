@@ -45,11 +45,34 @@ class LoginActivity : BaseActivity() {
             binding.emailInputLayout.error = null
             binding.passwordInputLayout.error = null
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
+            var isValid = true
+
+            // Email validation
+            if (email.isEmpty()) {
+                binding.emailInputLayout.error = "Email is required"
+                isValid = false
+            } else if (email.length > 320) {
+                binding.emailInputLayout.error = "Email is too long (max 320 characters)"
+                isValid = false
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.emailInputLayout.error = "Invalid email format"
+                isValid = false
+            }
+
+            // Password validation
+            if (password.isEmpty()) {
+                binding.passwordInputLayout.error = "Password is required"
+                isValid = false
+            } else if (password.length < 8) {
+                binding.passwordInputLayout.error = "Password must be at least 8 characters"
+                isValid = false
+            } else if (password.length > 128) {
+                binding.passwordInputLayout.error = "Password is too long (max 128 characters)"
+                isValid = false
+            }
+
+            if (isValid) {
                 authViewModel.login(LoginRequest(email, password))
-            } else {
-                if (email.isEmpty()) binding.emailInputLayout.error = "Email is required"
-                if (password.isEmpty()) binding.passwordInputLayout.error = "Password is required"
             }
         }
 

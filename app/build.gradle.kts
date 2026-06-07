@@ -4,7 +4,6 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
-    id("org.sonarqube")
 }
 
 android {
@@ -23,7 +22,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -50,6 +50,8 @@ android {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
+
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)

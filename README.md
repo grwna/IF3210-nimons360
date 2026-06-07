@@ -197,7 +197,140 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Implementasi Praktik Keamanan
 Berikut merupakan cuplikan kode yang menunjukkan implementasi dari masing-masing praktik keamanan pada aplikasi.
 
+- **Input Validation pada Form**:
+  Cuplikan kode Input Validation pada form login `LoginActivity.kt`, mencakup validasi kelengkapan data, format email, serta batas panjang minimum dan maksimum untuk mencegah payload berlebih ke server:
+  ```kotlin
+  var isValid = true
+
+  if (email.isEmpty()) {
+      binding.emailInputLayout.error = "Email is required"
+      isValid = false
+  } else if (email.length > 320) {
+      binding.emailInputLayout.error = "Email is too long (max 320 characters)"
+      isValid = false
+  } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+      binding.emailInputLayout.error = "Invalid email format"
+      isValid = false
+  }
+
+  if (password.isEmpty()) {
+      binding.passwordInputLayout.error = "Password is required"
+      isValid = false
+  } else if (password.length < 8) {
+      binding.passwordInputLayout.error = "Password must be at least 8 characters"
+      isValid = false
+  } else if (password.length > 128) {
+      binding.passwordInputLayout.error = "Password is too long (max 128 characters)"
+      isValid = false
+  }
+
+  if (isValid) {
+      authViewModel.login(LoginRequest(email, password))
+  }
+  ```
+
+- **Penyimpanan Data Sensitif Secara Aman**:
+  Penyimpanan token JWT dilakukan menggunakan `EncryptedSharedPreferences` dengan masterkey hardware-backed Keystore agar data kredensial terenkripsi secara aman.
+  Cuplikan kode ada pada `SessionManager.kt`:
+  ```kotlin
+  private val masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+
+  private val sharedPreferences: SharedPreferences =
+          EncryptedSharedPreferences.create(
+                  context,
+                  "auth_prefs",
+                  masterKey,
+                  EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                  EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+          )
+  ```
+
+- **Penggunaan Koneksi Aman (HTTPS)**:
+  Semua komunikasi dengan server backend diarahkan melalui HTTPS untuk koneksi yang aman.
+  Pengaturan network security pada `network_security.xml` :
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+  <network-security-config>
+      <base-config cleartextTrafficPermitted="false">
+          <trust-anchors>
+              <certificates src="system" />
+          </trust-anchors>
+      </base-config>
+  </network-security-config>
+  ```
+
+- **Error Handling Tanpa Mengekspos Informasi Sensitif**:
+  Kode dengan potensi error diamankan menggunakan blok try-catch untuk menampilkan pesan error tertentu atau generik yang ramah pengguna, tanpa mengekspos informasi sensitif ke UI.
+  Cuplikan penanganan error pada `ProfileViewModel.kt` untuk menangani pengunggahan foto profil:
+  ```kotlin
+  else {
+      val errorMsg = try {
+          val json = org.json.JSONObject(response.errorBody()?.string() ?: "")
+          json.getString("message")
+      } catch (e: Exception) {
+          if (response.code() == 413) "File size is too big (Max 500 KB)" else "Failed to upload photo"
+      }
+      _profileState.value = ProfileState.Error(errorMsg)
+  }
+  ```
+
 ### Analisis Owasp Top 10 
-#### M4: Insufficient Input/Output Validation
-#### M8: Security Misconfiguration
-#### M9: Insecure Data Storage
+Analisis keamanan kami lakukan menggunakan tools static analysis yaitu SonarQube. Adapun metrik yang kami perhatikan adalah *Security* dan *Security Hotspot*. Berikut hasil analisis awal dan hasil analisis setelah perbaikan.
+
+#### Hasil Sebelum Perbaikan
+<div align="center">
+  <img src="screenshot/sonarqube-before.png" alt="sonarqube-before" width="700">
+</div>
+
+Seperti yang terlihat pada gambar, terdapat 7 issue *Security* dan 5 issue *Security Hotspot*. Adapun issue-issue yang ditemukan adalah sebagai berikut.
+
+**Security**
+
+<div align="center">
+  <img src="screenshot/sonarqube-sec-before.png" alt="sonarqube-sec-before" width="500">
+</div>
+
+Pada gambar hanya 5 issue yang ditampilkan, tetapi 2 issue lainnya adalah "Make sure that intents are received safely here".
+
+**Security Hotspot**
+
+<div align="center">
+  <img src="screenshot/sonarqube-sechot-before.png" alt="sonarqube-sechot-before" width="300">
+</div>
+
+<br>
+
+**Pengelompokkan Issue**
+- M4: Insufficient Input/Output Validation
+	- Make sure that intents are received safely here. (`BaseActivity.kt`, `LocationTrackingService.kt`)
+  - Make sure that broadcasting intents is safe here.(`AuthInterceptor.kt`, `ProfileActivity.kt`) 
+- M8: Security Misconfiguration
+	- Make sure that obfuscation is enabled in the release build configuration.
+  - Make sure the use of "..." permission is necessary.
+  - Dependencies are not verified because the "verification-metadata.xml" file is missing. Make sure it is safe here.
+- M9: Insecure Data Storage
+	- Tidak ada
+
+#### Perbaikan yang Dilakukan
+- **Make sure that intents are received safely here. (`BaseActivity.kt`, `LocationTrackingService.kt`)**
+  - `BaseActivity.kt`: `registerReceiver()` tanpa security flag memungkinkan aplikasi lain mengirimkan broadcast ke receiver. Kami memperbaiki ini dengan menambahkan flag `Context.RECEIVER_NOT_EXPORTED`, sehingga receiver hanya menerima broadcast dari dalam aplikasi sendiri. 
+  - `LocationTrackingService.kt`: Masalahnya adalah battery receiver dan GPS provider receiver diregister tanpa flag keamanan, sehingga rentan terhadap broadcast injection. Kami perbaiki dengan menambahkan branching `Build.VERSION.SDK_INT >= TIRAMISU` dan menggunakan flag `RECEIVER_NOT_EXPORTED` agar receiver tidak dapat diakses dari aplikasi lain.
+
+- **Make sure that broadcasting intents is safe here.(`AuthInterceptor.kt`, `ProfileActivity.kt`)**
+  - Penggunaan `sendBroadcast()` secara default akan mengirim broadcast ke semua aplikasi di device. Namun, kedua file sudah menggunakan `intent.setPackage(context.packageName)` yang membatasi broadcast hanya ke package aplikasi sendiri. Ini merupakan best practice yang direkomendasikan Google sebagai pengganti `LocalBroadcastManager` yang sudah deprecated. Oleh karena itu, issue ini kami nilai sebagai false-positive dari SonarQube, dan kami abaikan.
+
+- **Make sure that obfuscation is enabled in the release build configuration.**
+  - Masalahnya ada pada konfigurasi `isMinifyEnabled = false` di build release yang menyebabkan APK berisi nama class, method, dan field yang masih dapat dibaca, sehingga mudah di-reverse engineer. Kami perbaiki dengan mengubah `isMinifyEnabled` menjadi `true` dan menambahkan `isShrinkResources = true` pada `build.gradle.kts`. Dengan ini, R8/ProGuard akan melakukan obfuscation pada APK release. File `proguard-rules.pro` juga diperbarui dengan keep rules yang diperlukan agar model Retrofit dan library lainnya tetap berfungsi.
+
+- **Make sure the use of "..." permission is necessary.**
+  - Kami nilai izin yang diperlukan aplikasi memang benar-benar diperlukan oleh fitur aplikasi, sehingga kami tandai ini sebagai Safe.
+
+- **Dependencies are not verified because the "verification-metadata.xml" file is missing. Make sure it is safe here.**
+  - Tanpa file `verification-metadata.xml`, Gradle tidak memverifikasi checksum dependency yang diunduh sehingga berpotensi terjadi supply chain attack. Untuk memperbaiki, perlu menghasilkan file besar yang harus di-maintain setiap kali dependency di-update. Oleh karena itu, kami pilih untuk tidak memperbaikinya (tandai Safe).
+
+#### Hasil Setelah Perbaikan
+<div align="center">
+  <img src="screenshot/sonarqube-after.png" alt="sonarqube-after" width="700">
+</div>
+
+Seperti yang terlihat pada gambar, issue *Security* dan *Security Hotspot* telah berkurang menjadi 0.

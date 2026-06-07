@@ -72,10 +72,10 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Notifikasi
 <table>
   <tr>
-    <td align="center"><img src="screenshot/m2/notifikasi1.jpg" width="240"><br><b>Family Detail Actions</b></td>
-    <td align="center"><img src="screenshot/m2/notifikasi2.jpg" width="240"><br><b>Send Message</b></td>
-    <td align="center"><img src="screenshot/m2/notifikasi3.jpg" width="240"><br><b>Greeting</b></td>
-    <td align="center"><img src="screenshot/m2/notifikasi4.jpg" width="240"><br><b>Notifikasi Diterima</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi1.png" width="240"><br><b>Family Detail Actions</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi2.png" width="240"><br><b>Send Message</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi3.png" width="240"><br><b>Greeting</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi4.png" width="240"><br><b>Notifikasi Diterima</b></td>
   </tr>
 </table>
 
@@ -108,15 +108,15 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Responsive (Halaman-halaman Landscape)
 <table>
   <tr>
-    <td align="center"><img src="screenshot/responsive1.jpg" width="240"><br><b>Login</b></td>
-    <td align="center"><img src="screenshot/responsive2.jpg" width="240"><br><b>Home</b></td>
-    <td align="center"><img src="screenshot/responsive3.jpg" width="240"><br><b>Profile</b></td>
-    <td align="center"><img src="screenshot/responsive4.jpg" width="240"><br><b>Map</b></td>
+    <td align="center"><img src="screenshot/m2/responsive1.jpg" width="240"><br><b>Login</b></td>
+    <td align="center"><img src="screenshot/m2/responsive2.png" width="240"><br><b>Home</b></td>
+    <td align="center"><img src="screenshot/m2/responsive3.jpg" width="240"><br><b>Profile</b></td>
+    <td align="center"><img src="screenshot/m2/responsive4.jpg" width="240"><br><b>Map</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/responsive5.jpg" width="240"><br><b>Family Detail</b></td>
-    <td align="center"><img src="screenshot/responsive6.jpg" width="240"><br><b>Families</b></td>
-    <td align="center"><img src="screenshot/responsive7.jpg" width="240"><br><b>Create Family</b></td>
+    <td align="center"><img src="screenshot/m2/responsive5.jpg" width="240"><br><b>Family Detail</b></td>
+    <td align="center"><img src="screenshot/m2/responsive6.jpg" width="240"><br><b>Families</b></td>
+    <td align="center"><img src="screenshot/m2/responsive7.jpg" width="240"><br><b>Create Family</b></td>
   </tr>
 </table>
 

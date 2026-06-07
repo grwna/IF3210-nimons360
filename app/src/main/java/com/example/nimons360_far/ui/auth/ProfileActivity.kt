@@ -275,12 +275,14 @@ class ProfileActivity : BaseActivity() {
         btnSave.setOnClickListener {
             val newName = etName.text.toString().trim()
             tilName.error = null
-            
-            if (newName.isNotEmpty()) {
+
+            if (newName.isEmpty()) {
+                tilName.error = "Name cannot be empty"
+            } else if (newName.length > 50) {
+                tilName.error = "Name is too long (max 50 characters)"
+            } else {
                 profileViewModel.updateProfile(newName)
                 bottomSheetDialog.dismiss()
-            } else {
-                tilName.error = "Name cannot be empty"
             }
         }
 

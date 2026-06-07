@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    id("org.sonarqube")
 }
 
 android {

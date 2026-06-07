@@ -1,4 +1,4 @@
-# Tubes MAD (IF3210-24) 2026 - MS1 - K01 - FAR
+# Tubes MAD (IF3210-24) 2026 - MS2 - K01 - FAR
 
 ## Daftar Isi
 - [Deskripsi Aplikasi](#deskripsi-aplikasi)

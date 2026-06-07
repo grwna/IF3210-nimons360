@@ -1,60 +1,55 @@
 package com.example.nimons360_far.ui.map
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration as AndroidConfig
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
-import android.view.MotionEvent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.collectAsState
-import android.annotation.SuppressLint
-import android.net.NetworkCapabilities
-import android.net.ConnectivityManager
-import com.example.nimons360_far.backend.utils.SessionManager
-import android.os.BatteryManager
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.example.nimons360_far.backend.utils.UserRepository
-
-import org.osmdroid.config.Configuration
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.events.MapEventsReceiver
-import org.osmdroid.views.overlay.MapEventsOverlay
 import com.example.nimons360_far.R
-import com.example.nimons360_far.ui.components.UserInfoCard
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.UUID
 import com.example.nimons360_far.backend.data.AppDatabase
 import com.example.nimons360_far.backend.data.FavoriteLocation
 import com.example.nimons360_far.backend.data.LocationDbHelper
 import com.example.nimons360_far.backend.data.LocationPhoto
+import com.example.nimons360_far.backend.utils.SessionManager
+import com.example.nimons360_far.backend.utils.UserRepository
+import com.example.nimons360_far.ui.components.AddEditLocationBottomSheet
 import com.example.nimons360_far.ui.components.FavoriteInfoCard
 import com.example.nimons360_far.ui.components.MapActionBottomSheet
-import com.example.nimons360_far.ui.components.AddEditLocationBottomSheet
+import com.example.nimons360_far.ui.components.UserInfoCard
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
+import org.osmdroid.views.overlay.Marker
 import java.io.File
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -80,11 +75,34 @@ fun MapScreen(
 ) {
     val context = LocalContext.current
     Configuration.getInstance().load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
-    val batteryManager = remember { context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager }
+    var batteryLevel by remember {
+        val intent = context.registerReceiver(
+            null,
+            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        )
+        val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+        val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, 100) ?: 100
+        mutableStateOf(if (level >= 0) (level * 100 / scale) else 0)
+    }
+
+    // Daftarkan receiver agar battery level update secara real-time
+    DisposableEffect(context) {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(ctx: Context, intent: Intent) {
+                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+                if (level >= 0) batteryLevel = level * 100 / scale
+            }
+        }
+        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        context.registerReceiver(receiver, filter)
+        onDispose { context.unregisterReceiver(receiver) }
+    }
+
+    val screenConfig = LocalConfiguration.current
+    val isLandscape = screenConfig.orientation == AndroidConfig.ORIENTATION_LANDSCAPE
 
     var isMapCentered by remember { mutableStateOf(false) }
-    var selectedUser by remember { mutableStateOf<UserLocationData?>(null) }
-    var showUserDialog by remember { mutableStateOf(false) }
     val userRepository = remember { UserRepository.getInstance(context) }
     val currentUser by userRepository.userProfile.collectAsState()
     val sessionManager = remember { SessionManager(context) }
@@ -109,24 +127,32 @@ fun MapScreen(
     // State lokasi favorit, direfresh manual tiap ada perubahan
     var favoriteLocations by remember { mutableStateOf<List<FavoriteLocation>>(emptyList()) }
     val favIcon = ContextCompat.getDrawable(context, R.drawable.ic_fav_location)
-
     val isMultiTouch = remember { booleanArrayOf(false) }
-
     val mapViewRef = remember { mutableStateOf<MapView?>(null) }
 
-    // Bottom sheet states
-    var longPressGeoPoint by remember { mutableStateOf<GeoPoint?>(null) }
-    var showMapActionSheet by remember { mutableStateOf(false) }
-    var showAddEditSheet by remember { mutableStateOf(false) }
-    var editingFavorite by remember { mutableStateOf<FavoriteLocation?>(null) }
+    var selectedUserKey by rememberSaveable { mutableStateOf<String?>(null) }
+    var showUserDialog by rememberSaveable { mutableStateOf(false) }
+    var selectedUser by remember { mutableStateOf<UserLocationData?>(null) }
+
+    var longPressLat by rememberSaveable { mutableStateOf<Double?>(null) }
+    var longPressLon by rememberSaveable { mutableStateOf<Double?>(null) }
+    val longPressGeoPoint = remember(longPressLat, longPressLon) {
+        if (longPressLat != null && longPressLon != null) GeoPoint(longPressLat!!, longPressLon!!) else null
+    }
+
+    var showMapActionSheet by rememberSaveable { mutableStateOf(false) }
+    var showAddEditSheet by rememberSaveable { mutableStateOf(false) }
+
+    var editingFavoriteId by rememberSaveable { mutableStateOf<String?>(null) }
     var editingPhotoPaths by remember { mutableStateOf<List<String>>(emptyList()) }
-    var selectedFavorite by remember { mutableStateOf<FavoriteLocation?>(null) }
+    var selectedFavoriteId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedFavoritePhotos by remember { mutableStateOf<List<LocationPhoto>>(emptyList()) }
 
-    // Fetch profile to get id
-    LaunchedEffect(Unit) {
-        userRepository.fetchProfile()
-    }
+    val selectedFavorite = favoriteLocations.firstOrNull { it.id == selectedFavoriteId }
+    val editingFavorite = favoriteLocations.firstOrNull { it.id == editingFavoriteId }
+
+
+    LaunchedEffect(Unit) { userRepository.fetchProfile() }
 
     // Load lokasi dari SQLite saat userId siap / berubah
     LaunchedEffect(currentUserId) {
@@ -137,7 +163,49 @@ fun MapScreen(
         }
     }
 
-    // Helper untuk refresh state setelah write
+    LaunchedEffect(selectedUserKey, familyMembers, userGeoPoint) {
+        when {
+            selectedUserKey == null -> selectedUser = null
+            selectedUserKey == "ME" && userGeoPoint != null -> {
+                selectedUser = UserLocationData(
+                    userId = currentUser?.id?.toString(),
+                    name = sessionManager.fetchUserName(),
+                    email = sessionManager.fetchUserEmail(),
+                    latitude = userGeoPoint.latitude,
+                    longitude = userGeoPoint.longitude,
+                    heading = currentHeading,
+                    battery = batteryLevel,
+                    internet = internetStatus
+                )
+            }
+            selectedUserKey != null && selectedUserKey != "ME" -> {
+                val found = familyMembers.values.firstOrNull { it.userId == selectedUserKey }
+                if (found != null) selectedUser = found
+            }
+        }
+    }
+
+    // Load foto favourite yang dipilih
+    LaunchedEffect(selectedFavoriteId) {
+        selectedFavoritePhotos = if (selectedFavoriteId != null) {
+            withContext(Dispatchers.IO) {
+                db.locationPhotoDao().getPhotosByLocationSync(selectedFavoriteId!!)
+            }
+        } else emptyList()
+    }
+
+    // Load path foto favourite yang sedang diedit
+    LaunchedEffect(editingFavoriteId) {
+        editingPhotoPaths = if (editingFavoriteId != null) {
+            withContext(Dispatchers.IO) {
+                db.locationPhotoDao().getPhotosByLocationSync(editingFavoriteId!!)
+                    .map { it.filePath }
+            }
+        } else emptyList()
+    }
+
+    // Helper functions
+
     fun refreshFavorites() {
         coroutineScope.launch(Dispatchers.IO) {
             val updated = locationDbHelper.getFavoritesByUser(currentUserId)
@@ -187,14 +255,15 @@ fun MapScreen(
 
                 val mapEventsReceiver = object : MapEventsReceiver {
                     override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                        selectedUser = null
+                        selectedUserKey = null
                         showUserDialog = false
                         return true
                     }
 
                     override fun longPressHelper(p: GeoPoint?): Boolean {
                         if (p != null) {
-                            longPressGeoPoint = p
+                            longPressLat = p.latitude
+                            longPressLon = p.longitude
                             showMapActionSheet = true
                         }
                         return true
@@ -215,19 +284,8 @@ fun MapScreen(
                     myMarker.rotation = currentHeading
                     myMarker.icon = myArrow
 
-                    val myData = UserLocationData(
-                        userId = currentUser?.id?.toString(),
-                        name = sessionManager.fetchUserName(),
-                        email = sessionManager.fetchUserEmail(),
-                        latitude = myLoc.latitude,
-                        longitude = myLoc.longitude,
-                        heading = currentHeading,
-                        battery = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY),
-                        internet = internetStatus
-                    )
-
                     myMarker.setOnMarkerClickListener { _, _ ->
-                        selectedUser = myData
+                        selectedUserKey = "ME"
                         showUserDialog = true
                         true
                     }
@@ -243,7 +301,7 @@ fun MapScreen(
                     familyMarker.icon = arrowFamily
 
                     familyMarker.setOnMarkerClickListener { _, _ ->
-                        selectedUser = member
+                        selectedUserKey = member.userId
                         showUserDialog = true
                         true
                     }
@@ -258,14 +316,8 @@ fun MapScreen(
 
                     favMarker.setOnMarkerClickListener { _, _ ->
                         showUserDialog = false
-                        selectedUser = null
-                        coroutineScope.launch {
-                            val photos = withContext(Dispatchers.IO) {
-                                db.locationPhotoDao().getPhotosByLocationSync(fav.id)
-                            }
-                            selectedFavoritePhotos = photos
-                            selectedFavorite = fav
-                        }
+                        selectedUserKey = null
+                        selectedFavoriteId = fav.id   // foto diload via LaunchedEffect
                         true
                     }
                     mapView.overlays.add(favMarker)
@@ -282,7 +334,13 @@ fun MapScreen(
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 24.dp),
+                .padding(
+                    end = 16.dp,
+                    bottom = when {
+                        showUserDialog && selectedUser != null -> if (isLandscape) 220.dp else 280.dp
+                        else -> 24.dp
+                    }
+                ),
             shape = CircleShape,
             containerColor = Color.White,
             contentColor = Color(0xFF1976D2)
@@ -296,8 +354,10 @@ fun MapScreen(
         // User info card
         if (showUserDialog && selectedUser != null) {
             Box(
-                modifier = Modifier .fillMaxSize() .padding(bottom = 24.dp),
-                contentAlignment = Alignment.BottomCenter
+                modifier = Modifier
+                    .fillMaxWidth(if (isLandscape) 0.55f else 1f)
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp)
             ) {
                 UserInfoCard(
                     user = selectedUser!!,
@@ -321,8 +381,12 @@ fun MapScreen(
                             }
                         }
                         showUserDialog = false
+                        selectedUserKey = null
                     },
-                    onClose = { showUserDialog = false }
+                    onClose = {
+                        showUserDialog = false
+                        selectedUserKey = null
+                    }
                 )
             }
         }
@@ -333,8 +397,7 @@ fun MapScreen(
                 geoPoint = longPressGeoPoint!!,
                 onDismiss = { showMapActionSheet = false },
                 onMarkLocation = {
-                    editingFavorite = null
-                    editingPhotoPaths = emptyList()
+                    editingFavoriteId = null   // lokasi baru, bukan edit
                     showAddEditSheet = true
                 }
             )
@@ -392,7 +455,7 @@ fun MapScreen(
                         withContext(Dispatchers.Main) {
                             favoriteLocations = updated
                             showAddEditSheet = false
-                            editingFavorite = null
+                            editingFavoriteId = null
                         }
                     }
                 }
@@ -404,19 +467,20 @@ fun MapScreen(
             FavoriteInfoCard(
                 favorite = selectedFavorite!!,
                 photos = selectedFavoritePhotos,
-                onClose = { selectedFavorite = null },
+                onClose = { selectedFavoriteId = null },
                 onEdit = {
-                    editingFavorite = selectedFavorite
-                    editingPhotoPaths = selectedFavoritePhotos.map { it.filePath }
-                    selectedFavorite = null
+                    editingFavoriteId = selectedFavoriteId   // foto diedit via LaunchedEffect
+                    selectedFavoriteId = null
                     showAddEditSheet = true
                 },
                 onDelete = {
-                    val toDelete = selectedFavorite!!
-                    selectedFavorite = null
+                    val toDeleteId = selectedFavoriteId
+                    selectedFavoriteId = null
                     coroutineScope.launch(Dispatchers.IO) {
-                        deleteLocationPhotos(toDelete.id)
-                        locationDbHelper.deleteFavorite(toDelete.id)
+                        if (toDeleteId != null) {
+                            deleteLocationPhotos(toDeleteId)
+                            locationDbHelper.deleteFavorite(toDeleteId)
+                        }
                         val updated = locationDbHelper.getFavoritesByUser(currentUserId)
                         withContext(Dispatchers.Main) { favoriteLocations = updated }
                     }

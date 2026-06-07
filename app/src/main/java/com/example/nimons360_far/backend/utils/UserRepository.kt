@@ -59,6 +59,12 @@ class UserRepository private constructor(context: Context) {
         }
     }
 
+    // update profile for other pages
+    fun updateLocalProfile(data: UserProfileData) {
+        _userProfile.value = data
+        sessionManager.saveUserData(data.fullName, data.email)
+    }
+
     fun clearCache() {
         _userProfile.value = null
     }

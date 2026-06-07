@@ -54,114 +54,114 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Auth
 <table>
   <tr>
-    <td align="center"><img src="screenshot/auth1.jpg" width="240"><br><b>Login (Input)</b></td>
-    <td align="center"><img src="screenshot/auth2.jpg" width="240"><br><b>Login (Failed)</b></td>
-    <td align="center"><img src="screenshot/auth3.jpg" width="240"><br><b>Logout</b></td>
+    <td align="center"><img src="screenshot/m1/auth1.jpg" width="240"><br><b>Login (Input)</b></td>
+    <td align="center"><img src="screenshot/m1/auth2.jpg" width="240"><br><b>Login (Failed)</b></td>
+    <td align="center"><img src="screenshot/m1/auth3.jpg" width="240"><br><b>Logout</b></td>
   </tr>
 </table>
 
 ### Wajib - Home
 <table>
   <tr>
-    <td align="center"><img src="screenshot/home1.jpg" width="240"><br><b>Home</b></td>
-    <td align="center"><img src="screenshot/home2.jpg" width="240"><br><b>Home (Empty)</b></td>
+    <td align="center"><img src="screenshot/m1/home1.jpg" width="240"><br><b>Home</b></td>
+    <td align="center"><img src="screenshot/m1/home2.jpg" width="240"><br><b>Home (Empty)</b></td>
   </tr>
 </table>
 
 ### Wajib - Families
 <table>
   <tr>
-    <td align="center"><img src="screenshot/families1.jpeg" width="240"><br><b>Create Family (Input)</b></td>
-    <td align="center"><img src="screenshot/families2.jpeg" width="240"><br><b>Create Family (Success)</b></td>
-    <td align="center"><img src="screenshot/families3.jpeg" width="240"><br><b>Create Family (Failed)</b></td>
+    <td align="center"><img src="screenshot/m1/families1.jpeg" width="240"><br><b>Create Family (Input)</b></td>
+    <td align="center"><img src="screenshot/m1/families2.jpeg" width="240"><br><b>Create Family (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/families3.jpeg" width="240"><br><b>Create Family (Failed)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families4.jpeg" width="240"><br><b>Family Detail (Joined)</b></td>
-    <td align="center"><img src="screenshot/families5.jpeg" width="240"><br><b>Family Detail (Not Joined)</b></td>
-    <td align="center"><img src="screenshot/families6.jpeg" width="240"><br><b>Join Family (Input)</b></td>
+    <td align="center"><img src="screenshot/m1/families4.jpeg" width="240"><br><b>Family Detail (Joined)</b></td>
+    <td align="center"><img src="screenshot/m1/families5.jpeg" width="240"><br><b>Family Detail (Not Joined)</b></td>
+    <td align="center"><img src="screenshot/m1/families6.jpeg" width="240"><br><b>Join Family (Input)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families7.jpeg" width="240"><br><b>Join (Error Length)</b></td>
-    <td align="center"><img src="screenshot/families8.jpeg" width="240"><br><b>Join (Wrong Code)</b></td>
-    <td align="center"><img src="screenshot/families9.jpeg" width="240"><br><b>Join (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/families7.jpeg" width="240"><br><b>Join (Error Length)</b></td>
+    <td align="center"><img src="screenshot/m1/families8.jpeg" width="240"><br><b>Join (Wrong Code)</b></td>
+    <td align="center"><img src="screenshot/m1/families9.jpeg" width="240"><br><b>Join (Success)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families10.jpeg" width="240"><br><b>Leave (Display)</b></td>
-    <td align="center"><img src="screenshot/families11.jpeg" width="240"><br><b>Leave (Success)</b></td>
-    <td align="center"><img src="screenshot/families12.jpeg" width="240"><br><b>Pinned (Display >0)</b></td>
+    <td align="center"><img src="screenshot/m1/families10.jpeg" width="240"><br><b>Leave (Display)</b></td>
+    <td align="center"><img src="screenshot/m1/families11.jpeg" width="240"><br><b>Leave (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/families12.jpeg" width="240"><br><b>Pinned (Display >0)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families13.jpeg" width="240"><br><b>Pinned (Display =0)</b></td>
-    <td align="center"><img src="screenshot/families14.jpeg" width="240"><br><b>Pinned (Add)</b></td>
-    <td align="center"><img src="screenshot/families15.jpeg" width="240"><br><b>Pinned (Delete)</b></td>
+    <td align="center"><img src="screenshot/m1/families13.jpeg" width="240"><br><b>Pinned (Display =0)</b></td>
+    <td align="center"><img src="screenshot/m1/families14.jpeg" width="240"><br><b>Pinned (Add)</b></td>
+    <td align="center"><img src="screenshot/m1/families15.jpeg" width="240"><br><b>Pinned (Delete)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/families16.jpeg" width="240"><br><b>Filter (All)</b></td>
-    <td align="center"><img src="screenshot/families17.jpeg" width="240"><br><b>Filter (My > 0)</b></td>
-    <td align="center"><img src="screenshot/families18.jpeg" width="240"><br><b>Filter (My = 0)</b></td>
+    <td align="center"><img src="screenshot/m1/families16.jpeg" width="240"><br><b>Filter (All)</b></td>
+    <td align="center"><img src="screenshot/m1/families17.jpeg" width="240"><br><b>Filter (My > 0)</b></td>
+    <td align="center"><img src="screenshot/m1/families18.jpeg" width="240"><br><b>Filter (My = 0)</b></td>
   </tr>
 </table>
 
 ### Wajib - Map
 <table>
   <tr>
-    <td align="center"><img src="screenshot/map1.jpg" width="240"><br><b>Map (Display)</b></td>
-    <td align="center"><img src="screenshot/map2.jpg" width="240"><br><b>Family Location</b></td>
+    <td align="center"><img src="screenshot/m1/map1.jpg" width="240"><br><b>Map (Display)</b></td>
+    <td align="center"><img src="screenshot/m1/map2.jpg" width="240"><br><b>Family Location</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/map3.jpg" width="240"><br><b>Phone Orientation A (hadap kiri)</b></td>
-    <td align="center"><img src="screenshot/map3_b.jpg" width="240"><br><b>Phone Orientation B (hadap kanan)</b></td>
-    <td align="center"><img src="screenshot/map4.jpg" width="240"><br><b>User Information</b></td>
+    <td align="center"><img src="screenshot/m1/map3.jpg" width="240"><br><b>Phone Orientation A (hadap kiri)</b></td>
+    <td align="center"><img src="screenshot/m1/map3_b.jpg" width="240"><br><b>Phone Orientation B (hadap kanan)</b></td>
+    <td align="center"><img src="screenshot/m1/map4.jpg" width="240"><br><b>User Information</b></td>
   </tr>
 </table>
 
 ### Wajib - Profile
 <table>
   <tr>
-    <td align="center"><img src="screenshot/profile1.jpg" width="240"><br><b>Profile Main</b></td>
-    <td align="center"><img src="screenshot/profile2.jpg" width="240"><br><b>Rename Profile</b></td>
-    <td align="center"><img src="screenshot/profile3.jpg" width="240"><br><b>Rename (Failed)</b></td>
+    <td align="center"><img src="screenshot/m1/profile1.jpg" width="240"><br><b>Profile Main</b></td>
+    <td align="center"><img src="screenshot/m1/profile2.jpg" width="240"><br><b>Rename Profile</b></td>
+    <td align="center"><img src="screenshot/m1/profile3.jpg" width="240"><br><b>Rename (Failed)</b></td>
   </tr>
 </table>
 
 ### Wajib - Network Sensing
 <table>
   <tr>
-    <td align="center"><img src="screenshot/network1.jpg" width="240"><br><b>Disconnected</b></td>
+    <td align="center"><img src="screenshot/m1/network1.jpg" width="240"><br><b>Disconnected</b></td>
   </tr>
 </table>
 
 ### Bonus - Search Family
 <table>
   <tr>
-    <td align="center"><img src="screenshot/search1.jpeg" width="240"><br><b>All (Found)</b></td>
-    <td align="center"><img src="screenshot/search2.jpeg" width="240"><br><b>All (Not Found)</b></td>
+    <td align="center"><img src="screenshot/m1/search1.jpeg" width="240"><br><b>All (Found)</b></td>
+    <td align="center"><img src="screenshot/m1/search2.jpeg" width="240"><br><b>All (Not Found)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/search3.jpeg" width="240"><br><b>My (Found)</b></td>
-    <td align="center"><img src="screenshot/search4.jpeg" width="240"><br><b>My (Not Found)</b></td>
+    <td align="center"><img src="screenshot/m1/search3.jpeg" width="240"><br><b>My (Found)</b></td>
+    <td align="center"><img src="screenshot/m1/search4.jpeg" width="240"><br><b>My (Not Found)</b></td>
   </tr>
 </table>
 
 ### Bonus - Internet Status
 <table>
   <tr>
-    <td align="center"><img src="screenshot/internet1.jpg" width="240"><br><b>Internet Status Wi-Fi (Display)</b></td>
-    <td align="center"><img src="screenshot/internet2.jpg" width="240"><br><b>Internet Status Cellular (Display)</b></td>
+    <td align="center"><img src="screenshot/m1/internet1.jpg" width="240"><br><b>Internet Status Wi-Fi (Display)</b></td>
+    <td align="center"><img src="screenshot/m1/internet2.jpg" width="240"><br><b>Internet Status Cellular (Display)</b></td>
   </tr>
 </table>
 
 ### Bonus - Mark Favorite Location
 <table>
   <tr>
-    <td align="center"><img src="screenshot/favorite1.jpg" width="240"><br><b>Map View</b></td>
-    <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite3.jpg" width="240"><br><b>Add (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/favorite1.jpg" width="240"><br><b>Map View</b></td>
+    <td align="center"><img src="screenshot/m1/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/favorite3.jpg" width="240"><br><b>Add (Success)</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/favorite4.jpg" width="240"><br><b>Rename (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite5.jpg" width="240"><br><b>Rename (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite6.jpg" width="240"><br><b>Delete (Display)</b></td>
+    <td align="center"><img src="screenshot/m1/favorite4.jpg" width="240"><br><b>Rename (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/favorite5.jpg" width="240"><br><b>Rename (Success)</b></td>
+    <td align="center"><img src="screenshot/m1/favorite6.jpg" width="240"><br><b>Delete (Display)</b></td>
   </tr>
 </table>
 

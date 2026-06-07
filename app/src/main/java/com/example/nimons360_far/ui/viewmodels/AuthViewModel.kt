@@ -63,7 +63,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.message ?: "Network error occurred")
+                android.util.Log.e("AuthViewModel", "Login failed", e)
+                _authState.value = AuthState.Error("Connection error. Please try again.")
             }
         }
     }

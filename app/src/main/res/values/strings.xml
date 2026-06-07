@@ -25,4 +25,24 @@
     <string name="you_havent_joined_any_families_yet">You haven\'t joined any families yet</string>
     <string name="discover_families">DISCOVER FAMILIES</string>
     <string name="no_new_families_to_discover">No new families to discover</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_family">New Family</string>
+    <string name="family_icon_preview">Family icon preview</string>
+    <string name="family_name">FAMILY NAME</string>
+    <string name="enter_your_family_name">Enter your family name...</string>
+    <string name="info">info</string>
+    <string name="_0_40">0/40</string>
+    <string name="after_creating_the_family">After creating the family, an auto-generated family code will be produced. Members will need to enter this code to join.</string>
+    <string name="choose_an_icon">CHOOSE AN ICON</string>
+    <string name="edit_name">Edit Name</string>
+    <string name="notifications">Notifications</string>
+    <string name="location_privacy">Hide Location</string>
+    <string name="join">Join</string>
+    <string name="are_you_sure_sign_out">Are you sure you want to sign out?</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="please_check_internet">Please check your internet connection!</string>
+    <string name="display_name">Display Name</string>
+    <string name="name_visible_to_family">This name is visible to your family members</string>
+    <string name="save">Save</string>
 </resources>

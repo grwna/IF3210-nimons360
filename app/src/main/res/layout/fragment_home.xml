@@ -12,11 +12,11 @@
         android:id="@+id/home_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="@dimen/home_header_min_height"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="20.dp"
-        android:paddingBottom="12.dp"
+        android:paddingBottom="@dimen/home_header_padding_bottom"
         android:elevation="8dp"
         android:background="@color/white">
 
@@ -80,11 +80,11 @@
         android:layout_height="match_parent">
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/home_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/home_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

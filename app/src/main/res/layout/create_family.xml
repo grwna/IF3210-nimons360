@@ -23,7 +23,7 @@
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="@color/design_text_black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Family"
+            android:text="@string/new_family"
             android:textColor="@color/design_text_black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
             android:id="@+id/btnHeaderCreate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create"
+            android:text="@string/create"
             android:textColor="@color/design_blue"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="FAMILY NAME"
+                android:text="@string/family_name"
                 android:textColor="@color/design_text_grey"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -128,7 +128,7 @@
                         android:id="@+id/etFamilyName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter your family name..."
+                        android:hint="@string/enter_your_family_name"
                         android:inputType="textPersonName"
                         android:paddingVertical="16dp"
                         android:paddingStart="16dp"
@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_marginEnd="16dp"
-                    android:text="0/40"
+                    android:text="@string/_0_40"
                     android:textColor="@color/design_text_grey"
                     android:textSize="12sp" />
             </FrameLayout>
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="16dp"
                         android:layout_marginEnd="16dp"
-                        android:text="After creating the family, an auto-generated family code will be produced. Members will need to enter this code to join."
+                        android:text="@string/after_creating_the_family"
                         android:textColor="@color/design_text_black"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -192,7 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="CHOOSE AN ICON"
+                android:text="@string/choose_an_icon"
                 android:textColor="@color/design_text_grey"
                 android:textSize="12sp"
                 android:textStyle="bold" />

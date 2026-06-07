@@ -24,7 +24,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/nimons_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Nimons360FAR">
+        android:theme="@style/Theme.Nimons360FAR"
+        android:networkSecurityConfig="@xml/network_security">
 
         <activity
             android:name=".LauncherActivity"
@@ -61,6 +62,7 @@
 
         <service
             android:name=".ui.main.LocationTrackingService"
+            android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"
             android:stopWithTask="false" />

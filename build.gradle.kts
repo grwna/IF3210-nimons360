@@ -4,4 +4,13 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.google.services) apply false
+    id("org.sonarqube") version "7.3.0.8198"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "nimons360")
+        property("sonar.projectName", "nimons360")
+        property("sonar.host.url", "http://localhost:9000")
+    }
 }

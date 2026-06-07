@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nimons360_far.ui.map.UserLocationData
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun UserInfoCard(
@@ -49,7 +50,8 @@ fun UserInfoCard(
 ) {
     Card(
         modifier = modifier
-            .width(366.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
             .wrapContentHeight()
             .shadow(
                 elevation = 8.dp,
@@ -90,20 +92,24 @@ fun UserInfoCard(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     user.name?.let {
                         Text(
                             text = it,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
-                            color = Color(0xFF1C1B1F)
+                            color = Color(0xFF1C1B1F),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     user.email?.let {
                         Text(
                             text = it,
                             color = Color.Gray,
-                            fontSize = 13.sp
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -183,9 +189,21 @@ fun InfoMiniCard(
                 tint = iconTint,
                 modifier = Modifier.size(16.dp)
             )
-            Text(text = value, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-            Text(text = label, color = Color.Gray, fontSize = 10.sp)
+            Text(
+                text = value,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                softWrap = false
+            )
+            Text(
+                text = label,
+                color = Color.Gray,
+                fontSize = 10.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
-

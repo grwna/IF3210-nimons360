@@ -142,9 +142,13 @@ class LocationTrackingService : Service(), SensorEventListener {
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_UI)
 
-        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-
-        registerReceiver(gpsProviderReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED), Context.RECEIVER_NOT_EXPORTED)
+            registerReceiver(gpsProviderReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION), Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            registerReceiver(gpsProviderReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        }
 
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, buildNotification())
@@ -216,18 +220,21 @@ class LocationTrackingService : Service(), SensorEventListener {
                     val isMobile = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
                     val internetStatus = if (isMobile) "mobile" else "wifi"
 
-                    _userGeoPoint.value?.let { loc ->
-                        wsManager.sendPresence(
-                            PresencePayload(
-                                name = userName,
-                                latitude = loc.latitude,
-                                longitude = loc.longitude,
-                                rotation = _currentHeading.value,
-                                batteryLevel = batteryLevel,
-                                isCharging = isCharging,
-                                internetStatus = internetStatus
+                    // privacy checking
+                    if (!sessionManager.fetchLocationPrivacyPreference()) {
+                        _userGeoPoint.value?.let { loc ->
+                            wsManager.sendPresence(
+                                PresencePayload(
+                                    name = userName,
+                                    latitude = loc.latitude,
+                                    longitude = loc.longitude,
+                                    rotation = _currentHeading.value,
+                                    batteryLevel = batteryLevel,
+                                    isCharging = isCharging,
+                                    internetStatus = internetStatus
+                                )
                             )
-                        )
+                        }
                     }
 
                     val now = System.currentTimeMillis()

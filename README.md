@@ -84,6 +84,8 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
   <tr>
     <td align="center"><img src="screenshot/m2/prof-pict1.jpeg" width="240"><br><b>Halaman Profile Baru</b></td>
     <td align="center"><img src="screenshot/m2/prof-pict2.jpeg" width="240"><br><b>Opsi Pemilihan Foto</b></td>
+  </tr>
+  <tr>
     <td align="center"><img src="screenshot/m2/prof-pict3.jpeg" width="240"><br><b>Home (Profile Picture)</b></td>
     <td align="center"><img src="screenshot/m2/prof-pict4.jpeg" width="240"><br><b>Family Detail (Profile Picture)</b></td>
   </tr>
@@ -92,13 +94,14 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Share Family
 <table>
   <tr>
-    <td align="center"><img src="screenshot/m2/share1.jpg" width="240"><br><b>Share Family Modal</b></td>
-    <td align="center"><img src="screenshot/m2/share2.jpg" width="240"><br><b>Share as Link Chat</b></td>
-    <td align="center"><img src="screenshot/m2/share3.jpg" width="240"><br><b>Share as Link HTML</b></td>
+    <td align="center"><img src="screenshot/m2/share1.jpeg" width="240"><br><b>Share Family Modal</b></td>
+	<td align="center"><img src="screenshot/m2/share2.jpeg" width="240"><br><b>Family Actions</b></td>
+    <td align="center"><img src="screenshot/m2/share3.jpeg" width="240"><br><b>Share as Link Chat</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/m2/share4.jpg" width="240"><br><b>Share as QR Code Chat</b></td>
-    <td align="center"><img src="screenshot/m2/share5.jpg" width="240"><br><b>Scan QR Code</b></td>
+	<td align="center"><img src="screenshot/m2/share4.jpeg" width="240"><br><b>Share as Link HTML</b></td>
+    <td align="center"><img src="screenshot/m2/share5.jpeg" width="240"><br><b>Share as QR Code Chat</b></td>
+    <td align="center"><img src="screenshot/m2/share6.jpeg" width="240"><br><b>Scan QR Code</b></td>
   </tr>
 </table>
 

@@ -59,7 +59,6 @@
             android:layout_marginTop="12.dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-            <!-- Programmatically added avatars -->
         </LinearLayout>
 
     </LinearLayout>

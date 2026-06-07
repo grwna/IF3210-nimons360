@@ -133,6 +133,15 @@ class MainActivity : BaseActivity() {
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         updateComponentVisibility(currentFragment)
 
+        // Cek & minta permission lokasi saat onCreate
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            startAndBindService()
+        } else {
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
         if (savedInstanceState == null) {
             if (intent?.data != null && intent?.data?.scheme == "nimons360") {
                 handleDeepLink(intent)
@@ -160,15 +169,6 @@ class MainActivity : BaseActivity() {
                     .addToBackStack(null)
                     .commit()
             }
-        }
-
-        // Cek permission lokasi, jika sudah ada langsung start & bind service
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            startAndBindService()
-        } else {
-            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 

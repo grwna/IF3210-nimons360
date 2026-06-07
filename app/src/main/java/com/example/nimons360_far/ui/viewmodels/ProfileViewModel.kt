@@ -17,6 +17,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
+import coil.imageLoader
 
 sealed class ProfileState {
     object Idle : ProfileState()
@@ -77,24 +78,58 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         _profileState.value = ProfileState.Loading
         viewModelScope.launch {
             try {
-                val inputStream = context.contentResolver.openInputStream(uri)
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                inputStream?.close()
-                val tempFile = File(context.cacheDir, "temp_profile_upload.jpg")
-                val outputStream = FileOutputStream(tempFile)
-                bitmap?.compress(Bitmap.CompressFormat.JPEG, 60, outputStream)
-                outputStream.close()
-                val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val body = MultipartBody.Part.createFormData("photo", tempFile.name, requestFile)
-                val response = userApi.uploadProfilePhoto(body)
+                val (response, tempFile) = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    val inputStream = context.contentResolver.openInputStream(uri)
+                    val originalBitmap = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+
+                    // Image processing
+                    val tempFile = File(context.cacheDir, "temp_profile_upload.jpg")
+                    val outputStream = FileOutputStream(tempFile)
+                    originalBitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStream)
+                    outputStream.close()
+                    originalBitmap.recycle()
+
+                    val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    val body = MultipartBody.Part.createFormData("photo", tempFile.name, requestFile)
+                    val resp = userApi.uploadProfilePhoto(body)
+                    Pair(resp, tempFile)
+                }
+
                 if (response.isSuccessful && response.body() != null) {
-                    _profileState.value = ProfileState.Success(response.body()!!.data)
+                    val newData = response.body()!!.data
+                    
+                    // Invalidate cache to reload profile picture
+                    val rawUrl = newData.profileImageUrl
+                    val finalUrl = if (rawUrl?.startsWith("/") == true) {
+                        "https://mad.labpro.hmif.dev$rawUrl"
+                    } else {
+                        rawUrl
+                    }
+                    if (!finalUrl.isNullOrEmpty()) {
+                        try {
+                            val imageLoader = context.imageLoader
+                            imageLoader.memoryCache?.remove(coil.memory.MemoryCache.Key(finalUrl))
+                            imageLoader.diskCache?.remove(finalUrl)
+                        } catch (e: Exception) {
+                        }
+                    }
+
+                    // update profile data elsewhere in the app
+                    userRepository.updateLocalProfile(newData)
+                    _profileState.value = ProfileState.Success(newData)
                     tempFile.delete()
                 } else {
-                    _profileState.value = ProfileState.Error("Failed to Upload Photo : File Size is Too Big")
+                    val errorMsg = try {
+                        val json = org.json.JSONObject(response.errorBody()?.string() ?: "")
+                        json.getString("message")
+                    } catch (e: Exception) {
+                        if (response.code() == 413) "File size is too big (Max 500 KB)" else "Failed to upload photo"
+                    }
+                    _profileState.value = ProfileState.Error(errorMsg)
                 }
-            } catch (_: Exception) {
-                _profileState.value = ProfileState.Error("Failed to Upload Photo")
+            } catch (e: Exception) {
+                _profileState.value = ProfileState.Error(e.message ?: "Failed to upload photo")
             }
         }
     }

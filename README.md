@@ -108,10 +108,16 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Responsive (Halaman-halaman Landscape)
 <table>
   <tr>
-    <td align="center"><img src="screenshot/m2/responsive1.jpg" width="240"><br><b>Login</b></td>
-    <td align="center"><img src="screenshot/m2/responsive2.png" width="240"><br><b>Home</b></td>
-    <td align="center"><img src="screenshot/m2/responsive3.jpg" width="240"><br><b>Profile</b></td>
-    <td align="center"><img src="screenshot/m2/responsive4.jpg" width="240"><br><b>Map</b></td>
+    <td align="center"><img src="screenshot/m2/responsive_map1.jpg" width="240"><br><b>Map Extended</b></td>
+    <td align="center"><img src="screenshot/m2/responsive_map2.jpg" width="240"><br><b>Map Extended</b></td>
+    <td align="center"><img src="screenshot/m2/responsive_map3.jpg" width="240"><br><b>Map Extended</b></td>
+    <td align="center"><img src="screenshot/m2/responsive_map4.jpg" width="240"><br><b>Map Extended</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/responsive1.jpg" width="240"><br><b>Login</b></td>
+    <td align="center"><img src="screenshot/responsive2.png" width="240"><br><b>Home</b></td>
+    <td align="center"><img src="screenshot/responsive3.jpg" width="240"><br><b>Profile</b></td>
+    <td align="center"><img src="screenshot/responsive4.jpg" width="240"><br><b>Map</b></td>
   </tr>
   <tr>
     <td align="center"><img src="screenshot/m2/responsive5.jpg" width="240"><br><b>Family Detail</b></td>

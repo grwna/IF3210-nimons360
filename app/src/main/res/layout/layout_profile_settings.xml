@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="SETTINGS"
+        android:text="@string/settings"
         android:textColor="#666666"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -41,7 +41,7 @@
                 <FrameLayout android:layout_width="32dp" android:layout_height="32dp" android:background="@drawable/shape_rounded_corner_med" android:backgroundTint="#FFF8E1" android:layout_marginEnd="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔔" android:textSize="18sp" android:layout_gravity="center"/>
                 </FrameLayout>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Notifications" android:textColor="#333333" android:textSize="16sp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/notifications" android:textColor="#333333" android:textSize="16sp"/>
                 <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switch_notification" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             </LinearLayout>
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginStart="64dp"/>
@@ -51,7 +51,7 @@
                 <FrameLayout android:layout_width="32dp" android:layout_height="32dp" android:background="@drawable/shape_rounded_corner_med" android:backgroundTint="#E8F5E9" android:layout_marginEnd="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🛡️" android:textSize="18sp" android:layout_gravity="center"/>
                 </FrameLayout>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Location Privacy" android:textColor="#333333" android:textSize="16sp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/location_privacy" android:textColor="#333333" android:textSize="16sp"/>
                 <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switch_location_privacy" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>

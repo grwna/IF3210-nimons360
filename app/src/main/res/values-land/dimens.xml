@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_nav_height">36dp</dimen>
+    <dimen name="home_header_min_height">44dp</dimen>
+    <dimen name="home_header_padding_bottom">2dp</dimen>
+</resources>

@@ -37,5 +37,12 @@
     <string name="choose_an_icon">CHOOSE AN ICON</string>
     <string name="edit_name">Edit Name</string>
     <string name="notifications">Notifications</string>
-    <string name="location_privacy">Location Privacy</string>
+    <string name="location_privacy">Hide Location</string>
+    <string name="join">Join</string>
+    <string name="are_you_sure_sign_out">Are you sure you want to sign out?</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="please_check_internet">Please check your internet connection!</string>
+    <string name="display_name">Display Name</string>
+    <string name="name_visible_to_family">This name is visible to your family members</string>
+    <string name="save">Save</string>
 </resources>

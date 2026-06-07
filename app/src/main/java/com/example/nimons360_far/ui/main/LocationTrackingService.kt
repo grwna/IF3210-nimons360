@@ -220,18 +220,21 @@ class LocationTrackingService : Service(), SensorEventListener {
                     val isMobile = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
                     val internetStatus = if (isMobile) "mobile" else "wifi"
 
-                    _userGeoPoint.value?.let { loc ->
-                        wsManager.sendPresence(
-                            PresencePayload(
-                                name = userName,
-                                latitude = loc.latitude,
-                                longitude = loc.longitude,
-                                rotation = _currentHeading.value,
-                                batteryLevel = batteryLevel,
-                                isCharging = isCharging,
-                                internetStatus = internetStatus
+                    // privacy checking
+                    if (!sessionManager.fetchLocationPrivacyPreference()) {
+                        _userGeoPoint.value?.let { loc ->
+                            wsManager.sendPresence(
+                                PresencePayload(
+                                    name = userName,
+                                    latitude = loc.latitude,
+                                    longitude = loc.longitude,
+                                    rotation = _currentHeading.value,
+                                    batteryLevel = batteryLevel,
+                                    isCharging = isCharging,
+                                    internetStatus = internetStatus
+                                )
                             )
-                        )
+                        }
                     }
 
                     val now = System.currentTimeMillis()

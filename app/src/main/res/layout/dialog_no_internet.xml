@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24.dp"
-            android:text="Disconnected"
+            android:text="@string/disconnected"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12.dp"
             android:gravity="center"
-            android:text="Please check your internet connection!"
+            android:text="@string/please_check_internet"
             android:textColor="@color/design_text_grey"
             android:textSize="16sp" />
 

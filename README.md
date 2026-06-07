@@ -64,9 +64,8 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ### Wajib - Map Extended
 <table>
   <tr>
-    <td align="center"><img src="screenshot/auth1.jpg" width="240"><br><b>Login (Input)</b></td>
-    <td align="center"><img src="screenshot/auth2.jpg" width="240"><br><b>Login (Failed)</b></td>
-    <td align="center"><img src="screenshot/auth3.jpg" width="240"><br><b>Logout</b></td>
+    <td align="center"><img src="screenshot/m2/map-extended1.jpg" width="240"><br><b>Mark Location</b></td>
+    <td align="center"><img src="screenshot/m2/map-extended2.jpg" width="240"><br><b>Mark Location</b></td>
   </tr>
 </table>
 

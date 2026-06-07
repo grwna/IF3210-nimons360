@@ -25,11 +25,12 @@ class DiscoverFamilyAdapter(
                 placeholder(android.R.drawable.ic_menu_myplaces)
             }
 
-            // populate avatars
+            // populate avatars (only initials, no profile pictures)
             MemberAvatarHelper.populateAvatarStack(
                 binding.root.context,
                 binding.avatarContainer,
-                family.members
+                family.members,
+                showProfilePictures = false
             )
 
             binding.btnJoin.setOnClickListener { onJoinClick(family) }

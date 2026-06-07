@@ -3,7 +3,7 @@
 ## Deskripsi Aplikasi
 Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pelacakan keluarga secara real-time, terinspirasi dari fungsionalitas utama aplikasi Life360. Aplikasi ini memungkinkan pengguna untuk membuat keluarga, memantau lokasi anggota, serta mengelola daftar keluarga dengan fitur pencarian dan penyematan.
 
-## Fitur Utama
+## Fitur Utama (Milestone 2)
 - **Autentikasi Pengguna** : Sistem Login dan Logout yang aman.
 - **Manajemen Keluarga** : Membuat, bergabung, meninggalkan, dan melihat detail keluarga.
 - **Pelacakan Lokasi** : Integrasi Map dan GPS untuk memantau anggota keluarga secara real-time.
@@ -192,3 +192,12 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
     </td>
   </tr>
 </table>
+
+## Analisis dan Perbaikan Keamanan Aplikasi
+### Implementasi Praktik Keamanan
+Berikut merupakan cuplikan kode yang menunjukkan implementasi dari masing-masing praktik keamanan pada aplikasi.
+
+### Analisis Owasp Top 10 
+#### M4: Insufficient Input/Output Validation
+#### M8: Security Misconfiguration
+#### M9: Insecure Data Storage

@@ -37,6 +37,26 @@ class ProfileActivity : BaseActivity() {
     private lateinit var sessionManager: SessionManager
     private lateinit var profileViewModel: ProfileViewModel
 
+    private var tempImageUri: Uri? = null
+
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+        if (success) {
+            tempImageUri?.let { uri ->
+                profileViewModel.uploadProfilePhoto(uri, this)
+            }
+        }
+    }
+
+    // Camera permission
+    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            tempImageUri = getTempImageUri()
+            takePictureLauncher.launch(tempImageUri!!)
+        } else {
+            android.widget.Toast.makeText(this, "Camera permission is required to take a photo.", android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             profileViewModel.uploadProfilePhoto(it, this)
@@ -158,43 +178,32 @@ class ProfileActivity : BaseActivity() {
 
         // Bottom Sheet trigger
         binding.ivEditPencil.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            val options = arrayOf("Take Photo", "Choose from Gallery")
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Update Profile Picture")
+                .setItems(options) { dialog, which ->
+                    when (which) {
+                        0 -> {
+                            if (androidx.core.content.ContextCompat.checkSelfPermission(this@ProfileActivity, android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                                tempImageUri = getTempImageUri()
+                                takePictureLauncher.launch(tempImageUri!!)
+                            } else {
+                                requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                            }
+                        }
+                        1 -> pickImageLauncher.launch("image/*")
+                    }
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         binding.tvProfileName.setOnClickListener {
-            val bottomSheetDialog = BottomSheetDialog(this)
-            val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
-            bottomSheetDialog.setContentView(sheetView)
-            
-            // Set background transparent to show curved top corners
-            (sheetView.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
+            showEditNameBottomSheet()
+        }
 
-            val etName = sheetView.findViewById<TextInputEditText>(R.id.et_name)
-            val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
-            val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
-
-            val tilName = sheetView.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.til_name)
-
-            // Populate current name
-            etName.setText(binding.tvProfileName.text.toString())
-
-            btnCancel.setOnClickListener {
-                bottomSheetDialog.dismiss()
-            }
-
-            btnSave.setOnClickListener {
-                val newName = etName.text.toString().trim()
-                tilName.error = null
-                
-                if (newName.isNotEmpty()) {
-                    profileViewModel.updateProfile(newName)
-                    bottomSheetDialog.dismiss()
-                } else {
-                    tilName.error = "Name cannot be empty"
-                }
-            }
-
-            bottomSheetDialog.show()
+        binding.ivEditNamePencil.setOnClickListener {
+            showEditNameBottomSheet()
         }
 
         // Sign Out Modal Trigger
@@ -227,6 +236,55 @@ class ProfileActivity : BaseActivity() {
 
             dialog.show()
         }
+    }
+
+    // Camera functionality
+    private fun getTempImageUri(): Uri {
+        val tempFile = java.io.File.createTempFile("avatar_temp", ".jpg", java.io.File(cacheDir, "shared_files").apply { mkdirs() }).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+        return androidx.core.content.FileProvider.getUriForFile(
+            this,
+            "${packageName}.fileprovider",
+            tempFile
+        )
+    }
+
+    private fun showEditNameBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_edit_name, null)
+        bottomSheetDialog.setContentView(sheetView)
+        
+        // Set background transparent to show curved top corners
+        (sheetView.parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
+
+        val etName = sheetView.findViewById<TextInputEditText>(R.id.et_name)
+        val btnCancel = sheetView.findViewById<MaterialButton>(R.id.btn_cancel)
+        val btnSave = sheetView.findViewById<MaterialButton>(R.id.btn_save)
+
+        val tilName = sheetView.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.til_name)
+
+        // Populate current name
+        etName.setText(binding.tvProfileName.text.toString())
+
+        btnCancel.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        btnSave.setOnClickListener {
+            val newName = etName.text.toString().trim()
+            tilName.error = null
+            
+            if (newName.isNotEmpty()) {
+                profileViewModel.updateProfile(newName)
+                bottomSheetDialog.dismiss()
+            } else {
+                tilName.error = "Name cannot be empty"
+            }
+        }
+
+        bottomSheetDialog.show()
     }
 
     override fun onNetworkAvailable() {

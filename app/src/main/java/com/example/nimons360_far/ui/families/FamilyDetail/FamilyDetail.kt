@@ -123,6 +123,7 @@ fun FamilyDetailScreen(
     var showShareSheet by remember { mutableStateOf(false) }
     var joinCodeInput by remember { mutableStateOf("") }
     var showBroadcastSheet by remember { mutableStateOf(false) }
+    var visibleMembersCount by remember(familyId) { mutableStateOf(10) }
 
     // Fetch Family Detail On Family ID Changes
     LaunchedEffect(familyId) {
@@ -272,7 +273,9 @@ fun FamilyDetailScreen(
                             ) {
                                 Column {
                                     val membersList = family.members ?: emptyList()
-                                    membersList.forEachIndexed { index, member ->
+                                    // Basic Pagination for members
+                                    val displayedMembers = membersList.take(visibleMembersCount)
+                                    displayedMembers.forEachIndexed { index, member ->
                                         MemberItem(
                                             name = member.fullName,
                                             email = member.email,
@@ -280,8 +283,27 @@ fun FamilyDetailScreen(
                                             isMe = member.email == viewModel.userEmail,
                                             profileImageUrl = member.profileImageUrl
                                         )
-                                        if (index < membersList.size - 1) {
+                                        if (index < displayedMembers.size - 1) {
                                             HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                        }
+                                    }
+
+                                    // Show load more option if there are more members
+                                    if (membersList.size > visibleMembersCount) {
+                                        HorizontalDivider(color = DesignBg, thickness = 1.dp)
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clickable { visibleMembersCount += 10 }
+                                                .padding(vertical = 16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = "Load More",
+                                                color = DesignBlue,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 14.sp
+                                            )
                                         }
                                     }
                                 }

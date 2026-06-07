@@ -1,5 +1,15 @@
 # Tubes MAD (IF3210-24) 2026 - MS1 - K01 - FAR
 
+## Daftar Isi
+- [Deskripsi Aplikasi](#deskripsi-aplikasi)
+- [Fitur Utama (Milestone 2)](#fitur-utama-milestone-2)
+- [Library yang Digunakan](#library-yang-digunakan)
+- [Pembagian Kerja Anggota Kelompok](#pembagian-kerja-anggota-kelompok)
+- [Waktu Pengerjaan](#waktu-pengerjaan)
+- [Screenshot Aplikasi](#screenshot-aplikasi)
+- [Contributors](#contributors)
+- [Analisis dan Perbaikan Keamanan Aplikasi (OWASP)](#analisis-dan-perbaikan-keamanan-aplikasi-owasp)
+
 ## Deskripsi Aplikasi
 Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pelacakan keluarga secara real-time, terinspirasi dari fungsionalitas utama aplikasi Life360. Aplikasi ini memungkinkan pengguna untuk membuat keluarga, memantau lokasi anggota, serta mengelola daftar keluarga dengan fitur pencarian dan penyematan.
 
@@ -45,13 +55,13 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
 ## Waktu Pengerjaan
 | NIM | Jam Persiapan | Jam Pengerjaan | Total Jam |
 | :---: | :---: | :---: | :---: |
-| **13523005** | 6 Jam | 30 Jam | 36 Jam |
-| **13523021** | 6 Jam | 30 Jam | 36 Jam |
-| **13523035** | 6 Jam | 30 Jam | 36 Jam |
+| **13523005** | 2 Jam | 30 Jam | 32 Jam |
+| **13523021** | 2 Jam | 30 Jam | 32 Jam |
+| **13523035** | 2 Jam | 30 Jam | 32 Jam |
 
 ## Screenshot Aplikasi
 
-### Wajib - Auth
+### Wajib - Map Extended
 <table>
   <tr>
     <td align="center"><img src="screenshot/auth1.jpg" width="240"><br><b>Login (Input)</b></td>
@@ -60,110 +70,54 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
   </tr>
 </table>
 
-### Wajib - Home
+### Wajib - Notifikasi
 <table>
   <tr>
-    <td align="center"><img src="screenshot/home1.jpg" width="240"><br><b>Home</b></td>
-    <td align="center"><img src="screenshot/home2.jpg" width="240"><br><b>Home (Empty)</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi1.jpg" width="240"><br><b>Family Detail Actions</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi2.jpg" width="240"><br><b>Send Message</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi3.jpg" width="240"><br><b>Greeting</b></td>
+    <td align="center"><img src="screenshot/m2/notifikasi4.jpg" width="240"><br><b>Notifikasi Diterima</b></td>
   </tr>
 </table>
 
-### Wajib - Families
+### Wajib - Profile Photo
 <table>
   <tr>
-    <td align="center"><img src="screenshot/families1.jpeg" width="240"><br><b>Create Family (Input)</b></td>
-    <td align="center"><img src="screenshot/families2.jpeg" width="240"><br><b>Create Family (Success)</b></td>
-    <td align="center"><img src="screenshot/families3.jpeg" width="240"><br><b>Create Family (Failed)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/families4.jpeg" width="240"><br><b>Family Detail (Joined)</b></td>
-    <td align="center"><img src="screenshot/families5.jpeg" width="240"><br><b>Family Detail (Not Joined)</b></td>
-    <td align="center"><img src="screenshot/families6.jpeg" width="240"><br><b>Join Family (Input)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/families7.jpeg" width="240"><br><b>Join (Error Length)</b></td>
-    <td align="center"><img src="screenshot/families8.jpeg" width="240"><br><b>Join (Wrong Code)</b></td>
-    <td align="center"><img src="screenshot/families9.jpeg" width="240"><br><b>Join (Success)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/families10.jpeg" width="240"><br><b>Leave (Display)</b></td>
-    <td align="center"><img src="screenshot/families11.jpeg" width="240"><br><b>Leave (Success)</b></td>
-    <td align="center"><img src="screenshot/families12.jpeg" width="240"><br><b>Pinned (Display >0)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/families13.jpeg" width="240"><br><b>Pinned (Display =0)</b></td>
-    <td align="center"><img src="screenshot/families14.jpeg" width="240"><br><b>Pinned (Add)</b></td>
-    <td align="center"><img src="screenshot/families15.jpeg" width="240"><br><b>Pinned (Delete)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/families16.jpeg" width="240"><br><b>Filter (All)</b></td>
-    <td align="center"><img src="screenshot/families17.jpeg" width="240"><br><b>Filter (My > 0)</b></td>
-    <td align="center"><img src="screenshot/families18.jpeg" width="240"><br><b>Filter (My = 0)</b></td>
+    <td align="center"><img src="screenshot/m2/prof-pict1.jpeg" width="240"><br><b>Halaman Profile Baru</b></td>
+    <td align="center"><img src="screenshot/m2/prof-pict2.jpeg" width="240"><br><b>Opsi Pemilihan Foto</b></td>
+    <td align="center"><img src="screenshot/m2/prof-pict3.jpeg" width="240"><br><b>Home (Profile Picture)</b></td>
+    <td align="center"><img src="screenshot/m2/prof-pict4.jpeg" width="240"><br><b>Family Detail (Profile Picture)</b></td>
   </tr>
 </table>
 
-### Wajib - Map
+### Wajib - Share Family
 <table>
   <tr>
-    <td align="center"><img src="screenshot/map1.jpg" width="240"><br><b>Map (Display)</b></td>
-    <td align="center"><img src="screenshot/map2.jpg" width="240"><br><b>Family Location</b></td>
+    <td align="center"><img src="screenshot/m2/share1.jpg" width="240"><br><b>Share Family Modal</b></td>
+    <td align="center"><img src="screenshot/m2/share2.jpg" width="240"><br><b>Share as Link Chat</b></td>
+    <td align="center"><img src="screenshot/m2/share3.jpg" width="240"><br><b>Share as Link HTML</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="screenshot/map3.jpg" width="240"><br><b>Phone Orientation A (hadap kiri)</b></td>
-    <td align="center"><img src="screenshot/map3_b.jpg" width="240"><br><b>Phone Orientation B (hadap kanan)</b></td>
-    <td align="center"><img src="screenshot/map4.jpg" width="240"><br><b>User Information</b></td>
+    <td align="center"><img src="screenshot/m2/share4.jpg" width="240"><br><b>Share as QR Code Chat</b></td>
+    <td align="center"><img src="screenshot/m2/share5.jpg" width="240"><br><b>Scan QR Code</b></td>
   </tr>
 </table>
 
-### Wajib - Profile
+### Wajib - Responsive (Halaman-halaman Landscape)
 <table>
   <tr>
-    <td align="center"><img src="screenshot/profile1.jpg" width="240"><br><b>Profile Main</b></td>
-    <td align="center"><img src="screenshot/profile2.jpg" width="240"><br><b>Rename Profile</b></td>
-    <td align="center"><img src="screenshot/profile3.jpg" width="240"><br><b>Rename (Failed)</b></td>
+    <td align="center"><img src="screenshot/responsive1.jpg" width="240"><br><b>Login</b></td>
+    <td align="center"><img src="screenshot/responsive2.jpg" width="240"><br><b>Home</b></td>
+    <td align="center"><img src="screenshot/responsive3.jpg" width="240"><br><b>Profile</b></td>
+    <td align="center"><img src="screenshot/responsive4.jpg" width="240"><br><b>Map</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshot/responsive5.jpg" width="240"><br><b>Family Detail</b></td>
+    <td align="center"><img src="screenshot/responsive6.jpg" width="240"><br><b>Families</b></td>
+    <td align="center"><img src="screenshot/responsive7.jpg" width="240"><br><b>Create Family</b></td>
   </tr>
 </table>
 
-### Wajib - Network Sensing
-<table>
-  <tr>
-    <td align="center"><img src="screenshot/network1.jpg" width="240"><br><b>Disconnected</b></td>
-  </tr>
-</table>
-
-### Bonus - Search Family
-<table>
-  <tr>
-    <td align="center"><img src="screenshot/search1.jpeg" width="240"><br><b>All (Found)</b></td>
-    <td align="center"><img src="screenshot/search2.jpeg" width="240"><br><b>All (Not Found)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/search3.jpeg" width="240"><br><b>My (Found)</b></td>
-    <td align="center"><img src="screenshot/search4.jpeg" width="240"><br><b>My (Not Found)</b></td>
-  </tr>
-</table>
-
-### Bonus - Internet Status
-<table>
-  <tr>
-    <td align="center"><img src="screenshot/internet1.jpg" width="240"><br><b>Internet Status Wi-Fi (Display)</b></td>
-    <td align="center"><img src="screenshot/internet2.jpg" width="240"><br><b>Internet Status Cellular (Display)</b></td>
-  </tr>
-</table>
-
-### Bonus - Mark Favorite Location
-<table>
-  <tr>
-    <td align="center"><img src="screenshot/favorite1.jpg" width="240"><br><b>Map View</b></td>
-    <td align="center"><img src="screenshot/favorite2.jpg" width="240"><br><b>Add (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite3.jpg" width="240"><br><b>Add (Success)</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="screenshot/favorite4.jpg" width="240"><br><b>Rename (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite5.jpg" width="240"><br><b>Rename (Success)</b></td>
-    <td align="center"><img src="screenshot/favorite6.jpg" width="240"><br><b>Delete (Display)</b></td>
-  </tr>
-</table>
 
 ## Contributors
 
@@ -193,7 +147,7 @@ Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pe
   </tr>
 </table>
 
-## Analisis dan Perbaikan Keamanan Aplikasi
+## Analisis dan Perbaikan Keamanan Aplikasi (OWASP)
 ### Implementasi Praktik Keamanan
 Berikut merupakan cuplikan kode yang menunjukkan implementasi dari masing-masing praktik keamanan pada aplikasi.
 
@@ -274,7 +228,7 @@ Berikut merupakan cuplikan kode yang menunjukkan implementasi dari masing-masing
   }
   ```
 
-### Analisis Owasp Top 10 
+### Analisis Owasp Top 10
 Analisis keamanan kami lakukan menggunakan tools static analysis yaitu SonarQube. Adapun metrik yang kami perhatikan adalah *Security* dan *Security Hotspot*. Berikut hasil analisis awal dan hasil analisis setelah perbaikan.
 
 #### Hasil Sebelum Perbaikan

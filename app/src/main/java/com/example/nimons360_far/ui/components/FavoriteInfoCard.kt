@@ -83,7 +83,9 @@ fun FavoriteInfoCard(
             Text(
                 text = "Lat: ${"%.5f".format(favorite.latitude)}, Lon: ${"%.5f".format(favorite.longitude)}",
                 fontSize = 12.sp,
-                color = Color(0xFF8E8E93)
+                color = Color(0xFF8E8E93),
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
 
             HorizontalDivider(color = Color(0xFFE5E5EA), thickness = 1.dp)
@@ -105,7 +107,8 @@ fun FavoriteInfoCard(
                             model = File(photo.filePath),
                             contentDescription = "Foto lokasi",
                             modifier = Modifier
-                                .size(130.dp)
+                                .height(120.dp)
+                                .aspectRatio(1f)
                                 .clip(RoundedCornerShape(12.dp)),
                             contentScale = ContentScale.Crop
                         )

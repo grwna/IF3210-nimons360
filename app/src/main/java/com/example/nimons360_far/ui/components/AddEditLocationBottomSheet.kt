@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,8 +50,8 @@ fun AddEditLocationBottomSheet(
 ) {
     val context = LocalContext.current
 
-    var locationName by remember { mutableStateOf(existingLocation?.name ?: "") }
-    var description by remember { mutableStateOf(existingLocation?.description ?: "") }
+    var locationName by rememberSaveable { mutableStateOf(existingLocation?.name ?: "") }
+    var description by rememberSaveable { mutableStateOf(existingLocation?.description ?: "") }
 
     // Track existing and new photos
     val removedPhotoPaths = remember { mutableStateListOf<String>() }
@@ -209,7 +210,8 @@ fun AddEditLocationBottomSheet(
                     items(visibleExistingPhotos) { path ->
                         Box(
                             modifier = Modifier
-                                .size(100.dp)
+                                .height(100.dp)
+                                .aspectRatio(1f)
                                 .clip(RoundedCornerShape(12.dp))
                         ) {
                             AsyncImage(
@@ -239,7 +241,8 @@ fun AddEditLocationBottomSheet(
                     items(newPhotoUris.toList()) { uri ->
                         Box(
                             modifier = Modifier
-                                .size(100.dp)
+                                .height(100.dp)
+                                .aspectRatio(1f)
                                 .clip(RoundedCornerShape(12.dp))
                         ) {
                             AsyncImage(

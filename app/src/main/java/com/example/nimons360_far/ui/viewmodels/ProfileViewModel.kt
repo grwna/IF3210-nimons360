@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nimons360_far.backend.models.UserProfileData
@@ -57,7 +58,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             if (result.isSuccess) {
                 _profileState.value = ProfileState.Success(result.getOrThrow())
             } else if (result.isFailure) {
-                _profileState.value = ProfileState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                Log.e("ProfileViewModel", "Failed to fetch profile", result.exceptionOrNull())
+                _profileState.value = ProfileState.Error("Failed to load profile. Please try again.")
             }
         }
     }
@@ -69,7 +71,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             if (result.isSuccess) {
                 _profileState.value = ProfileState.Success(result.getOrThrow())
             } else if (result.isFailure) {
-                _profileState.value = ProfileState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                Log.e("ProfileViewModel", "Failed to update profile", result.exceptionOrNull())
+                _profileState.value = ProfileState.Error("Failed to update profile. Please try again.")
             }
         }
     }
@@ -129,7 +132,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     _profileState.value = ProfileState.Error(errorMsg)
                 }
             } catch (e: Exception) {
-                _profileState.value = ProfileState.Error(e.message ?: "Failed to upload photo")
+                Log.e("ProfileViewModel", "Failed to upload photo", e)
+                _profileState.value = ProfileState.Error("Failed to upload photo. Please try again.")
             }
         }
     }

@@ -142,9 +142,13 @@ class LocationTrackingService : Service(), SensorEventListener {
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_UI)
 
-        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-
-        registerReceiver(gpsProviderReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED), Context.RECEIVER_NOT_EXPORTED)
+            registerReceiver(gpsProviderReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION), Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            registerReceiver(gpsProviderReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        }
 
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, buildNotification())

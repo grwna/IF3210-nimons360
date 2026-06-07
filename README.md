@@ -3,10 +3,10 @@
 ## Daftar Isi
 - [Deskripsi Aplikasi](#deskripsi-aplikasi)
 - [Fitur Utama (Milestone 2)](#fitur-utama-milestone-2)
-- [Library yang Digunakan](#library-yang-digunakan)
-- [Pembagian Kerja Anggota Kelompok](#pembagian-kerja-anggota-kelompok)
-- [Waktu Pengerjaan](#waktu-pengerjaan)
-- [Screenshot Aplikasi](#screenshot-aplikasi)
+- [Library yang Digunakan (Milestone 2)](#library-yang-digunakan-milestone-2)
+- [Pembagian Kerja Anggota Kelompok (Milestone 2)](#pembagian-kerja-anggota-kelompok-milestone-2)
+- [Waktu Pengerjaan (Milestone 2)](#waktu-pengerjaan-milestone-2)
+- [Screenshot Aplikasi (Milestone 2)](#screenshot-aplikasi-milestone-2)
 - [Contributors](#contributors)
 - [Analisis dan Perbaikan Keamanan Aplikasi (OWASP)](#analisis-dan-perbaikan-keamanan-aplikasi-owasp)
 
@@ -14,52 +14,52 @@
 Nimons360 adalah aplikasi Android yang dirancang untuk membantu manajemen dan pelacakan keluarga secara real-time, terinspirasi dari fungsionalitas utama aplikasi Life360. Aplikasi ini memungkinkan pengguna untuk membuat keluarga, memantau lokasi anggota, serta mengelola daftar keluarga dengan fitur pencarian dan penyematan.
 
 ## Fitur Utama (Milestone 2)
-- **Autentikasi Pengguna** : Sistem Login dan Logout yang aman.
-- **Manajemen Keluarga** : Membuat, bergabung, meninggalkan, dan melihat detail keluarga.
-- **Pelacakan Lokasi** : Integrasi Map dan GPS untuk memantau anggota keluarga secara real-time.
-- **Interaksi Interaktif** : Fitur pencarian, filter, dan penyematan keluarga.
-- **Profil Pengguna** : Pengelolaan informasi akun dan sesi.
+- **Map Extended** : Sistem mark location, share location, dan open Google Maps.
+- **Notifikasi** : Menerima notifikasi secara otomatis dari pesan yang ada di keluarga.
+- **Upload Profile Photo & Privacy Toggle** : Mengunggah foto profil dari kamera atau galeri, serta toggle untuk privasi.
+- **Share Family** : Mengundang anggota baru menggunakan deep link melalui HTML Link dan QR Code.
+- **Responsive** : Mendukung tampilan portrait dan landscape untuk semua halaman tanpa kehilangan data saat rotasi layar.
 
-## Library yang Digunakan
+## Library yang Digunakan (Milestone 2)
 - **Material Components** : Implementasi standar komponen antarmuka Material Design 3.
 - **Jetpack Compose** : Framework modern untuk membangun UI deklaratif secara penuh.
 - **Retrofit & OKHttp** : Client HTTP untuk berkomunikasi dengan REST API secara efisien.
-- **GSON & Retrofit Converter GSON** : Serialisasi dan deserialisasi data JSON menjadi objek model.
-- **Room Database** : Sistem manajemen database lokal (ORM) untuk penyimpanan data persisten.
-- **Kotlinx Coroutines** : Library untuk menangani operasi asinkron dan concurrency.
-- **Lifecycle (ViewModel, Runtime, Compose)** : Manajemen state aplikasi dan data UI.
-- **Security Crypto** : Implementasi enkripsi untuk penyimpanan data sensitif (EncryptedSharedPreferences).
-- **Coil & Coil Compose** : Library pemuatan gambar yang dioptimalkan untuk performa tinggi, termasuk dukungan Compose.
+- **GSON & Converter GSON** : Serialisasi dan deserialisasi data JSON menjadi objek model.
+- **Room Database** : Penyimpanan data persisten lokal SQLite untuk lokasi favorit dan keluarga tersemat.
+- **Kotlinx Coroutines** : Library untuk menangani operasi asinkron secara non-blocking.
+- **Lifecycle (ViewModel, Runtime, Compose)** : Manajemen state aplikasi dan data UI selama siklus hidup komponen.
+- **Security Crypto** : Enkripsi token sesi menggunakan EncryptedSharedPreferences.
+- **Coil & Coil Compose** : Library pemuatan gambar dan avatar secara asinkron dengan performa tinggi.
 - **OSMDroid** : Integrasi dan rendering peta interaktif menggunakan sumber OpenStreetMap.
 - **Google Play Services Location** : API untuk pengambilan data lokasi presisi dan koordinat GPS.
-- **SwipeRefreshLayout** : Komponen UI untuk fitur "pull down to refresh" pada layout XML.
+- **SwipeRefreshLayout** : Komponen UI untuk fitur pull down to refresh pada layout XML.
+- **ZXing (Core & Android Embedded)** : Library untuk meng-generate dan memindai QR Code untuk fitur Share Family.
+- **Firebase Cloud Messaging (FCM)** : Layanan push notification cloud untuk menerima siaran pesan secara real-time.
 
-## Pembagian Kerja Anggota Kelompok
-| Spesifikasi | UI Framework | Kontributor |
-| :--- | :--- | :---: |
-| **Wajib - Auth** | XML | 13523035 |
-| **Wajib - Header & Navbar** | XML | 13523035 |
-| **Wajib - Home** | XML | 13523035 |
-| **Wajib - Families** | XML (Create Family) & Jetpack Compose (Other) | 13523021 |
-| **Wajib - Map** | Jetpack Compose | 13523005 |
-| **Wajib - Profile** | XML | 13523035 |
-| **Wajib - Network Sensing** | Jetpack Compose | 13523035 |
-| **Wajib - OpenAPI** | None | 13523035 |
-| **Wajib - README** | None | 13523021 |
-| **Bonus - Search Family** | Jetpack Compose | 13523021 |
-| **Bonus - Internet Status** | Jetpack Compose | 13523005 |
-| **Bonus - Livestreaming** | None | None |
-| **Bonus - Mark Favorite Location** | Jetpack Compose | 13523005 |
-| **Bonus - Accessibility Testing** | None | None |
+## Pembagian Kerja Anggota Kelompok (Milestone 2)
+| Spesifikasi | Kontributor |
+| :--- | :---: |
+| **Wajib - Map Extended** | 13523005 |
+| **Wajib - Notifikasi** | 13523035 |
+| **Wajib - Upload Profile Photo & Privacy Toggle** | 13523021 |
+| **Wajib - Share Family** | 13523021 |
+| **Wajib - Responsive** | 13523005 & 13523021 & 13523035 |
+| **Wajib - OWASP**| 13523035 |
+| **Wajib - OpenAPI** | 13523035 |
+| **Bonus - Share Story Instagram** | None |
+| **Bonus - Analytics** | None |
+| **Bonus - Share Family Via QR Code** | 13523021 |
+| **Bonus - Customizable Icon** | None |
+| **Bonus - Accessibility Testing** | None |
 
-## Waktu Pengerjaan
+## Waktu Pengerjaan (Milestone 2)
 | NIM | Jam Persiapan | Jam Pengerjaan | Total Jam |
 | :---: | :---: | :---: | :---: |
 | **13523005** | 2 Jam | 30 Jam | 32 Jam |
 | **13523021** | 2 Jam | 30 Jam | 32 Jam |
 | **13523035** | 2 Jam | 30 Jam | 32 Jam |
 
-## Screenshot Aplikasi
+## Screenshot Aplikasi (Milestone 2)
 
 ### Wajib - Map Extended
 <table>
